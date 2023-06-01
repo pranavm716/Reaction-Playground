@@ -1,14 +1,15 @@
 from abc import ABC, abstractmethod
 
 from rdkit import Chem
-
-from config import Mol2dTuple
+from rdkit.Chem import Draw
+from rdkit.Chem.Draw.IPythonConsole import display
 from rdkit.Chem.rdchem import Mol
 
+from datatypes import Mol2dTuple
 
 
 class UI(ABC):
-    """A generic UI abstract class."""
+    """An abstract class representing the user interface for this project."""
 
     @abstractmethod
     def prompt_for_start_and_target_molecule(self) -> tuple[Mol, Mol]:
@@ -57,4 +58,3 @@ class GoogleColabUI(UI):
             print(f"Scenario #{index}")
             display(Draw.MolsToGridImage(list(scenario), molsPerRow=len(scenario)))
             print("\n")
-

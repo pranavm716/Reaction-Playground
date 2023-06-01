@@ -1,5 +1,5 @@
 from config import read_all_reactions_from_file
-from google_colab_ui import GoogleColabUI
+from ui import GoogleColabUI
 from program import Program
 
 

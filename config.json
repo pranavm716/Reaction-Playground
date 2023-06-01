@@ -1,0 +1,5 @@
+{
+    "multi_step_react_mode": true,
+    "max_num_solver_steps": 15,
+    "all_reactions_file_path": "./all_reactions.txt"
+}

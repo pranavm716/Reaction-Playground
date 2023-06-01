@@ -4,7 +4,8 @@ from rdkit import Chem
 from rdkit.Chem import AllChem
 from rdkit.Chem.rdchem import Mol
 
-from config import Mol2dTuple, MolTuple
+from datatypes import Mol2dTuple
+from datatypes import MolTuple
 from reaction import Reaction
 
 

@@ -2,6 +2,7 @@ from rdkit.Chem import AllChem
 from rdkit.Chem.rdchem import Mol
 from reaction import Reaction
 
+MolTuple = tuple[Mol, ...]
 Mol2dTuple = tuple[tuple[Mol, ...], ...]
 
 MULTI_STEP_REACT_MODE = True

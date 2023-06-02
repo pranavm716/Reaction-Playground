@@ -53,11 +53,11 @@ def generate_multi_step_product(start_mol: Mol, reaction: Reaction) -> MolTuple:
     Recursively performs a reaction on a starting molecule and on its products until no more products can be formed.
     Returns the final tuple of products (always 1 x n).
     """
-    products = _generate_multi_step_product_recursion(start_mol, reaction, tuple())
+    products = _generate_multi_step_product(start_mol, reaction, tuple())
     return generate_unique_products((products,))[0]
 
 
-def _generate_multi_step_product_recursion(
+def _generate_multi_step_product(
     start_mol: Mol, reaction: Reaction, products: Mol2dTuple
 ) -> MolTuple:
     """
@@ -69,9 +69,7 @@ def _generate_multi_step_product_recursion(
     else:
         for scenario in single_step_product:
             for p in scenario:
-                products += _generate_multi_step_product_recursion(
-                    p, reaction, products
-                )
+                products += _generate_multi_step_product(p, reaction, products)
 
         return products
 

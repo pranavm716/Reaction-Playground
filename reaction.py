@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
-from rdkit.Chem import AllChem
 import rdkit.Chem.rdChemReactions as rd
+from rdkit.Chem import AllChem
 
 
 @dataclass(frozen=True, slots=True)
@@ -11,7 +11,7 @@ class Reaction:
     This class defines reactions more broadly than RDKit.
     While RDKit reactions precisely define which atoms and bonds are involved,
     this class organizes groups of specific reactions by behavior
-    (ex. a more general 'oxidation' reaction that applies to many classes of 
+    (ex. a more general 'oxidation' reaction that applies to many classes of
     molecules vs. any specific oxidation reaction).
     """
 

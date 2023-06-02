@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 from rdkit.Chem import AllChem
-from rdkit.Chem.rdChemReactions import ChemicalReaction
+import rdkit.Chem.rdChemReactions as rd
 
 
 @dataclass(frozen=True, slots=True)
@@ -16,7 +16,7 @@ class Reaction:
     """
 
     name: str
-    reactions_list: list[ChemicalReaction]
+    reactions_list: list[rd.ChemicalReaction]
     description: str
     num_reactants: int
 

@@ -24,13 +24,13 @@ LiAlH4 (lithium aluminum hydride) reduction of aldehyes, ketones, esters, carbox
 ^[CX3H1:1](=[O:2])[#6:3]>>[CX3H2:1]([OX2H:2])[#6:3]
 ^[#6:1][CX3:2](=[O:3])[#6:4]>>[#6:1][CX3:2]([OH:3])[#6:4]
 ^[#6:1][O:2][C:3](=O)[#6:4]>>[#6:1][O:2].[O][C:3][#6:4]
-^[#6:4][CX3:1](=[O:2])[OX2H:3]>>[#6:4][CX3H2:1][OX2H:3]
-^[#6:4][CX3:1](=[O:2])[NX3:3]>>[#6:4][CX3H2:1][NX3:3]
+^[#6:4][CX3:1](=O)[OX2H:3]>>[#6:4][CX3H2:1][OX2H:3]
+^[#6:4][CX3:1](=O)[NX3:3]>>[#6:4][CX3H2:1][NX3:3]
 ^[#6:2][C:3]#[N:1]>>[#6:2][C:3][N:1]
 Converts aldehydes, esters, and carboxylic acids to primary alcohols; ketones to secondary alcohols; and amides/nitriles to amines.
 
 PBr3 bromination of alcohols
-^[CH,CH2,CH3:1][OX2H:2]>>[C:1][Br]
+^[CH,CH2,CH3:1][OX2H]>>[C:1][Br]
 Converts primary and secondary alcohols into alkyl bromides.
 
 Ozonolysis
@@ -40,7 +40,7 @@ Ozonolysis
 Cleaves alkenes/alkynes into carbonyls.
 
 NaCN (sodium cyanide) nitrile synthesis
-^[CH,CH2,CH3:1][Br:2]>>[C:1]C#N
+^[CH,CH2,CH3:1][Br]>>[C:1]C#N
 Converts a primary/secondary alkyl bromides into nitriles via SN2.
 
 Oxymercuration/demercuration (OM/DM)
@@ -66,7 +66,7 @@ Grignard reagent
 Converts an alkyl bromide into a carbon nucleophile for use in Grignard reactions.
 
 SOCl2 (thionyl chloride) acid chloride synthesis
-^[#6:4][CX3:1](=[O:2])[OX2H:3]>>[#6:4][CX3:1](=[O:2])Cl
+^[#6:4][CX3:1](=[O:2])[OX2H]>>[#6:4][CX3:1](=[O:2])Cl
 Converts carboxylic acids into acid chlorides.
 
 Grignard reaction
@@ -84,9 +84,9 @@ Amide synthesis from acid chloride
 Converts an acid chloride + (ammonia/ primary/secondary amine into a primary/secondary/tertiary amide), respectively.
 
 Ester synthesis from acid chloride
-^[#6:3][CX3:1](=[O:2])Cl.[CH2,CH3:4][OX2H:5]>>[#6:3][CX3:1](=[O:2])O[CH2,CH3:4]
+^[#6:3][CX3:1](=[O:2])Cl.[CH2,CH3:4][OX2H]>>[#6:3][CX3:1](=[O:2])O[CH2,CH3:4]
 Converts an acid chloride + a primary alcohol into an ester.
 
 Fischer esterification
-^[#6:1][C:2](=[O:3])[OH:4].[CH,CH2,CH3,CX4,c:5][OX2H:6]>>[#6:1][C:2](=[O:3])[O:4][#6:5]
+^[#6:1][C:2](=[O:3])[OH:4].[CH,CH2,CH3,CX4,c:5][OX2H]>>[#6:1][C:2](=[O:3])[O:4][#6:5]
 Esterifies a carboxylic acid by reacting it with an alcohol.

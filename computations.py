@@ -149,7 +149,6 @@ def find_synthetic_pathway(
     target_mol: Mol,
     all_reactions: list[Reaction],
     max_solver_steps: int,
-    multi_step_react_mode: bool,
 ) -> tuple[bool, list[Reaction], list[int]]:
     """
     Auto-solver, utilizes multi step products.
@@ -157,8 +156,6 @@ def find_synthetic_pathway(
     """
     if not target_mol:
         raise ValueError("Target molecule must be present to use the solver mode.")
-    if not multi_step_react_mode:
-        raise ValueError("Multi step react mode must be enabled to use the solver.")
 
     # Set of visited nodes to prevent loops
     visited = set()

@@ -77,6 +77,11 @@ def _generate_multi_step_product_recursion(
 
 
 def get_reactant_substructures(subreaction: rd.ChemicalReaction) -> list[Mol]:
+    """
+    Returns the substructures of the reactants of the subreaction.
+    A substructure is like a chemical fingerprint that the reaction looks for in a molecule
+    to determine whether it is a valid reaction for that molecule.
+    """
     smarts: str = AllChem.ReactionToSmarts(subreaction)
     substructures_str = smarts[: smarts.index(">")].split(".")
     substructures = [Chem.MolFromSmarts(s) for s in substructures_str]
@@ -88,6 +93,7 @@ def get_reactant_position_of_mol_in_subreaction(
 ) -> int | None:
     """
     Returns the position of the mol in the reactants of the subreaction.
+    Returns None if the mol does not match any of the substructures.
     """
     substructures = get_reactant_substructures(subreaction)
     for i, s in enumerate(substructures):
@@ -103,6 +109,8 @@ def get_reactant_position_of_mol_in_reaction(
     Returns the position of the mol in the reactants of any of the reaction's subreactions.
     Since all of the subreactions have the same substructure pattern, we can return the first
     instance of when the mol is found.
+
+    Returns None if the mol does not match any of the substructures of any of the subreactions.
     """
     for subreaction in reaction.reactions_list:
         pos = get_reactant_position_of_mol_in_subreaction(mol, subreaction)

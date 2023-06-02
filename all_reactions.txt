@@ -1,0 +1,92 @@
+Hydrolysis of esters, amides, and nitriles
+^[#6:1][O:2]C(=O)[#6:4]>>[#6:1][O:2].[O]C(=O)[#6:4]
+^[#6:4][CX3:1](=[O:2])[NX3:3]>>[#6:4][CX3:1](=[O:2])[OX2H].[NX3:3]
+^[#6:1][C:2]#N>>[#6:1][C:2](=O)[OH]
+Hydrolizes esters/amides/nitriles into carboxylic acids.
+
+DMP/PCC oxidation of alcohols
+^[CH3:1][OH:2]>>[CH2:1]=[O:2]
+^[CH,CH2:1][OH:2]>>[C:1]=[O:2]
+Converts primary alcohols to aldehydes and secondary alcohols to ketones.
+
+H2CrO4 (chromic acid) oxidation of alcohols and aldehydes
+^[CH2,CH3:1][OH:2]>>[C:1](=O)[OH:2]
+^[CH:1][OH:2]>>[C:1]=[O:2]
+^[CX3H1:1](=[O:2])[#6:3]>>[#6:3][CX3:1](=[O:2])[OX2H]
+Converts primary alcohols and aldehydes to carboxylic acids; and secondary alcohols to ketones.
+
+NaBH4 (sodium borohydride) reduction of aldehydes and ketones
+^[CX3H1:1](=[O:2])[#6:3]>>[CX3H2:1]([OX2H:2])[#6:3]
+^[#6:1][CX3:2](=[O:3])[#6:4]>>[#6:1][CX3:2]([OH:3])[#6:4]
+Converts aldehydes and ketones to primary alcohols.
+
+LiAlH4 (lithium aluminum hydride) reduction of aldehyes, ketones, esters, carboxylic acids, amides, and nitriles
+^[CX3H1:1](=[O:2])[#6:3]>>[CX3H2:1]([OX2H:2])[#6:3]
+^[#6:1][CX3:2](=[O:3])[#6:4]>>[#6:1][CX3:2]([OH:3])[#6:4]
+^[#6:1][O:2][C:3](=O)[#6:4]>>[#6:1][O:2].[O][C:3][#6:4]
+^[#6:4][CX3:1](=O)[OX2H:3]>>[#6:4][CX3H2:1][OX2H:3]
+^[#6:4][CX3:1](=O)[NX3:3]>>[#6:4][CX3H2:1][NX3:3]
+^[#6:2][C:3]#[N:1]>>[#6:2][C:3][N:1]
+Converts aldehydes, esters, and carboxylic acids to primary alcohols; ketones to secondary alcohols; and amides/nitriles to amines.
+
+PBr3 bromination of alcohols
+^[CH,CH2,CH3:1][OX2H]>>[C:1][Br]
+Converts primary and secondary alcohols into alkyl bromides.
+
+Ozonolysis
+^[C:2]=[C:3]>>[C:2](=O).[C:3](=O)
+^[#6:1][C:2]#[C:3][#6:4]>>[#6:1][C:2](=O)[OX2H].[#6:4][C:3](=O)[OX2H]
+^[#6:1][C:2]#[CH:3]>>[#6:1][C:2](=O)[OX2H].O=[C:3]=O
+Cleaves alkenes/alkynes into carbonyls.
+
+NaCN (sodium cyanide) nitrile synthesis
+^[CH,CH2,CH3:1][Br]>>[C:1]C#N
+Converts a primary/secondary alkyl bromides into nitriles via SN2.
+
+Oxymercuration/demercuration (OM/DM)
+^[#6:1][CH:2]=[CH2:3]>>[#6:1][C:2]([OH])[C:3]
+^[#6:1][C:2]([#6:4])=[CH2:3]>>[#6:1][C:2]([OH])([#6:4])[C:3]
+^[#6:1][C:2]([#6:4])=[CH:3][#6:5]>>[#6:1][C:2]([OH])([#6:4])[C:3][#6:5]
+^[CH2:1]=[CH2:2]>>[C:1][C:2][OH]
+^[#6:1][CH:2]=[CH:3][#6:4]>>[#6:1][C:2]([OH])[C:3][#6:4].[#6:1][C:2][C:3]([OH])[#6:4]
+^[#6:1][C:2]([#6:4])=[C:3]([#6:6])[#6:5]>>[#6:1][C:2]([OH])([#6:4])[C:3]([#6:6])[#6:5].[#6:1][C:2]([#6:4])[C:3]([OH])([#6:6])[#6:5]
+Attaches an -OH group to the more substituted carbon atom of an alkene (Markovnikov addition).
+
+Hydroboration/oxidation (BH3/[O])
+^[#6:1][CH:2]=[CH2:3]>>[#6:1][C:2][C:3]([OH])
+^[#6:1][C:2]([#6:4])=[CH2:3]>>[#6:1][C:2]([#6:4])[C:3]([OH])
+^[#6:1][C:2]([#6:4])=[CH:3][#6:5]>>[#6:1][C:2]([#6:4])[C:3]([OH])[#6:5]
+^[CH2:1]=[CH2:2]>>[C:1][C:2][OH]
+^[#6:1][CH:2]=[CH:3][#6:4]>>[#6:1][C:2]([OH])[C:3][#6:4].[#6:1][C:2][C:3]([OH])[#6:4]
+^[#6:1][C:2]([#6:4])=[C:3]([#6:6])[#6:5]>>[#6:1][C:2]([OH])([#6:4])[C:3]([#6:6])[#6:5].[#6:1][C:2]([#6:4])[C:3]([OH])([#6:6])[#6:5]
+Attaches an -OH group to the less substituted carbon atom of an alkene (Anti-Markovnikov addition).
+
+Grignard reagent
+^[#6:1][Br]>>[#6-:1]
+Converts an alkyl bromide into a carbon nucleophile for use in Grignard reactions.
+
+SOCl2 (thionyl chloride) acid chloride synthesis
+^[#6:4][CX3:1](=[O:2])[OX2H]>>[#6:4][CX3:1](=[O:2])Cl
+Converts carboxylic acids into acid chlorides.
+
+Grignard reaction
+^[#6-:1].[CH2]=O>>[#6-0:1]C[OH]
+^[#6-:1].[CX3H1:2](=[O:3])[#6:4]>>[#6-0:1][C:2]([OH:3])[#6:4]
+^[#6-:1].[#6:2][CX3:3](=[O:4])[#6:5]>>[#6:2][CX3:3]([OH:4])([#6-0:1])[#6:5]
+^[#6-:1].[#6:2][C:3]#N>>[#6-0:1][C:3](=O)[#6:2]
+^[#6-:1].O=C=O>>[#6-0:1]C(=O)[OH]
+Converts a carbon nucleophile + (formaldehyde/aldehydes/ketones into primary/secondary/tertiary alcohols), respectively; or a carbon nucleophile + (nitriles/CO2 into ketones/carboxylic acids), respectively.
+
+Amide synthesis from acid chloride
+^[#6:4][CX3:1](=[O:2])Cl.[NH3:3]>>[#6:4][CX3:1](=[O:2])[NX3H2:3]
+^[#6:4][CX3:1](=[O:2])Cl.[NH2:3]([CX4:5])>>[#6:4][CX3:1](=[O:2])[NX3H:3]([CX4:5])
+^[#6:4][CX3:1](=[O:2])Cl.[NH:3]([CX4:5])[CX4:6]>>[#6:4][CX3:1](=[O:2])[NX3:3]([CX4:5])[CX4:6]
+Converts an acid chloride + (ammonia/ primary/secondary amine into a primary/secondary/tertiary amide), respectively.
+
+Ester synthesis from acid chloride
+^[#6:3][CX3:1](=[O:2])Cl.[CH2,CH3:4][OX2H]>>[#6:3][CX3:1](=[O:2])O[CH2,CH3:4]
+Converts an acid chloride + a primary alcohol into an ester.
+
+Fischer esterification
+^[#6:1][C:2](=[O:3])[OH:4].[CH,CH2,CH3,CX4,c:5][OX2H]>>[#6:1][C:2](=[O:3])[O:4][#6:5]
+Esterifies a carboxylic acid by reacting it with an alcohol.

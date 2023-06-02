@@ -42,7 +42,7 @@ def generate_single_step_product(
         reactants = (reactants,)
 
     products: Mol2dTuple = tuple()
-    for r in reaction.reactions_list:
+    for r in reaction.subreactions:
         products += r.RunReactants(reactants)
 
     return generate_unique_products(products)
@@ -110,7 +110,7 @@ def get_reactant_position_of_mol_in_reaction(
 
     Returns None if the mol does not match any of the substructures of any of the subreactions.
     """
-    for subreaction in reaction.reactions_list:
+    for subreaction in reaction.subreactions:
         pos = get_reactant_position_of_mol_in_subreaction(mol, subreaction)
         if pos is not None:
             return pos
@@ -136,7 +136,7 @@ def find_possible_reactions(
         if solver_mode and reaction.num_reactants > 1:
             continue  # Solver mode will omit any reactions with more than one reactant
 
-        for subreaction in reaction.reactions_list:
+        for subreaction in reaction.subreactions:
             if subreaction_is_valid(start_mol, subreaction):
                 possible_reactions.append(reaction)
                 break

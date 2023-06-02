@@ -12,17 +12,18 @@ class Reaction:
     While RDKit reactions precisely define which atoms and bonds are involved,
     this class organizes groups of specific reactions by behavior
     (ex. a more general 'oxidation' reaction that applies to many classes of
-    molecules vs. any specific oxidation reaction).
+    molecules vs. any specific oxidation reaction). Here, the specific cases of the
+    broader reaction are called subreactions.
     """
 
     name: str
-    reactions_list: list[rd.ChemicalReaction]
+    subreactions: list[rd.ChemicalReaction]
     description: str
     num_reactants: int
 
     @property
     def smarts_list(self):
-        return [AllChem.ReactionToSmarts(rxn) for rxn in self.reactions_list]
+        return [AllChem.ReactionToSmarts(rxn) for rxn in self.subreactions]
 
     def __str__(self):
         return f"{self.name}: {self.smarts_list}"

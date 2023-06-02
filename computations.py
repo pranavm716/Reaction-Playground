@@ -1,4 +1,5 @@
 from collections import deque
+from typing import Deque
 
 import rdkit.Chem.rdChemReactions as rd
 from rdkit import Chem
@@ -157,9 +158,9 @@ def find_synthetic_pathway(
     if not target_mol:
         raise ValueError("Target molecule must be present to use the solver mode.")
 
-    # Set of visited nodes to prevent loops
-    visited = set()
-    queue = deque()
+    # Set of visited molecule SMILES - used to prevent infinite loops
+    visited: set[str] = set()
+    queue: Deque[Mol] = deque()
 
     # Add the start_node to the queue and visited list
     queue.append(start_mol)
@@ -167,7 +168,7 @@ def find_synthetic_pathway(
 
     # The format of this dictionary is:
     # key = product SMILES -> value = reactant SMILES
-    parent: dict[str, str] = {}
+    parent: dict[str, str | None] = {}
     parent[Chem.MolToSmiles(start_mol)] = None  # startMol has no previous reactants
 
     # The format of this dictionary is:
@@ -188,7 +189,7 @@ def find_synthetic_pathway(
             possible_reactions = find_possible_reactions(
                 cur, all_reactions, solver_mode=True
             )
-            all_reactions_products: list[Mol2dTuple] = [
+            all_reactions_products: list[MolTuple] = [
                 generate_multi_step_product(cur, rxn) for rxn in possible_reactions
             ]
 
@@ -211,19 +212,21 @@ def find_synthetic_pathway(
             break
         dist += 1
 
+    if not path_found:
+        return False, [], []
+
     # Reconstructing the reaction pathway
     reaction_pathway = []
     choice_pathway = []
     target_smiles = Chem.MolToSmiles(target_mol)
 
-    if path_found:
-        while parent[target_smiles] is not None:
-            reaction, product_index = choices[(parent[target_smiles], target_smiles)]
-            reaction_pathway.append(reaction)
-            choice_pathway.append(product_index)
-            target_smiles = parent[target_smiles]
+    while parent[target_smiles] is not None:
+        reaction, product_index = choices[(parent[target_smiles], target_smiles)]
+        reaction_pathway.append(reaction)
+        choice_pathway.append(product_index)
+        target_smiles = parent[target_smiles]
 
-        reaction_pathway.reverse()
-        choice_pathway.reverse()
+    reaction_pathway.reverse()
+    choice_pathway.reverse()
 
     return path_found, reaction_pathway, choice_pathway

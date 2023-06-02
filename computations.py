@@ -178,18 +178,18 @@ def find_synthetic_pathway(
         dist += 1
 
     # Reconstructing the reaction pathway
-    rxn_pathway = []
+    reaction_pathway = []
     choice_pathway = []
     target_smiles = Chem.MolToSmiles(target_mol)
 
     if path_found:
         while parent[target_smiles] is not None:
             reaction, product_index = choices[(parent[target_smiles], target_smiles)]
-            rxn_pathway.append(reaction)
+            reaction_pathway.append(reaction)
             choice_pathway.append(product_index)
             target_smiles = parent[target_smiles]
 
-        rxn_pathway.reverse()
+        reaction_pathway.reverse()
         choice_pathway.reverse()
 
-    return path_found, rxn_pathway, choice_pathway
+    return path_found, reaction_pathway, choice_pathway

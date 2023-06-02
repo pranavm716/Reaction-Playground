@@ -49,6 +49,22 @@ class UI(ABC):
         """
         pass
 
+    @abstractmethod
+    def display_solver_step(
+        self,
+        current_mol: Mol,
+        step_number: int,
+        reaction: Reaction,
+        products: MolTuple,
+        choice: int,
+    ) -> None:
+        """
+        Displays information about the current step of the solver.
+        Displays which reaction turns the current mol into the products and
+        which product to pick for the next step.
+        """
+        pass
+
     # ---------------------------------------------------------
 
     # -------------------- For playground mode ----------------
@@ -124,6 +140,25 @@ class GoogleColabUI(UI):
             "\nThe goal is to find a reaction pathway that converts the molecule on the left into the molecule on the right."
         )
         self.display_mol_tuple((start_mol, target_mol))
+
+    def display_solver_step(
+        self,
+        current_mol: Mol,
+        step_number: int,
+        reaction: Reaction,
+        products: MolTuple,
+        choice: int,
+    ) -> None:
+        self.display_mol(current_mol)
+        print(f"\nStep #{step_number} - {reaction.name}.", end=" ")
+
+        num_products = len(products)
+        if num_products == 1:
+            print("The product is: ")
+        else:
+            print(f"This produces {num_products} products:")
+            self.display_mol_tuple(products)
+            print(f"\nPick product #{choice + 1}:")
 
     # ---------------------------------------------------------
 

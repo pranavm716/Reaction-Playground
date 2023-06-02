@@ -39,31 +39,62 @@ class Program:
     def run_program(self):
         proceed_to_playground_mode = True
         if self.solver_mode:
-            proceed_to_playground_mode = self.run_solver_mode()
+            self.run_solver_mode()
+            proceed_to_playground_mode = (
+                self.ui.get_user_input(
+                    "\nWould you like to continue using Reaction Playground (y/n)? "
+                )
+                == "y"
+            )
+            if proceed_to_playground_mode:
+                self.ui.print("\nThis is your starting molecule:\n")
 
-        if not proceed_to_playground_mode:
-            return
+        if proceed_to_playground_mode:
+            self.run_playground_mode()
 
-        self.run_playground_mode()
-
-    def run_solver_mode(self) -> bool:
+    def run_solver_mode(self) -> None:
         """
         Runs the auto synthetic pathway solver.
-        Returns whether or not the user would like to continue using the tool in playground mode.
         """
         path_found, reaction_pathway, choice_pathway = find_synthetic_pathway(
             self.start_mol,
             self.target_mol,
             self.all_reactions,
             self.max_num_solver_steps,
-            self.multi_step_react_mode,
         )
         self.ui.display_solver_mode_intro(self.start_mol, self.target_mol)
-        # TODO: rest of this method
-        return False
 
-    def run_playground_mode(self):
-        history = []
+        if not path_found:
+            self.ui.print(
+                f"\nNo synthetic pathway found in {self.max_num_solver_steps} steps. It is also possible that no synthetic pathway exists at all."
+            )
+            return
+
+        self.ui.print(
+            f"\n{len(reaction_pathway)}-step synthetic pathway found!\n\nThis is your starting molecule:"
+        )
+        current_mol = copy_mol(self.start_mol)
+        for step_number, (reaction, choice) in enumerate(
+            zip(reaction_pathway, choice_pathway), start=1
+        ):
+            products = generate_multi_step_product(current_mol, reaction)
+            self.ui.display_solver_step(
+                current_mol, step_number, reaction, products, choice
+            )
+
+            next_mol = products[choice]
+            current_mol = copy_mol(next_mol)
+
+        # Display the target molecule
+        self.ui.display_mol(current_mol)
+        self.ui.print("\nThis is your target molecule.")
+
+    def run_playground_mode(self) -> None:
+        """
+        Runs the playground mode loop, where users can experiment with applying reactions
+        freely to molecules.
+        """
+        history: list[Mol] = []
         current_mol = copy_mol(self.start_mol)
         while True:
             possible_reactions = find_possible_reactions(
@@ -116,10 +147,15 @@ class Program:
                     products[chosen_scenario]
                 )
 
-            current_mol = copy_mol(products[chosen_scenario][chosen_product])
             history.append(current_mol)
+            next_mol = products[chosen_scenario][chosen_product]
+            current_mol = copy_mol(next_mol)
 
     def get_missing_reactants(self, current_mol: Mol, reaction: Reaction) -> MolTuple:
+        """
+        For reactions that require additional reactants, this method will prompt the
+        user for those additional missing reactants.
+        """
         prompts = self.multiple_reactants_prompts[reaction.name]
         reactant_position = get_reactant_position_of_mol_in_reaction(
             current_mol, reaction

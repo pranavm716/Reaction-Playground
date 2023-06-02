@@ -1,7 +1,13 @@
 from rdkit.Chem import AllChem
 from rdkit.Chem.rdchem import Mol
 
-from computations import find_synthetic_pathway
+from computations import (
+    copy_mol,
+    find_possible_reactions,
+    find_synthetic_pathway,
+    generate_multi_step_product,
+    generate_single_step_product,
+)
 from reaction import Reaction
 from ui import UI
 
@@ -22,11 +28,11 @@ class Program:
         self.multi_step_react_mode = multi_step_react_mode
         self.max_num_solver_steps = max_num_solver_steps
         self.all_reactions = read_all_reactions_from_file(all_reactions_file_path)
+        self.solver_mode = bool(target_mol)
 
     def run_program(self):
-        solver_mode = bool(self.target_mol)
         proceed_to_playground_mode = True
-        if solver_mode:
+        if self.solver_mode:
             proceed_to_playground_mode = self._run_solver_mode()
 
         if not proceed_to_playground_mode:
@@ -50,10 +56,60 @@ class Program:
         return False
 
     def _run_playground_mode(self):
-        history = [self.start_mol]
+        history = []
+        current_mol = copy_mol(self.start_mol)
         while True:
-            pass
-        # TODO: rest of this method
+            possible_reactions = find_possible_reactions(
+                current_mol, self.all_reactions, self.solver_mode
+            )
+            self.ui.display_compatible_reactions(current_mol, possible_reactions)
+
+            if history:
+                self.ui.print("[b] Back\n")
+            self.ui.print("[q] Quit\n")
+
+            choice = self.ui.get_user_input()
+            if choice == "q":
+                break
+            elif history and choice == "b":
+                current_mol = history.pop()
+                continue
+            elif choice in [str(i) for i in range(1, len(possible_reactions) + 1)]:
+                chosen_reaction = possible_reactions[int(choice) - 1]
+            else:
+                self.ui.print("Invalid input!")
+                continue
+
+            if chosen_reaction.num_reactants > 1:
+                # TODO: Handling the reactions that require additional reactants (need to prompt user)
+                pass
+            elif not self.multi_step_react_mode:
+                products = generate_single_step_product(current_mol, chosen_reaction)
+            else:
+                products = (generate_multi_step_product(current_mol, chosen_reaction),)
+
+            if not products:
+                self.ui.print("\nNo reaction!\n")
+                continue
+
+            self.ui.print()
+            if len(products[0]) == 1 and len(products) == 1:
+                self.ui.print("The product is:")
+            else:
+                self.ui.print("The products are:")
+
+            chosen_scenario, chosen_product = 0, 0
+            if len(products) > 1:
+                self.ui.display_2d_mol_tuple(products)
+                chosen_scenario = self.ui.prompt_for_scenario_index(products)
+            if len(products[0]) > 1:
+                self.ui.display_mol_tuple(products[chosen_scenario])
+                chosen_product = self.ui.prompt_for_product_index(
+                    products[chosen_scenario]
+                )
+
+            current_mol = copy_mol(products[chosen_scenario][chosen_product])
+            history.append(current_mol)
 
 
 def read_all_reactions_from_file(all_reactions_file_path: str) -> list[Reaction]:

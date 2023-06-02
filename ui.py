@@ -1,11 +1,11 @@
 from abc import ABC, abstractmethod
 
-from IPython.display import display
 from rdkit import Chem
 from rdkit.Chem import Draw
 from rdkit.Chem.rdchem import Mol
 
 from datatypes import Mol2dTuple, MolTuple
+from reaction import Reaction
 
 
 class UI(ABC):
@@ -27,9 +27,9 @@ class UI(ABC):
         pass
 
     @abstractmethod
-    def display_solver_mode_intro(self, start_mol: Mol, target_mol: Mol) -> None:
+    def display_mol_tuple(self, mols: MolTuple) -> None:
         """
-        Displays the solver mode introductory text and images.
+        Displays a 1d tuple of molecules in a line.
         """
         pass
 
@@ -39,6 +39,51 @@ class UI(ABC):
         Draws a 2d grid of molecules on screen.
         """
         pass
+
+    @abstractmethod
+    def get_user_input(self, prompt: str = "") -> str:
+        pass
+
+    @abstractmethod
+    def print(self, text: str = "") -> None:
+        pass
+
+    # -------------------- For solver mode --------------------
+    @abstractmethod
+    def display_solver_mode_intro(self, start_mol: Mol, target_mol: Mol) -> None:
+        """
+        Displays the solver mode introductory text and images.
+        """
+        pass
+
+    # ---------------------------------------------------------
+
+    # -------------------- For playground mode ----------------
+    @abstractmethod
+    def display_compatible_reactions(
+        self, start_mol: Mol, possible_reactions: list[Reaction]
+    ) -> None:
+        """
+        Displays the start molecule and the list of compatible reactions.
+        """
+        pass
+
+    @abstractmethod
+    def prompt_for_scenario_index(self, products: Mol2dTuple) -> int:
+        """
+        When multiple scenarios are generated from the results of single step mode,
+        this method prompts the user for the scenario index.
+        """
+        pass
+
+    @abstractmethod
+    def prompt_for_product_index(self, scenario: MolTuple) -> int:
+        """
+        For a given scenario, this method prompts the user for the product index.
+        """
+        pass
+
+    # ---------------------------------------------------------
 
 
 class GoogleColabUI(UI):
@@ -58,16 +103,57 @@ class GoogleColabUI(UI):
         return start_mol, target_mol
 
     def display_mol(self, mol: Mol) -> None:
-        display(Draw.MolToImage(mol))
+        img = Draw.MolToImage(mol)
+        # display(img)
+        img.show()
 
-    def display_solver_mode_intro(self, start_mol: Mol, target_mol: Mol) -> None:
-        print(
-            "\nThe goal is to find a reaction pathway that converts the molecule on the left into the molecule on the right."
-        )
-        display(Draw.MolsToGridImage([start_mol, target_mol]))
+    def display_mol_tuple(self, mols: MolTuple) -> None:
+        img = Draw.MolsToGridImage(list(mols), molsPerRow=len(mols))
+        # display(img)
+        img.show()
 
     def display_2d_mol_tuple(self, products: Mol2dTuple) -> None:
         for index, scenario in enumerate(products, start=1):
             print(f"Scenario #{index}")
-            display(Draw.MolsToGridImage(list(scenario), molsPerRow=len(scenario)))
+            self.display_mol_tuple(scenario)
             print("\n")
+
+    def get_user_input(self, prompt: str = "") -> str:
+        return input(prompt)
+
+    def print(self, text: str = "") -> None:
+        print(text)
+
+    # -------------------- For solver mode ----------------
+    def display_solver_mode_intro(self, start_mol: Mol, target_mol: Mol) -> None:
+        print(
+            "\nThe goal is to find a reaction pathway that converts the molecule on the left into the molecule on the right."
+        )
+        self.display_mol_tuple((start_mol, target_mol))
+
+    # ---------------------------------------------------------
+
+    # -------------------- For playground mode ----------------
+    def display_compatible_reactions(
+        self, start_mol: Mol, possible_reactions: list[Reaction]
+    ) -> None:
+        self.display_mol(start_mol)
+        print(f"Smiles of molecule: {Chem.MolToSmiles(start_mol)}")
+        if possible_reactions:
+            print("\nCompatible reactions are listed below. Choose a reaction:\n")
+            for i, reaction in enumerate(possible_reactions, start=1):
+                print(f"[{i}] {reaction.name}")
+                print(reaction.description)
+                print("\n")
+        else:
+            print("\nThere are no compatible reactions.\n")
+
+    def prompt_for_scenario_index(self, products: Mol2dTuple) -> int:
+        choice = input(f"\nPick a scenario to analyze next (1 - {len(products)}): ")
+        return int(choice) - 1
+
+    def prompt_for_product_index(self, scenario: MolTuple) -> int:
+        choice = input(f"\nPick a product to analyze next (1 - {len(scenario)}): ")
+        return int(choice) - 1
+
+    # ---------------------------------------------------------

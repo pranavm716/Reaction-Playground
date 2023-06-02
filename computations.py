@@ -4,9 +4,12 @@ from rdkit import Chem
 from rdkit.Chem import AllChem
 from rdkit.Chem.rdchem import Mol
 
-from datatypes import Mol2dTuple
-from datatypes import MolTuple
+from datatypes import Mol2dTuple, MolTuple
 from reaction import Reaction
+
+
+def copy_mol(mol: Mol) -> Mol:
+    return Chem.MolFromSmiles(Chem.MolToSmiles(mol))
 
 
 def generate_unique_products(products: Mol2dTuple) -> Mol2dTuple:
@@ -18,7 +21,7 @@ def generate_unique_products(products: Mol2dTuple) -> Mol2dTuple:
     smiles = tuple(
         tuple(Chem.MolToSmiles(s) for s in scenarios) for scenarios in products
     )
-    inner_unique = tuple(set(p) for p in smiles)
+    inner_unique = tuple(tuple(set(p)) for p in smiles)
     outer_unique = tuple(set(inner_unique))
 
     # Convert back to Mols

@@ -1,5 +1,6 @@
 from collections import deque
 
+import rdkit.Chem.rdChemReactions as rd
 from rdkit import Chem
 from rdkit.Chem import AllChem
 from rdkit.Chem.rdchem import Mol
@@ -31,20 +32,18 @@ def generate_unique_products(products: Mol2dTuple) -> Mol2dTuple:
 
 
 def generate_single_step_product(
-    start_mol: Mol,
+    reactants: Mol | MolTuple,
     reaction: Reaction,
-    additional_reactants: MolTuple | None = None,
 ) -> Mol2dTuple:
     """
     Performs a reaction on a molecule once, and returns a 2d tuple of products.
     """
-    all_reactants: MolTuple = (start_mol,)
-    if additional_reactants:
-        all_reactants += additional_reactants
+    if isinstance(reactants, Mol):
+        reactants = (reactants,)
 
     products: Mol2dTuple = tuple()
     for r in reaction.reactions_list:
-        products += r.RunReactants(all_reactants)
+        products += r.RunReactants(reactants)
 
     return generate_unique_products(products)
 
@@ -77,19 +76,45 @@ def _generate_multi_step_product_recursion(
         return products
 
 
-def _get_reactant_substructures(reaction: Reaction) -> list[Mol]:
-    smarts: str = AllChem.ReactionToSmarts(reaction)
+def get_reactant_substructures(subreaction: rd.ChemicalReaction) -> list[Mol]:
+    smarts: str = AllChem.ReactionToSmarts(subreaction)
     substructures_str = smarts[: smarts.index(">")].split(".")
     substructures = [Chem.MolFromSmarts(s) for s in substructures_str]
     return substructures
 
 
-def _subreaction_is_valid(start_mol: Mol, subreaction: Reaction) -> bool:
-    substructures = _get_reactant_substructures(subreaction)
-    for s in substructures:
-        if start_mol.HasSubstructMatch(s):
-            return True
-    return False
+def get_reactant_position_of_mol_in_subreaction(
+    mol: Mol, subreaction: rd.ChemicalReaction
+) -> int | None:
+    """
+    Returns the position of the mol in the reactants of the subreaction.
+    """
+    substructures = get_reactant_substructures(subreaction)
+    for i, s in enumerate(substructures):
+        if mol.HasSubstructMatch(s):
+            return i
+    return None
+
+
+def get_reactant_position_of_mol_in_reaction(
+    mol: Mol, reaction: Reaction
+) -> int | None:
+    """
+    Returns the position of the mol in the reactants of any of the reaction's subreactions.
+    Since all of the subreactions have the same substructure pattern, we can return the first
+    instance of when the mol is found.
+    """
+    for subreaction in reaction.reactions_list:
+        pos = get_reactant_position_of_mol_in_subreaction(mol, subreaction)
+        if pos is not None:
+            return pos
+    return None
+
+
+def subreaction_is_valid(start_mol: Mol, subreaction: rd.ChemicalReaction) -> bool:
+    return (
+        get_reactant_position_of_mol_in_subreaction(start_mol, subreaction) is not None
+    )
 
 
 def find_possible_reactions(
@@ -106,7 +131,7 @@ def find_possible_reactions(
             continue  # Solver mode will omit any reactions with more than one reactant
 
         for subreaction in reaction.reactions_list:
-            if _subreaction_is_valid(start_mol, subreaction):
+            if subreaction_is_valid(start_mol, subreaction):
                 possible_reactions.append(reaction)
                 break
 

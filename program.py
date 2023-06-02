@@ -1,3 +1,4 @@
+from rdkit import Chem
 from rdkit.Chem import AllChem
 from rdkit.Chem.rdchem import Mol
 
@@ -7,7 +8,9 @@ from computations import (
     find_synthetic_pathway,
     generate_multi_step_product,
     generate_single_step_product,
+    get_reactant_position_of_mol_in_reaction,
 )
+from datatypes import MolTuple
 from reaction import Reaction
 from ui import UI
 
@@ -21,26 +24,29 @@ class Program:
         multi_step_react_mode: bool,
         max_num_solver_steps: int,
         all_reactions_file_path: str,
+        multiple_reactants_prompts: dict[str, list[str]],
     ) -> None:
         self.ui = ui
         self.start_mol = start_mol
         self.target_mol = target_mol
         self.multi_step_react_mode = multi_step_react_mode
         self.max_num_solver_steps = max_num_solver_steps
+        self.multiple_reactants_prompts = multiple_reactants_prompts
+
         self.all_reactions = read_all_reactions_from_file(all_reactions_file_path)
         self.solver_mode = bool(target_mol)
 
     def run_program(self):
         proceed_to_playground_mode = True
         if self.solver_mode:
-            proceed_to_playground_mode = self._run_solver_mode()
+            proceed_to_playground_mode = self.run_solver_mode()
 
         if not proceed_to_playground_mode:
             return
 
-        self._run_playground_mode()
+        self.run_playground_mode()
 
-    def _run_solver_mode(self) -> bool:
+    def run_solver_mode(self) -> bool:
         """
         Runs the auto synthetic pathway solver.
         Returns whether or not the user would like to continue using the tool in playground mode.
@@ -55,7 +61,7 @@ class Program:
         # TODO: rest of this method
         return False
 
-    def _run_playground_mode(self):
+    def run_playground_mode(self):
         history = []
         current_mol = copy_mol(self.start_mol)
         while True:
@@ -81,8 +87,9 @@ class Program:
                 continue
 
             if chosen_reaction.num_reactants > 1:
-                # TODO: Handling the reactions that require additional reactants (need to prompt user)
-                pass
+                # Handling the reactions that require additional reactants (need to prompt user)
+                reactants = self.get_missing_reactants(current_mol, chosen_reaction)
+                products = generate_single_step_product(reactants, chosen_reaction)
             elif not self.multi_step_react_mode:
                 products = generate_single_step_product(current_mol, chosen_reaction)
             else:
@@ -110,6 +117,29 @@ class Program:
 
             current_mol = copy_mol(products[chosen_scenario][chosen_product])
             history.append(current_mol)
+
+    def get_missing_reactants(self, current_mol: Mol, reaction: Reaction) -> MolTuple:
+        prompts = self.multiple_reactants_prompts[reaction.name]
+
+        reactant_position = get_reactant_position_of_mol_in_reaction(
+            current_mol, reaction
+        )
+        print(f"{reactant_position=}")
+        reactants: list[Mol] = []
+        for i, prompt in enumerate(prompts):
+            if i == reactant_position:
+                reactants.append(current_mol)
+            else:
+                missing_reactant_smiles = self.ui.get_user_input(prompt)
+                missing_reactant = Chem.MolFromSmiles(missing_reactant_smiles)
+
+                self.ui.print("\nYou entered:")
+                self.ui.display_mol(missing_reactant)
+                self.ui.print()
+
+                reactants.append(missing_reactant)
+
+        return tuple(reactants)
 
 
 def read_all_reactions_from_file(all_reactions_file_path: str) -> list[Reaction]:

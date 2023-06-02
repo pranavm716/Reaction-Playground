@@ -7,6 +7,11 @@ def main() -> None:
     # Read the configuration settings from a json file
     config = read_config("./config.json")
 
+    if config.disable_rdkit_warnings:
+        from rdkit import RDLogger
+
+        RDLogger.DisableLog("rdApp.warning")
+
     # Prompt the user for the start and target molecules
     google_colab_ui = GoogleColabUI()
     start_mol, target_mol = google_colab_ui.prompt_for_start_and_target_molecule()
@@ -18,6 +23,7 @@ def main() -> None:
         multi_step_react_mode=config.multi_step_react_mode,
         max_num_solver_steps=config.max_num_solver_steps,
         all_reactions_file_path=config.all_reactions_file_path,
+        multiple_reactants_prompts=config.multiple_reactants_prompts,
     )
     program.run_program()
 

@@ -56,6 +56,7 @@ class Program:
             self.target_mol,
             self.all_reactions,
             self.max_num_solver_steps,
+            self.multi_step_react_mode,
         )
         self.ui.display_solver_mode_intro(self.start_mol, self.target_mol)
         # TODO: rest of this method

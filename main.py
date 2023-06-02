@@ -19,7 +19,7 @@ def main() -> None:
         max_num_solver_steps=config.max_num_solver_steps,
         all_reactions_file_path=config.all_reactions_file_path,
     )
-    program.run()
+    program.run_program()
 
 
 if __name__ == "__main__":

@@ -1,11 +1,11 @@
 from abc import ABC, abstractmethod
 
+from IPython.display import display
 from rdkit import Chem
 from rdkit.Chem import Draw
-from rdkit.Chem.Draw.IPythonConsole import display
 from rdkit.Chem.rdchem import Mol
 
-from datatypes import Mol2dTuple
+from datatypes import Mol2dTuple, MolTuple
 
 
 class UI(ABC):
@@ -27,9 +27,16 @@ class UI(ABC):
         pass
 
     @abstractmethod
+    def display_solver_mode_intro(self, start_mol: Mol, target_mol: Mol) -> None:
+        """
+        Displays the solver mode introductory text and images.
+        """
+        pass
+
+    @abstractmethod
     def display_2d_mol_tuple(self, products: Mol2dTuple) -> None:
         """
-        Draws a grid of molecules on screen.
+        Draws a 2d grid of molecules on screen.
         """
         pass
 
@@ -52,6 +59,12 @@ class GoogleColabUI(UI):
 
     def display_mol(self, mol: Mol) -> None:
         display(Draw.MolToImage(mol))
+
+    def display_solver_mode_intro(self, start_mol: Mol, target_mol: Mol) -> None:
+        print(
+            "\nThe goal is to find a reaction pathway that converts the molecule on the left into the molecule on the right."
+        )
+        display(Draw.MolsToGridImage([start_mol, target_mol]))
 
     def display_2d_mol_tuple(self, products: Mol2dTuple) -> None:
         for index, scenario in enumerate(products, start=1):

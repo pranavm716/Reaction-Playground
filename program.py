@@ -1,6 +1,7 @@
 from rdkit.Chem import AllChem
 from rdkit.Chem.rdchem import Mol
 
+from computations import find_synthetic_pathway
 from reaction import Reaction
 from ui import UI
 
@@ -22,8 +23,37 @@ class Program:
         self.max_num_solver_steps = max_num_solver_steps
         self.all_reactions = read_all_reactions_from_file(all_reactions_file_path)
 
-    def run(self):
+    def run_program(self):
         solver_mode = bool(self.target_mol)
+        proceed_to_playground_mode = True
+        if solver_mode:
+            proceed_to_playground_mode = self._run_solver_mode()
+
+        if not proceed_to_playground_mode:
+            return
+
+        self._run_playground_mode()
+
+    def _run_solver_mode(self) -> bool:
+        """
+        Runs the auto synthetic pathway solver.
+        Returns whether or not the user would like to continue using the tool in playground mode.
+        """
+        path_found, reaction_pathway, choice_pathway = find_synthetic_pathway(
+            self.start_mol,
+            self.target_mol,
+            self.all_reactions,
+            self.max_num_solver_steps,
+        )
+        self.ui.display_solver_mode_intro(self.start_mol, self.target_mol)
+        # TODO: rest of this method
+        return False
+
+    def _run_playground_mode(self):
+        history = [self.start_mol]
+        while True:
+            pass
+        # TODO: rest of this method
 
 
 def read_all_reactions_from_file(all_reactions_file_path: str) -> list[Reaction]:

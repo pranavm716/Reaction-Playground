@@ -121,11 +121,10 @@ class Program:
 
     def get_missing_reactants(self, current_mol: Mol, reaction: Reaction) -> MolTuple:
         prompts = self.multiple_reactants_prompts[reaction.name]
-
         reactant_position = get_reactant_position_of_mol_in_reaction(
             current_mol, reaction
         )
-        print(f"{reactant_position=}")
+
         reactants: list[Mol] = []
         for i, prompt in enumerate(prompts):
             if i == reactant_position:

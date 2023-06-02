@@ -34,13 +34,6 @@ class UI(ABC):
         pass
 
     @abstractmethod
-    def display_2d_mol_tuple(self, products: Mol2dTuple) -> None:
-        """
-        Draws a 2d grid of molecules on screen.
-        """
-        pass
-
-    @abstractmethod
     def get_user_input(self, prompt: str = "") -> str:
         pass
 
@@ -59,6 +52,13 @@ class UI(ABC):
     # ---------------------------------------------------------
 
     # -------------------- For playground mode ----------------
+    @abstractmethod
+    def display_2d_mol_tuple(self, products: Mol2dTuple) -> None:
+        """
+        Draws a 2d grid of molecules on screen.
+        """
+        pass
+
     @abstractmethod
     def display_compatible_reactions(
         self, start_mol: Mol, possible_reactions: list[Reaction]
@@ -112,12 +112,6 @@ class GoogleColabUI(UI):
         # display(img)
         img.show()
 
-    def display_2d_mol_tuple(self, products: Mol2dTuple) -> None:
-        for index, scenario in enumerate(products, start=1):
-            print(f"Scenario #{index}")
-            self.display_mol_tuple(scenario)
-            print("\n")
-
     def get_user_input(self, prompt: str = "") -> str:
         return input(prompt)
 
@@ -134,6 +128,12 @@ class GoogleColabUI(UI):
     # ---------------------------------------------------------
 
     # -------------------- For playground mode ----------------
+    def display_2d_mol_tuple(self, products: Mol2dTuple) -> None:
+        for index, scenario in enumerate(products, start=1):
+            print(f"Scenario #{index}")
+            self.display_mol_tuple(scenario)
+            print("\n")
+
     def display_compatible_reactions(
         self, start_mol: Mol, possible_reactions: list[Reaction]
     ) -> None:

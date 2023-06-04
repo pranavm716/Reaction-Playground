@@ -1,6 +1,6 @@
 from config import read_config
 from program import Program
-from ui import GoogleColabUI
+from ui import CLI
 
 
 def main() -> None:
@@ -13,11 +13,11 @@ def main() -> None:
         RDLogger.DisableLog("rdApp.warning")
 
     # Prompt the user for the start and target molecules
-    google_colab_ui = GoogleColabUI()
-    start_mol, target_mol = google_colab_ui.prompt_for_start_and_target_molecule()
+    cli = CLI()
+    start_mol, target_mol = cli.prompt_for_start_and_target_molecule()
 
     program = Program(
-        ui=google_colab_ui,
+        ui=cli,
         start_mol=start_mol,
         target_mol=target_mol,
         multi_step_react_mode=config.multi_step_react_mode,

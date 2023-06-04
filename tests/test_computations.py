@@ -3,8 +3,10 @@ from rdkit import Chem
 
 from computations import (
     copy_mol,
+    generate_multi_step_product,
     generate_single_step_product,
     generate_unique_products,
+    get_reactant_position_of_mol_in_reaction,
 )
 from datatypes import Mol2dTuple
 from reaction import Reaction
@@ -66,25 +68,21 @@ def test_generate_unique_products():
 
 
 @pytest.mark.parametrize(
-    [
-        "reactants_smiles",
-        "reaction_index",
-        "single_step_product_smiles",
-    ],
+    ["reactants_smiles", "reaction_index", "single_step_product_smiles"],
     [
         [
             "CCO",
-            2,
+            2,  # H2CrO4 oxidation
             (("CC(=O)O",),),
         ],
         [
             r"C/C=C/C=C(\CC)C1CC1",
-            6,
+            6,  # Ozonolysis
             (("CCC(=O)C1CC1", "C/C=C/C=O"), ("CC=O", r"CC/C(=C\C=O)C1CC1")),
         ],
         [
             ("CC[CH-]C1CC1", "CCC=O"),
-            12,
+            12,  # Grignard reaction
             (("CCC(O)C(CC)C1CC1",),),
         ],
     ],
@@ -104,3 +102,51 @@ def test_generate_single_step_product(
     assert smiles_2d_tuples_match(
         single_step_product_smiles, mol_2d_tuple_to_smiles(single_step_product)
     )
+
+
+@pytest.mark.parametrize(
+    ["reactant_smiles", "reaction_index", "multi_step_product_smiles"],
+    [
+        ["CC(=O)OC1=CCC(=O)C1", 4, ("CCO", "OC1=CCC(O)C1")],  # LiAlH4 reduction
+        ["C=CC", 8, ("CC(C)O",)],  # OM/DM
+        ["C=CC", 9, ("CCCO",)],  # BH3/[O]
+    ],
+)
+def test_generate_multi_step_product(
+    reactant_smiles: str,
+    reaction_index: int,
+    multi_step_product_smiles: SmilesTuple,
+    all_reactions: list[Reaction],
+):
+    start_mol = Chem.MolFromSmiles(reactant_smiles)
+    reaction = all_reactions[reaction_index]
+    multi_step_product = generate_multi_step_product(start_mol, reaction)
+    assert set(multi_step_product_smiles) == set(
+        Chem.MolToSmiles(p) for p in multi_step_product
+    )
+
+
+@pytest.mark.parametrize(
+    ["reactant_smiles", "reaction_index", "reactant_position"],
+    [
+        ["BrCC1CCCC1", 7, 0],  # NaCN nitrile synthesis
+        ["CCCO", -1, 2],  # A made up reaction
+        ["C#CCC(O)C#C", 12, None],  # Grignard reaction
+    ],
+)
+def test_get_reactant_position(
+    reactant_smiles: str,
+    reaction_index: int,
+    reactant_position: int | None,
+    all_reactions: list[Reaction],
+):
+    mol = Chem.MolFromSmiles(reactant_smiles)
+    reaction = all_reactions[reaction_index]
+
+    if reactant_position is None:
+        with pytest.raises(ValueError):
+            get_reactant_position_of_mol_in_reaction(mol, reaction)
+    else:
+        assert (
+            get_reactant_position_of_mol_in_reaction(mol, reaction) == reactant_position
+        )

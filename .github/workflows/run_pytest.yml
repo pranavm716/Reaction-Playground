@@ -13,30 +13,25 @@ jobs:
   test:
 
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.10]
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up Python 3.10
-      uses: actions/setup-python@v3
+    - uses: actions/checkout@v2
+    - name: Set up Anaconda Using Python ${{ matrix.python-version }}
+      uses: goanpeca/setup-miniconda@v1
       with:
-        python-version: "3.10"
-    - uses: actions/cache@v3
-      id: cache
-      with:
-        path: ~/.cache/pip
-        key: ${{ runner.os }}-pip-${{ hashFiles('**/environment.yml') }}
-        restore-keys: | 
-          ${{ runner.os }}-pip-
-    - name: Export and Install Conda environment
+        activate-environment: microdf
+        environment-file: C:/Users/prana/anaconda3/envs/my-rdkit-env/environment.yml
+        python-version: ${{ matrix.python-version }}
+        auto-activate-base: false
+    - name: Build
+      shell: bash
       run: |
-        conda init bash
-        conda activate my-rdkit-env
-        conda env export --no-builds | grep -v "^prefix: " > /tmp/environment.yml
-        conda env create -f /tmp/environment.yml
-        conda activate my-rdkit-env
+        pip install -e .
     - name: Run pytest
+      shell: bash
       run: | 
         pytest -v tests
-    - name: Clean up temporary file
-      run: |
-        rm /tmp/environment.yml
+        

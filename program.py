@@ -191,7 +191,9 @@ def read_all_reactions_from_file(all_reactions_file_path: str) -> list[Reaction]
         i += 1
         reaction_list = []
         while lines[i].startswith("^"):
-            reaction_list.append(AllChem.ReactionFromSmarts(lines[i][1:]))
+            subreaction = AllChem.ReactionFromSmarts(lines[i][1:])
+            subreaction.Initialize()
+            reaction_list.append(subreaction)
             i += 1
         reactants_side = lines[i - 1].index(">")
         num_reactants = lines[i - 1][1:reactants_side].count(".") + 1

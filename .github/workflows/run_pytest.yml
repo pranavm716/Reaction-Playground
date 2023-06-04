@@ -29,13 +29,14 @@ jobs:
           ${{ runner.os }}-pip-
     - name: Export and Install Conda environment
       run: |
+        conda init bash
         conda activate my-rdkit-env
         conda env export --no-builds | grep -v "^prefix: " > /tmp/environment.yml
         conda env create -f /tmp/environment.yml
         conda activate my-rdkit-env
     - name: Run pytest
       run: | 
-        pytest
+        pytest -v tests
     - name: Clean up temporary file
       run: |
         rm /tmp/environment.yml

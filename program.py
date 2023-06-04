@@ -32,13 +32,11 @@ class Program:
         self.multi_step_react_mode = multi_step_react_mode
         self.max_num_solver_steps = max_num_solver_steps
         self.multiple_reactants_prompts = multiple_reactants_prompts
-
         self.all_reactions = read_all_reactions_from_file(all_reactions_file_path)
-        self.solver_mode = bool(target_mol)
 
     def run_program(self):
         proceed_to_playground_mode = True
-        if self.solver_mode:
+        if self.target_mol:
             self.run_solver_mode()
             proceed_to_playground_mode = (
                 self.ui.get_user_input(
@@ -98,7 +96,7 @@ class Program:
         current_mol = copy_mol(self.start_mol)
         while True:
             possible_reactions = find_possible_reactions(
-                current_mol, self.all_reactions, self.solver_mode
+                current_mol, self.all_reactions, solver_mode=False
             )
             self.ui.display_compatible_reactions(current_mol, possible_reactions)
 

@@ -127,6 +127,7 @@ def subreaction_is_valid(start_mol: Mol, subreaction: rd.ChemicalReaction) -> bo
 def find_possible_reactions(
     start_mol: Mol,
     all_reactions: list[Reaction],
+    *,
     solver_mode: bool,
 ) -> list[Reaction]:
     """

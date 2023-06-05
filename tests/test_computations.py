@@ -4,6 +4,7 @@ from rdkit import Chem
 from computations import (
     copy_mol,
     find_possible_reactions,
+    find_synthetic_pathway,
     generate_multi_step_product,
     generate_single_step_product,
     generate_unique_products,
@@ -171,7 +172,71 @@ def test_find_possible_reactions(
     possible_reactions = find_possible_reactions(
         start_mol, all_reactions, solver_mode=solver_mode
     )
-    correct_possible_reactions = [
-        reaction for reaction in [all_reactions[i] for i in possible_reactions_indices]
-    ]
+    correct_possible_reactions = [all_reactions[i] for i in possible_reactions_indices]
     assert possible_reactions == correct_possible_reactions
+
+
+@pytest.mark.parametrize(
+    [
+        "start_mol_smiles",
+        "target_mol_smiles",
+        "path_found",
+        "reaction_pathway_indices",
+        "choice_pathway",
+    ],
+    [
+        [
+            "CC(=O)OC1=CCC(=O)C1",
+            "OCC1CC=C(O)C1",
+            True,
+            [3, 5, 7, 0, 4],
+            [0, 0, 0, 1, 0],
+        ],
+        [
+            "OC1CC1C2C#CC2",
+            "O=CCC1CC1=O",
+            True,
+            [6, 4, 1],
+            [1, 0, 0],
+        ],
+        [
+            "OC1CC1C2C#CC2",
+            "O=CCC1CC1O",
+            False,
+            [],
+            [],
+        ],
+        [
+            "CCCC",
+            "CCC#N",
+            False,
+            [],
+            [],
+        ],
+    ],
+)
+def test_find_synthetic_pathway(
+    start_mol_smiles: str,
+    target_mol_smiles: str,
+    path_found: bool,
+    reaction_pathway_indices: list[int],
+    choice_pathway: list[int],
+    all_reactions: list[Reaction],
+):
+    max_solver_steps = 15
+    start_mol = Chem.MolFromSmiles(start_mol_smiles)
+    target_mol = Chem.MolFromSmiles(target_mol_smiles)
+
+    (
+        retrieved_path_found,
+        retrieved_reaction_pathway,
+        retrieved_choice_pathway,
+    ) = find_synthetic_pathway(
+        start_mol, target_mol, all_reactions, max_solver_steps=max_solver_steps
+    )
+
+    assert retrieved_path_found == path_found
+    assert retrieved_reaction_pathway == [
+        all_reactions[i] for i in reaction_pathway_indices
+    ]
+    assert retrieved_choice_pathway == choice_pathway

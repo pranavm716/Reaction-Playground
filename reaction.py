@@ -27,3 +27,14 @@ class Reaction:
 
     def __str__(self):
         return f"{self.name}: {self.smarts_list}"
+
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, Reaction):
+            return False
+
+        return (
+            self.name == other.name
+            and set(self.smarts_list) == set(other.smarts_list)
+            and self.description == other.description
+            and self.num_reactants == other.num_reactants
+        )

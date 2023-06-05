@@ -13,13 +13,14 @@ def all_reactions() -> list[Reaction]:
         os.path.dirname(__file__), "../all_reactions.txt"
     )
     real_reactions = read_all_reactions_from_file(all_reactions_file_path)
+
+    made_up_subreaction = AllChem.ReactionFromSmarts(
+        "[CX3H1](=[O])[#6].[#6][CH]=[CH2].[CH,CH2][OH]>>[C]"
+    )
+    made_up_subreaction.Initialize()
     made_up_reaction = Reaction(
         name="Made up reaction",
-        subreactions=[
-            AllChem.ReactionFromSmarts(
-                "[CX3H1:1](=[O:2])[#6:3].[#6:1][CH:2]=[CH2:3].[CH,CH2:1][OH:2]>>[Au]"
-            )
-        ],
+        subreactions=[made_up_subreaction],
         description="Some description",
         num_reactants=3,
     )

@@ -3,6 +3,7 @@ from rdkit import Chem
 
 from computations import (
     copy_mol,
+    find_possible_reactions,
     generate_multi_step_product,
     generate_single_step_product,
     generate_unique_products,
@@ -150,3 +151,27 @@ def test_get_reactant_position(
         assert (
             get_reactant_position_of_mol_in_reaction(mol, reaction) == reactant_position
         )
+
+
+@pytest.mark.parametrize(
+    ["start_mol_smiles", "solver_mode", "possible_reactions_indices"],
+    [
+        [r"C/C(C)=C\C=O", True, [2, 3, 4, 6, 8, 9]],
+        [r"C/C(C)=C\C=O", False, [2, 3, 4, 6, 8, 9, 12, -1]],
+        ["COC(=O)C1C#CCC1", False, [0, 4, 6]],
+    ],
+)
+def test_find_possible_reactions(
+    start_mol_smiles: str,
+    solver_mode: bool,
+    possible_reactions_indices: list[int],
+    all_reactions: list[Reaction],
+):
+    start_mol = Chem.MolFromSmiles(start_mol_smiles)
+    possible_reactions = find_possible_reactions(
+        start_mol, all_reactions, solver_mode=solver_mode
+    )
+    correct_possible_reactions = [
+        reaction for reaction in [all_reactions[i] for i in possible_reactions_indices]
+    ]
+    assert possible_reactions == correct_possible_reactions

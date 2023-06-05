@@ -7,18 +7,18 @@ Hydrolizes esters/amides/nitriles into carboxylic acids.
 DMP/PCC oxidation of alcohols
 ^[CH3:1][OH:2]>>[CH2:1]=[O:2]
 ^[CH,CH2:1][OH:2]>>[C:1]=[O:2]
-Converts primary alcohols to aldehydes and secondary alcohols to ketones.
+Oxidizes primary alcohols to aldehydes and secondary alcohols to ketones.
 
 H2CrO4 (chromic acid) oxidation of alcohols and aldehydes
 ^[CH2,CH3:1][OH:2]>>[C:1](=O)[OH:2]
 ^[CH:1][OH:2]>>[C:1]=[O:2]
 ^[CX3H1:1](=[O:2])[#6:3]>>[#6:3][CX3:1](=[O:2])[OX2H]
-Converts primary alcohols and aldehydes to carboxylic acids; and secondary alcohols to ketones.
+Oxidizes aldehydes and primary alcohols to carboxylic acids; and secondary alcohols to ketones.
 
 NaBH4 (sodium borohydride) reduction of aldehydes and ketones
 ^[CX3H1:1](=[O:2])[#6:3]>>[CX3H2:1]([OX2H:2])[#6:3]
 ^[#6:1][CX3:2](=[O:3])[#6:4]>>[#6:1][CX3:2]([OH:3])[#6:4]
-Converts aldehydes and ketones to primary alcohols.
+Reduces aldehydes to primary alcohols and ketones to secondary alcohols.
 
 LiAlH4 (lithium aluminum hydride) reduction of aldehyes, ketones, esters, carboxylic acids, amides, and nitriles
 ^[CX3H1:1](=[O:2])[#6:3]>>[CX3H2:1]([OX2H:2])[#6:3]
@@ -27,7 +27,7 @@ LiAlH4 (lithium aluminum hydride) reduction of aldehyes, ketones, esters, carbox
 ^[#6:4][CX3:1](=O)[OX2H:3]>>[#6:4][CX3H2:1][OX2H:3]
 ^[#6:4][CX3:1](=O)[NX3:3]>>[#6:4][CX3H2:1][NX3:3]
 ^[#6:2][C:3]#[N:1]>>[#6:2][C:3][N:1]
-Converts aldehydes, esters, and carboxylic acids to primary alcohols; ketones to secondary alcohols; and amides/nitriles to amines.
+Reduces aldehydes, esters, and carboxylic acids to primary alcohols; ketones to secondary alcohols; and amides/nitriles to amines.
 
 PBr3 bromination of alcohols
 ^[CH,CH2,CH3:1][OX2H]>>[C:1][Br]
@@ -41,7 +41,7 @@ Cleaves alkenes/alkynes into carbonyls.
 
 NaCN (sodium cyanide) nitrile synthesis
 ^[CH,CH2,CH3:1][Br]>>[C:1]C#N
-Converts a primary/secondary alkyl bromides into nitriles via SN2.
+Converts primary/secondary alkyl bromides into nitriles via SN2.
 
 Oxymercuration/demercuration (OM/DM)
 ^[#6:1][CH:2]=[CH2:3]>>[#6:1][C:2]([OH])[C:3]

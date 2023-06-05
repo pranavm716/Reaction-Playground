@@ -102,9 +102,9 @@ class UI(ABC):
     # ---------------------------------------------------------
 
 
-class GoogleColabUI(UI):
+class CLI(UI):
     """A concrete implementation of the UI class. This class contains methods
-    to gather user input and display text/ images in the Google Colab terminal.
+    to gather user input, display images, and display text in the terminal.
     """
 
     def prompt_for_start_and_target_molecule(self) -> tuple[Mol, Mol | None]:

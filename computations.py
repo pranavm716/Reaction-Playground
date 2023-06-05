@@ -1,9 +1,7 @@
 from collections import deque
 from typing import Deque
 
-import rdkit.Chem.rdChemReactions as rd
 from rdkit import Chem
-from rdkit.Chem import AllChem
 from rdkit.Chem.rdchem import Mol
 
 from datatypes import Mol2dTuple, MolTuple
@@ -23,8 +21,8 @@ def generate_unique_products(products: Mol2dTuple) -> Mol2dTuple:
     smiles = tuple(
         tuple(Chem.MolToSmiles(s) for s in scenarios) for scenarios in products
     )
-    inner_unique = tuple(tuple(set(p)) for p in smiles)
-    outer_unique = tuple(set(inner_unique))
+    inner_unique = tuple(tuple(sorted(set(p))) for p in smiles)
+    outer_unique = tuple(sorted(set(inner_unique)))
 
     # Convert back to Mols
     return tuple(
@@ -75,58 +73,25 @@ def _generate_multi_step_product(
         return products
 
 
-def get_reactant_substructures(subreaction: rd.ChemicalReaction) -> list[Mol]:
-    """
-    Returns the substructures of the reactants of the subreaction.
-    A substructure is like a chemical fingerprint that the reaction looks for in a molecule
-    to determine whether it is a valid reaction for that molecule.
-    """
-    smarts: str = AllChem.ReactionToSmarts(subreaction)
-    substructures_str = smarts[: smarts.index(">")].split(".")
-    substructures = [Chem.MolFromSmarts(s) for s in substructures_str]
-    return substructures
-
-
-def get_reactant_position_of_mol_in_subreaction(
-    mol: Mol, subreaction: rd.ChemicalReaction
-) -> int | None:
-    """
-    Returns the position of the mol in the reactants of the subreaction.
-    Returns None if the mol does not match any of the substructures.
-    """
-    substructures = get_reactant_substructures(subreaction)
-    for i, s in enumerate(substructures):
-        if mol.HasSubstructMatch(s):
-            return i
-    return None
-
-
-def get_reactant_position_of_mol_in_reaction(
-    mol: Mol, reaction: Reaction
-) -> int | None:
+def get_reactant_position_of_mol_in_reaction(mol: Mol, reaction: Reaction) -> int:
     """
     Returns the position of the mol in the reactants of any of the reaction's subreactions.
     Since all of the subreactions have the same substructure pattern, we can return the first
     instance of when the mol is found.
-
-    Returns None if the mol does not match any of the substructures of any of the subreactions.
     """
     for subreaction in reaction.subreactions:
-        pos = get_reactant_position_of_mol_in_subreaction(mol, subreaction)
-        if pos is not None:
-            return pos
-    return None
-
-
-def subreaction_is_valid(start_mol: Mol, subreaction: rd.ChemicalReaction) -> bool:
-    return (
-        get_reactant_position_of_mol_in_subreaction(start_mol, subreaction) is not None
+        for index, reactant in enumerate(subreaction.GetReactants()):
+            if mol.HasSubstructMatch(reactant):
+                return index
+    raise ValueError(
+        f"{reaction.name} is not valid for molecule with SMILES '{Chem.MolToSmiles(mol)}'."
     )
 
 
 def find_possible_reactions(
     start_mol: Mol,
     all_reactions: list[Reaction],
+    *,
     solver_mode: bool,
 ) -> list[Reaction]:
     """
@@ -138,7 +103,7 @@ def find_possible_reactions(
             continue  # Solver mode will omit any reactions with more than one reactant
 
         for subreaction in reaction.subreactions:
-            if subreaction_is_valid(start_mol, subreaction):
+            if subreaction.IsMoleculeReactant(start_mol):
                 possible_reactions.append(reaction)
                 break
 
@@ -221,7 +186,8 @@ def find_synthetic_pathway(
     target_smiles = Chem.MolToSmiles(target_mol)
 
     while parent[target_smiles] is not None:
-        reaction, product_index = choices[(parent[target_smiles], target_smiles)]
+        choice = choices[(parent[target_smiles], target_smiles)]  # type: ignore[index]
+        reaction, product_index = choice
         reaction_pathway.append(reaction)
         choice_pathway.append(product_index)
         target_smiles = parent[target_smiles]

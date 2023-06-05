@@ -21,8 +21,8 @@ def generate_unique_products(products: Mol2dTuple) -> Mol2dTuple:
     smiles = tuple(
         tuple(Chem.MolToSmiles(s) for s in scenarios) for scenarios in products
     )
-    inner_unique = tuple(tuple(set(p)) for p in smiles)
-    outer_unique = tuple(set(inner_unique))
+    inner_unique = tuple(tuple(sorted(set(p))) for p in smiles)
+    outer_unique = tuple(sorted(set(inner_unique)))
 
     # Convert back to Mols
     return tuple(

@@ -2,7 +2,7 @@ Hydrolysis of esters, amides, and nitriles
 ^[#6:1][O:2]C(=O)[#6:4]>>[#6:1][O:2].[O]C(=O)[#6:4]
 ^[#6:4][CX3:1](=[O:2])[NX3:3]>>[#6:4][CX3:1](=[O:2])[OX2H].[NX3:3]
 ^[#6:1][C:2]#N>>[#6:1][C:2](=O)[OH]
-Hydrolizes esters/amides/nitriles into carboxylic acids.
+Hydrolyzes esters/amides/nitriles into carboxylic acids.
 
 DMP/PCC oxidation of alcohols
 ^[CH3:1][OH:2]>>[CH2:1]=[O:2]

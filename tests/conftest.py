@@ -3,6 +3,7 @@ import os
 import pytest
 from rdkit.Chem import AllChem
 
+from config import Config, read_config
 from program import read_all_reactions_from_file
 from reaction import Reaction
 
@@ -25,3 +26,15 @@ def all_reactions() -> list[Reaction]:
         num_reactants=3,
     )
     return real_reactions + [made_up_reaction]
+
+
+@pytest.fixture
+def config() -> Config:
+    config_file_path = os.path.join(os.path.dirname(__file__), "../config.json")
+    c = read_config(config_file_path)
+    if c.disable_rdkit_warnings:
+        from rdkit import RDLogger
+
+        RDLogger.DisableLog("rdApp.warning")
+
+    return c

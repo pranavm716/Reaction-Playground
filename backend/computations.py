@@ -4,8 +4,8 @@ from typing import Deque
 from rdkit import Chem
 from rdkit.Chem.rdchem import Mol
 
-from datatypes import Mol2dTuple, MolTuple
-from reaction import Reaction
+from backend.datatypes import Mol2dTuple, MolTuple
+from backend.reaction import Reaction
 
 
 def copy_mol(mol: Mol) -> Mol:

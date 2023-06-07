@@ -1,11 +1,14 @@
+import os
+
 from flask import Blueprint, flash, redirect, render_template, request, session, url_for
 from rdkit import Chem
 
-from config import read_config
-from program import Program
-from ui import CLI
+from backend.config import read_config
+from backend.program import Program
+from backend.ui import CLI
 
 views = Blueprint("views", __name__)
+program = None
 
 
 @views.route("/")
@@ -28,7 +31,13 @@ def process_init():
         flash("Invalid SMILES. Please enter valid SMILES.", category="error")
         return render_template("home.jinja")
 
-    config = read_config("./config.json")
+    config_file_location = os.path.join(
+        os.path.dirname(__file__), "../../backend/config.json"
+    )
+    config = read_config(config_file_location)
+    config.all_reactions_file_path = os.path.join(
+        os.path.dirname(__file__), "../../backend", config.all_reactions_file_path
+    )
 
     if config.disable_rdkit_warnings:
         from rdkit import RDLogger
@@ -44,15 +53,13 @@ def process_init():
         all_reactions_file_path=config.all_reactions_file_path,
         multiple_reactants_prompts=config.multiple_reactants_prompts,
     )
-    session["program"] = program
     return redirect(url_for("views.program"))
 
 
 @views.route("/program")
 def program():
-    program = session["program"]
     return render_template(
         "program.jinja",
-        start_mol_SMILES=Chem.MolToSMILES(program.start_mol),
+        start_mol_SMILES=Chem.MolToSmiles(program.start_mol),
         target_mol_SMILES=Chem.MolToSMILES(program.target_mol),
     )

@@ -2,7 +2,7 @@ from rdkit import Chem
 from rdkit.Chem import AllChem
 from rdkit.Chem.rdchem import Mol
 
-from computations import (
+from backend.computations import (
     copy_mol,
     find_possible_reactions,
     find_synthetic_pathway,
@@ -10,9 +10,9 @@ from computations import (
     generate_single_step_product,
     get_reactant_position_of_mol_in_reaction,
 )
-from datatypes import MolTuple
-from reaction import Reaction
-from ui import UI
+from backend.datatypes import MolTuple
+from backend.reaction import Reaction
+from backend.ui import UI
 
 
 class Program:

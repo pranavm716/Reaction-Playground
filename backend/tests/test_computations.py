@@ -1,7 +1,7 @@
 import pytest
 from rdkit import Chem
 
-from computations import (
+from backend.computations import (
     copy_mol,
     find_possible_reactions,
     find_synthetic_pathway,
@@ -10,8 +10,8 @@ from computations import (
     generate_unique_products,
     get_reactant_position_of_mol_in_reaction,
 )
-from datatypes import Mol2dTuple
-from reaction import Reaction
+from backend.datatypes import Mol2dTuple
+from backend.reaction import Reaction
 
 SmilesTuple = tuple[str, ...]
 Smiles2dTuple = tuple[tuple[str, ...], ...]

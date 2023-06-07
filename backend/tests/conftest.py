@@ -3,9 +3,9 @@ import os
 import pytest
 from rdkit.Chem import AllChem
 
-from config import Config, read_config
-from program import read_all_reactions_from_file
-from reaction import Reaction
+from backend.config import Config, read_config
+from backend.program import read_all_reactions_from_file
+from backend.reaction import Reaction
 
 
 @pytest.fixture
@@ -37,4 +37,7 @@ def config() -> Config:
 
         RDLogger.DisableLog("rdApp.warning")
 
+    c.all_reactions_file_path = os.path.join(
+        os.path.dirname(__file__), "..", c.all_reactions_file_path
+    )
     return c

@@ -12,7 +12,7 @@ from backend.computations import (
 )
 from backend.datatypes import MolTuple
 from backend.reaction import Reaction
-from backend.ui import UI
+from backend.interfaces.ui import UI
 
 
 class Program:
@@ -61,7 +61,7 @@ class Program:
             self.max_num_solver_steps,
         )
         self.ui.display_solver_mode_intro(self.start_mol, self.target_mol)
-
+        exit(0)
         if not path_found:
             self.ui.print(
                 f"\nNo synthetic pathway found in {self.max_num_solver_steps} steps. It is also possible that no synthetic pathway exists at all."

@@ -2,7 +2,7 @@ import os
 
 from backend.config import read_config
 from backend.program import Program
-from backend.ui import CLI
+from backend.interfaces.cli import CLI
 
 
 def main() -> None:

@@ -5,7 +5,7 @@ from rdkit import Chem
 
 from backend.config import read_config
 from backend.program import Program
-from backend.ui import CLI
+from backend.interfaces.cli import CLI
 
 views = Blueprint("views", __name__)
 
@@ -82,6 +82,7 @@ def run_program():
         all_reactions_file_path=config.all_reactions_file_path,
         multiple_reactants_prompts=config.multiple_reactants_prompts,
     )
+    # program.run_program()
 
     return render_template(
         "solver_mode.jinja",

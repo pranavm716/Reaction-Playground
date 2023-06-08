@@ -3,29 +3,45 @@
 
 <form method="POST">
     <div class="form-group">
-        <label for="start_mol_SMILES">Start Molecule SMIELS</label>
-        <input type="text" class="form-control" id="start_mol_SMILES" name="start_mol_SMILES"
+        <label for="start_mol_smiles">Start Molecule SMILES</label>
+        <input type="text" class="form-control" id="start_mol_smiles" name="start_mol_smiles"
             placeholder="Enter SMILES" />
     </div>
+
     <div>
-        <button type="button" class="btn btn-success" id="addTargetButton">
-            <i class="fas fa-plus" style="padding-right: 5px;"></i> Add Target
+        <button type="button" class="btn btn-success btn-icon" id="addTargetButton">
+            <style>
+                .btn-icon {
+                    display: flex;
+                    align-items: center;
+                }
+
+                .btn-icon .material-icons {
+                    padding-right: 5px;
+                }
+            </style>
+            <span class="material-icons"> add </span>
+            Add Target (optional)
         </button>
     </div>
     <div class="form-group" style="display:none;" id="targetMolInput">
-        <label for="target_mol_SMILES">Target Molecule SMILES (optional)</label>
-        <input type="text" class="form-control" id="target_mol_SMILES" name="target_mol_SMILES"
-            placeholder="Enter SMILES" />
+        <label for="target_mol_smiles">Target Molecule SMILES</label>
+        <input type="text" class="form-control" id="target_mol_smiles" name="target_mol_smiles"
+            placeholder="Enter SMILES"/>
     </div>
+    
+    <br />
+    <button type="submit" class="btn btn-primary" id="submitButton">Run reactions</button>
+    
     <script>
         var btn = document.getElementById("addTargetButton");
         btn.addEventListener("click", () => {
             btn.style.display = "none";
             document.getElementById('targetMolInput').style.display = "block";
+            document.getElementById('submitButton').textContent = "Find synthetic pathway";
         });
     </script>
-    <br />
-    <button type="submit" class="btn btn-primary">Next</button>
+
 </form>
 
 {% endblock %}

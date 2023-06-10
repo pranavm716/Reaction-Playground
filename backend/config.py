@@ -8,6 +8,7 @@ class Config:
     multi_step_react_mode: bool
     max_num_solver_steps: int
     disable_rdkit_warnings: bool
+    frontend_images_folder: str
     multiple_reactants_prompts: dict[str, list[str]]
 
 

@@ -4,24 +4,37 @@ from flask import Blueprint, flash, redirect, render_template, request, session,
 from rdkit import Chem
 
 from backend.config import read_config
+from backend.interfaces.flask_ui import FlaskUI
 from backend.program import Program
-from backend.interfaces.cli import CLI
+from backend.reaction import Reaction
 
 views = Blueprint("views", __name__)
+DYNAMIC_IMAGES_DIR = os.path.join(os.path.dirname(__file__), "./static/images/dynamic")
 
 
-@views.route("/", methods=["GET", "POST"])
+def clear_directory(directory):
+    for filename in os.listdir(directory):
+        if filename == ".gitignore":
+            continue
+        file_path = os.path.join(directory, filename)
+        if os.path.isfile(file_path):
+            os.remove(file_path)
+
+
+@views.route("/", methods=["GET"])
 def home():
+    return render_template("home.jinja")
+
+
+@views.route("/", methods=["POST"])
+def store_start_and_target_molecules():
     def flash_invalid_mol(mol_type: str):
         flash(
             f"Invalid SMILES for {mol_type} molecule. Please enter valid SMILES.",
             category="error",
         )
 
-    if request.method == "GET":
-        print("GET")
-        return render_template("home.jinja")
-
+    clear_directory(DYNAMIC_IMAGES_DIR)
     start_mol_smiles = request.form.get("start_mol_smiles")
     target_mol_smiles = request.form.get("target_mol_smiles")
     print(f"{start_mol_smiles=}", f"{target_mol_smiles=}")
@@ -67,25 +80,62 @@ def run_program():
 
         RDLogger.DisableLog("rdApp.warning")
 
-    start_mol_smiles = session.get("start_mol_smiles")
+    session["max_num_solver_steps"] = config.max_num_solver_steps
+
+    start_mol_smiles = session["start_mol_smiles"]
     start_mol = Chem.MolFromSmiles(start_mol_smiles)
 
-    target_mol_smiles = session.get("target_mol_smiles")
+    target_mol_smiles = session["target_mol_smiles"]
     target_mol = Chem.MolFromSmiles(target_mol_smiles) if target_mol_smiles else None
-    
+
     program = Program(
-        ui=CLI(),
+        ui=FlaskUI(),
         start_mol=start_mol,
         target_mol=target_mol,
         multi_step_react_mode=config.multi_step_react_mode,
         max_num_solver_steps=config.max_num_solver_steps,
+        frontend_images_folder=config.frontend_images_folder,
         all_reactions_file_path=config.all_reactions_file_path,
         multiple_reactants_prompts=config.multiple_reactants_prompts,
     )
-    # program.run_program()
 
-    return render_template(
-        "solver_mode.jinja",
-        start_mol_SMILES=start_mol_smiles,
-        target_mol_SMILES=target_mol_smiles,
-    )
+    if target_mol:
+        (
+            path_found,
+            reaction_pathway,
+            choice_pathway,
+            image_file_paths,
+        ) = program.run_solver_mode()
+        return run_solver_mode(
+            path_found, reaction_pathway, choice_pathway, image_file_paths
+        )
+    else:
+        pass
+        # program.run_playground_mode()
+        # return run_playground_mode(program)
+
+
+def run_solver_mode(
+    path_found: bool,
+    reaction_pathway: list[Reaction],
+    choice_pathway: list[int],
+    image_file_paths: dict[str, list[str]],
+):
+    
+    session["path_found"] = path_found
+    session["choice_pathway"] = choice_pathway
+    session["reaction_names"] = [reaction.name for reaction in reaction_pathway]
+
+    relative_image_file_paths = {}
+    for k, v in image_file_paths.items():
+        relative_image_file_paths[k] = [
+            os.path.relpath(file_path, os.path.dirname(__file__)) for file_path in v
+        ]
+    session.update(relative_image_file_paths)
+    print(f"{relative_image_file_paths=}")
+
+    return render_template("solver_mode.jinja")
+
+
+# def run_playground_mode(program: Program) -> Response:
+#     pass

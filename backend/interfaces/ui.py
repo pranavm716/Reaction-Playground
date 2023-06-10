@@ -4,6 +4,7 @@ from rdkit.Chem.rdchem import Mol
 
 from backend.datatypes import Mol2dTuple, MolTuple
 from backend.reaction import Reaction
+from typing import Iterable
 
 
 class UI(ABC):

@@ -3,6 +3,7 @@
     "max_num_solver_steps": 15,
     "all_reactions_file_path": "./all_reactions.txt",
     "disable_rdkit_warnings": true,
+    "frontend_images_folder": "../frontend/website/static/images/dynamic",
     "multiple_reactants_prompts": {
         "Grignard reaction": [
             "\nEnter the SMILES of the carbon nucleophile: ",

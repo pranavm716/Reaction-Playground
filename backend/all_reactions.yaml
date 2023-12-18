@@ -1,0 +1,153 @@
+- name: Hydrolysis of esters, amides, and nitriles
+  subreactions:
+    - smarts: "[#6:1][O:2]C(=O)[#6:4]>>[#6:1][O:2].[O]C(=O)[#6:4]"
+      effect:
+    - smarts: "[#6:4][CX3:1](=[O:2])[NX3:3]>>[#6:4][CX3:1](=[O:2])[OX2H].[NX3:3]"
+      effect:
+    - smarts: "[#6:1][C:2]#N>>[#6:1][C:2](=O)[OH]"
+      effect:
+  description: Hydrolyzes esters/amides/nitriles into carboxylic acids.
+
+- name: DMP/PCC oxidation of alcohols
+  subreactions:
+    - smarts: "[CH3:1][OH:2]>>[CH2:1]=[O:2]"
+      effect:
+    - smarts: "[CH,CH2:1][OH:2]>>[C:1]=[O:2]"
+      effect:
+  description: Oxidizes primary alcohols to aldehydes and secondary alcohols to ketones.
+
+- name: H2CrO4 (chromic acid) oxidation of alcohols and aldehydes
+  subreactions:
+    - smarts: "[CH2,CH3:1][OH:2]>>[C:1](=O)[OH:2]"
+      effect:
+    - smarts: "[CH:1][OH:2]>>[C:1]=[O:2]"
+      effect:
+    - smarts: "[CX3H1:1](=[O:2])[#6:3]>>[#6:3][CX3:1](=[O:2])[OX2H]"
+      effect:
+  description: Oxidizes aldehydes and primary alcohols to carboxylic acids; and secondary alcohols to ketones.
+
+- name: NaBH4 (sodium borohydride) reduction of aldehydes and ketones
+  subreactions:
+    - smarts: "[CX3H1:1](=[O:2])[#6:3]>>[CX3H2:1]([OX2H:2])[#6:3]"
+      effect:
+    - smarts: "[#6:1][CX3:2](=[O:3])[#6:4]>>[#6:1][CX3:2]([OH:3])[#6:4]"
+      effect:
+  description: Reduces aldehydes to primary alcohols and ketones to secondary alcohols.
+
+- name: LiAlH4 (lithium aluminum hydride) reduction of aldehyes, ketones, esters, carboxylic acids, amides, and nitriles
+  subreactions:
+    - smarts: "[CX3H1:1](=[O:2])[#6:3]>>[CX3H2:1]([OX2H:2])[#6:3]"
+      effect:
+    - smarts: "[#6:1][CX3:2](=[O:3])[#6:4]>>[#6:1][CX3:2]([OH:3])[#6:4]"
+      effect:
+    - smarts: "[#6:1][O:2][C:3](=O)[#6:4]>>[#6:1][O:2].[O][C:3][#6:4]"
+      effect:
+    - smarts: "[#6:4][CX3:1](=O)[OX2H:3]>>[#6:4][CX3H2:1][OX2H:3]"
+      effect:
+    - smarts: "[#6:4][CX3:1](=O)[NX3:3]>>[#6:4][CX3H2:1][NX3:3]"
+      effect:
+    - smarts: "[#6:2][C:3]#[N:1]>>[#6:2][C:3][N:1]"
+      effect:
+  description: Reduces aldehydes, esters, and carboxylic acids to primary alcohols; ketones to secondary alcohols; and amides/nitriles to amines.
+
+- name: PBr3 bromination of alcohols
+  subreactions:
+    - smarts: "[CH,CH2,CH3:1][OX2H]>>[C:1][Br]"
+      effect:
+  description: Converts primary and secondary alcohols into alkyl bromides.
+
+- name: Ozonolysis
+  subreactions:
+    - smarts: "[C:2]=[C:3]>>[C:2](=O).[C:3](=O)"
+      effect:
+    - smarts: "[#6:1][C:2]#[C:3][#6:4]>>[#6:1][C:2](=O)[OX2H].[#6:4][C:3](=O)[OX2H]"
+      effect:
+    - smarts: "[#6:1][C:2]#[CH:3]>>[#6:1][C:2](=O)[OX2H].O=[C:3]=O"
+      effect:
+  description: Cleaves alkenes/alkynes into carbonyls.
+
+- name: NaCN (sodium cyanide) nitrile synthesis
+  subreactions:
+    - smarts: "[CH,CH2,CH3:1][Br]>>[C:1]C#N"
+      effect:
+  description: Converts primary/secondary alkyl bromides into nitriles via SN2.
+
+- name: Oxymercuration/demercuration (OM/DM)
+  subreactions:
+    - smarts: "[#6:1][CH:2]=[CH2:3]>>[#6:1][C:2]([OH])[C:3]"
+      effect:
+    - smarts: "[#6:1][C:2]([#6:4])=[CH2:3]>>[#6:1][C:2]([OH])([#6:4])[C:3]"
+      effect:
+    - smarts: "[#6:1][C:2]([#6:4])=[CH:3][#6:5]>>[#6:1][C:2]([OH])([#6:4])[C:3][#6:5]"
+      effect:
+    - smarts: "[CH2:1]=[CH2:2]>>[C:1][C:2][OH]"
+      effect:
+    - smarts: "[#6:1][CH:2]=[CH:3][#6:4]>>[#6:1][C:2]([OH])[C:3][#6:4].[#6:1][C:2][C:3]([OH])[#6:4]"
+      effect:
+    - smarts: "[#6:1][C:2]([#6:4])=[C:3]([#6:6])[#6:5]>>[#6:1][C:2]([OH])([#6:4])[C:3]([#6:6])[#6:5].[#6:1][C:2]([#6:4])[C:3]([OH])([#6:6])[#6:5]"
+      effect:
+  description: Attaches an -OH group to the more substituted carbon atom of an alkene (Markovnikov addition).
+
+- name: Hydroboration/oxidation (BH3/[O])
+  subreactions:
+    - smarts: "[#6:1][CH:2]=[CH2:3]>>[#6:1][C:2][C:3]([OH])"
+      effect:
+    - smarts: "[#6:1][C:2]([#6:4])=[CH2:3]>>[#6:1][C:2]([#6:4])[C:3]([OH])"
+      effect:
+    - smarts: "[#6:1][C:2]([#6:4])=[CH:3][#6:5]>>[#6:1][C:2]([#6:4])[C:3]([OH])[#6:5]"
+      effect:
+    - smarts: "[CH2:1]=[CH2:2]>>[C:1][C:2][OH]"
+      effect:
+    - smarts: "[#6:1][CH:2]=[CH:3][#6:4]>>[#6:1][C:2]([OH])[C:3][#6:4].[#6:1][C:2][C:3]([OH])[#6:4]"
+      effect:
+    - smarts: "[#6:1][C:2]([#6:4])=[C:3]([#6:6])[#6:5]>>[#6:1][C:2]([OH])([#6:4])[C:3]([#6:6])[#6:5].[#6:1][C:2]([#6:4])[C:3]([OH])([#6:6])[#6:5]"
+      effect:
+  description: Attaches an -OH group to the less substituted carbon atom of an alkene (Anti-Markovnikov addition).
+
+- name: Grignard reagent
+  subreactions:
+  - smarts: "[#6:1][Br]>>[#6-:1]"
+    effect:
+  description: Converts an alkyl bromide into a carbon nucleophile for use in Grignard reactions.
+
+- name: SOCl2 (thionyl chloride) acid chloride synthesis
+  subreactions:
+    - smarts: "[#6:4][CX3:1](=[O:2])[OX2H]>>[#6:4][CX3:1](=[O:2])Cl"
+      effect:
+  description: Converts carboxylic acids into acid chlorides.
+
+- name: Grignard reaction
+  subreactions:
+    - smarts: "[#6-:1].[CH2]=O>>[#6-0:1]C[OH]"
+      effect:
+    - smarts: "[#6-:1].[CX3H1:2](=[O:3])[#6:4]>>[#6-0:1][C:2]([OH:3])[#6:4]"
+      effect:
+    - smarts: "[#6-:1].[#6:2][CX3:3](=[O:4])[#6:5]>>[#6:2][CX3:3]([OH:4])([#6-0:1])[#6:5]"
+      effect:
+    - smarts: "[#6-:1].[#6:2][C:3]#N>>[#6-0:1][C:3](=O)[#6:2]"
+      effect:
+    - smarts: "[#6-:1].O=C=O>>[#6-0:1]C(=O)[OH]"
+      effect:
+  description: Converts a carbon nucleophile + (formaldehyde/aldehydes/ketones into primary/secondary/tertiary alcohols), respectively; or a carbon nucleophile + (nitriles/CO2 into ketones/carboxylic acids), respectively.
+
+- name: Amide synthesis from acid chloride
+  subreactions:
+    - smarts: "[#6:4][CX3:1](=[O:2])Cl.[NH3:3]>>[#6:4][CX3:1](=[O:2])[NX3H2:3]"
+      effect:
+    - smarts: "[#6:4][CX3:1](=[O:2])Cl.[NH2:3]([CX4:5])>>[#6:4][CX3:1](=[O:2])[NX3H:3]([CX4:5])"
+      effect:
+    - smarts: "[#6:4][CX3:1](=[O:2])Cl.[NH:3]([CX4:5])[CX4:6]>>[#6:4][CX3:1](=[O:2])[NX3:3]([CX4:5])[CX4:6]"
+      effect:
+  description: Converts an acid chloride + (ammonia/ primary/secondary amine into a primary/secondary/tertiary amide), respectively.
+
+- name: Ester synthesis from acid chloride
+  subreactions:
+    - smarts: "[#6:3][CX3:1](=[O:2])Cl.[CH2,CH3:4][OX2H]>>[#6:3][CX3:1](=[O:2])O[CH2,CH3:4]"
+      effect:
+  description: Converts an acid chloride + a primary alcohol into an ester.
+
+- name: Fischer esterification
+  subreactions:
+    - smarts: "[#6:1][C:2](=[O:3])[OH:4].[CH,CH2,CH3,CX4,c:5][OX2H]>>[#6:1][C:2](=[O:3])[O:4][#6:5]"
+      effect:
+  description: Esterifies a carboxylic acid by reacting it with an alcohol.

@@ -60,7 +60,7 @@ def _generate_multi_step_product(
     start_mol: Mol, reaction: Reaction, products: Mol2dTuple
 ) -> MolTuple:
     """
-    Recusrive sub-method for the method above.
+    Recursive sub-method for the method above.
     """
     single_step_product = generate_single_step_product(start_mol, reaction)
     if not single_step_product:
@@ -133,8 +133,7 @@ def find_synthetic_pathway(
 
     # The format of this dictionary is:
     # key = product SMILES -> value = reactant SMILES
-    parent: dict[str, str | None] = {}
-    parent[Chem.MolToSmiles(start_mol)] = None  # startMol has no previous reactants
+    parent: dict[str, str | None] = {Chem.MolToSmiles(start_mol): None}  # startMol has no previous reactants
 
     # The format of this dictionary is:
     # key = (reactant SMILES, product SMILES) -> value = (reaction, product_index) that converts

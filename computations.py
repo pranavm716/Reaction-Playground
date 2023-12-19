@@ -42,8 +42,8 @@ def generate_single_step_product(
         reactants = (reactants,)
 
     products: Mol2dTuple = tuple()
-    for r in reaction.subreactions:
-        products += r.RunReactants(reactants)
+    for subreaction in reaction.subreactions:
+        products += subreaction.reaction.RunReactants(reactants)
 
     return generate_unique_products(products)
 
@@ -99,7 +99,7 @@ def find_possible_reactions(start_mol: Mol, *, solver_mode: bool) -> list[Reacti
             continue  # Solver mode will omit any reactions with more than one reactant
 
         for subreaction in reaction.subreactions:
-            if subreaction.IsMoleculeReactant(start_mol):
+            if subreaction.reaction.IsMoleculeReactant(start_mol):
                 possible_reactions.append(reaction)
                 break
 

@@ -1,6 +1,4 @@
-import os
-from dataclasses import dataclass
-
+from rdkit.Chem import Draw
 from rdkit.Chem.rdchem import Mol
 
 from computations import (
@@ -8,10 +6,11 @@ from computations import (
     find_synthetic_pathway,
     generate_multi_step_product,
 )
-from interfaces.ui import UI
-from rdkit.Chem import Draw
-from reaction import Reaction
 from PIL.Image import Image as PILImage
+
+from datatypes import SolverModeImageData
+
+
 # @dataclass
 # class Program:
 #     ui: UI
@@ -94,43 +93,55 @@ def construct_mol_image(mol: Mol) -> PILImage:
     return Draw.MolToImage(mol)
 
 
-def run_solver_mode(start_mol: Mol, target_mol: Mol):
+# @dataclass
+# class SolverModeImageData:
+#     start_mol_image: PILImage
+#     target_mol_image: PILImage
+#     intermediate_steps_images
+
+
+def run_solver_mode(start_mol: Mol, target_mol: Mol) -> SolverModeImageData:
     """
     Runs the auto synthetic pathway solver.
     """
-    solver_images: dict[str, list[PILImage]] = {
-        "start_mol_src": [construct_mol_image(start_mol)],
-        "target_mol_src": [construct_mol_image(target_mol)],
-    }
+    # solver_images: dict[str, list[PILImage]] = {
+    #     "start_mol": [construct_mol_image(start_mol)],
+    #     "target_mol": [construct_mol_image(target_mol)],
+    # }
+    start_mol_img = construct_mol_image(start_mol)
+    target_mol_img = construct_mol_image(target_mol)
+    solver_images: SolverModeImageData = []
 
     path_found, reaction_pathway, choice_pathway = find_synthetic_pathway(
         start_mol, target_mol
     )
+    num_steps = len(choice_pathway)
 
-    if not path_found:
-        return path_found, reaction_pathway, choice_pathway
-
+    # Reconstruct the synthetic pathway
+    reaction_names: list[str] = []
     current_mol = copy_mol(start_mol)
-    for step_number, (reaction, choice) in enumerate(
-        zip(reaction_pathway, choice_pathway), start=1
-    ):
+    for reaction, choice in zip(reaction_pathway, choice_pathway):
+        solver_images.append((construct_mol_image(current_mol),))
         products = generate_multi_step_product(current_mol, reaction)
-
-        step_full_image_path = self.get_full_image_path(f"{step_number - 1}.png")
-        self.ui.save_mol(current_mol, step_full_image_path)
-        solver_images[str(step_number - 1)] = [step_full_image_path]
 
         num_products = len(products)
         if num_products > 1:
-            for i in range(1, num_products + 1):
-                file_name = self.get_full_image_path(f"{step_number - 1}_{i}.png")
-                solver_images[f"{step_number - 1}"].append(file_name)
-                self.ui.save_mol(products[i - 1], file_name)
+            multi_product_images = [construct_mol_image(p) for p in products]
+            solver_images.append((multi_product_images, choice))
 
-        next_mol = products[choice]
-        current_mol = copy_mol(next_mol)
+        current_mol = products[choice]
 
-    return path_found, reaction_pathway, choice_pathway, solver_images
+    # The last image in the list will be the target mol
+    solver_images.append(construct_mol_image(target_mol))
+
+    return (
+        path_found,
+        num_steps,
+        reaction_names,
+        start_mol_img,
+        target_mol_img,
+        solver_images,
+    )
 
     # def run_playground_mode(self) -> None:
     #     """

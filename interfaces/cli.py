@@ -2,9 +2,9 @@ from rdkit import Chem
 from rdkit.Chem import Draw
 from rdkit.Chem.rdchem import Mol
 
-from backend.datatypes import Mol2dTuple, MolTuple
-from backend.reaction import Reaction
-from backend.interfaces.ui import UI
+from datatypes import Mol2dTuple, MolTuple
+from reaction import Reaction
+from interfaces.ui import UI
 
 
 class CLI(UI):

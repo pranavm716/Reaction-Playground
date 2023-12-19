@@ -2,9 +2,8 @@ from abc import ABC, abstractmethod
 
 from rdkit.Chem.rdchem import Mol
 
-from backend.datatypes import Mol2dTuple, MolTuple
-from backend.reaction import Reaction
-from typing import Iterable
+from datatypes import Mol2dTuple, MolTuple
+from reaction import Reaction
 
 
 class UI(ABC):

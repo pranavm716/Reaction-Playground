@@ -4,8 +4,9 @@ from typing import Deque
 from rdkit import Chem
 from rdkit.Chem.rdchem import Mol
 
-from backend.datatypes import Mol2dTuple, MolTuple
-from backend.reaction import Reaction
+from datatypes import Mol2dTuple, MolTuple
+from main import MAX_NUM_SOLVER_STEPS, ALL_REACTIONS
+from reaction import Reaction
 
 
 def copy_mol(mol: Mol) -> Mol:
@@ -57,7 +58,7 @@ def generate_multi_step_product(start_mol: Mol, reaction: Reaction) -> MolTuple:
 
 
 def _generate_multi_step_product(
-    start_mol: Mol, reaction: Reaction, products: Mol2dTuple
+    start_mol: Mol, reaction: Reaction, products: MolTuple
 ) -> MolTuple:
     """
     Recursive sub-method for the method above.
@@ -65,40 +66,35 @@ def _generate_multi_step_product(
     single_step_product = generate_single_step_product(start_mol, reaction)
     if not single_step_product:
         return (start_mol,)
-    else:
-        for scenario in single_step_product:
-            for p in scenario:
-                products += _generate_multi_step_product(p, reaction, products)
 
-        return products
+    for scenario in single_step_product:
+        for p in scenario:
+            products += _generate_multi_step_product(p, reaction, products)
 
-
-def get_reactant_position_of_mol_in_reaction(mol: Mol, reaction: Reaction) -> int:
-    """
-    Returns the position of the mol in the reactants of any of the reaction's subreactions.
-    Since all of the subreactions have the same substructure pattern, we can return the first
-    instance of when the mol is found.
-    """
-    for subreaction in reaction.subreactions:
-        for index, reactant in enumerate(subreaction.GetReactants()):
-            if mol.HasSubstructMatch(reactant):
-                return index
-    raise ValueError(
-        f"{reaction.name} is not valid for molecule with SMILES '{Chem.MolToSmiles(mol)}'."
-    )
+    return products
 
 
-def find_possible_reactions(
-    start_mol: Mol,
-    all_reactions: list[Reaction],
-    *,
-    solver_mode: bool,
-) -> list[Reaction]:
+# def get_reactant_position_of_mol_in_reaction(mol: Mol, reaction: Reaction) -> int:
+#     """
+#     Returns the position of the mol in the reactants of the reaction's subreactions.
+#     Since all the subreactions have the same substructure pattern, we can return the first
+#     instance of when the mol is found.
+#     """
+#     for subreaction in reaction.subreactions:
+#         for index, reactant in enumerate(subreaction.GetReactants()):
+#             if mol.HasSubstructMatch(reactant):
+#                 return index
+#     raise ValueError(
+#         f"{reaction.name} is not valid for molecule with SMILES '{Chem.MolToSmiles(mol)}'."
+#     )
+
+
+def find_possible_reactions(start_mol: Mol, *, solver_mode: bool) -> list[Reaction]:
     """
     Returns the reactions that can be performed on the given molecule.
     """
     possible_reactions = []
-    for reaction in all_reactions:
+    for reaction in ALL_REACTIONS:
         if solver_mode and reaction.num_reactants > 1:
             continue  # Solver mode will omit any reactions with more than one reactant
 
@@ -111,10 +107,7 @@ def find_possible_reactions(
 
 
 def find_synthetic_pathway(
-    start_mol: Mol,
-    target_mol: Mol,
-    all_reactions: list[Reaction],
-    max_solver_steps: int,
+    start_mol: Mol, target_mol: Mol
 ) -> tuple[bool, list[Reaction], list[int]]:
     """
     Auto-solver, utilizes multi step products.
@@ -133,7 +126,9 @@ def find_synthetic_pathway(
 
     # The format of this dictionary is:
     # key = product SMILES -> value = reactant SMILES
-    parent: dict[str, str | None] = {Chem.MolToSmiles(start_mol): None}  # startMol has no previous reactants
+    parent: dict[str, str | None] = {
+        Chem.MolToSmiles(start_mol): None,  # startMol has no previous reactants
+    }
 
     # The format of this dictionary is:
     # key = (reactant SMILES, product SMILES) -> value = (reaction, product_index) that converts
@@ -143,16 +138,14 @@ def find_synthetic_pathway(
     # BFS loop
     dist = 0
     path_found = False
-    while queue and dist < max_solver_steps:
+    while queue and dist < MAX_NUM_SOLVER_STEPS:
         for _ in range(len(queue)):
             cur = queue.popleft()
             if Chem.MolToSmiles(cur) == Chem.MolToSmiles(target_mol):
                 path_found = True
                 break
 
-            possible_reactions = find_possible_reactions(
-                cur, all_reactions, solver_mode=True
-            )
+            possible_reactions = find_possible_reactions(cur, solver_mode=True)
             all_reactions_products: list[MolTuple] = [
                 generate_multi_step_product(cur, rxn) for rxn in possible_reactions
             ]
@@ -185,7 +178,7 @@ def find_synthetic_pathway(
     target_smiles = Chem.MolToSmiles(target_mol)
 
     while parent[target_smiles] is not None:
-        choice = choices[(parent[target_smiles], target_smiles)]  # type: ignore[index]
+        choice = choices[(parent[target_smiles], target_smiles)]
         reaction, product_index = choice
         reaction_pathway.append(reaction)
         choice_pathway.append(product_index)

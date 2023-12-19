@@ -3,9 +3,8 @@ import os
 import pytest
 from rdkit.Chem import AllChem
 
-from backend.config import Config, read_config
-from backend.program import read_all_reactions_from_file
-from backend.reaction import Reaction
+from config import Config, read_config
+from reaction import Reaction, read_all_reactions_from_file
 
 
 @pytest.fixture

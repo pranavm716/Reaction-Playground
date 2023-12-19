@@ -3,7 +3,7 @@ from unittest.mock import MagicMock
 
 from rdkit import Chem
 
-from backend.program import Program
+from program import Program
 
 
 @mock.patch("builtins.input", side_effect=["1", "CCC=O", "b", "q"])

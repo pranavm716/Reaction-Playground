@@ -74,21 +74,6 @@ def _generate_multi_step_product(
     return products
 
 
-# def get_reactant_position_of_mol_in_reaction(mol: Mol, reaction: Reaction) -> int:
-#     """
-#     Returns the position of the mol in the reactants of the reaction's subreactions.
-#     Since all the subreactions have the same substructure pattern, we can return the first
-#     instance of when the mol is found.
-#     """
-#     for subreaction in reaction.subreactions:
-#         for index, reactant in enumerate(subreaction.GetReactants()):
-#             if mol.HasSubstructMatch(reactant):
-#                 return index
-#     raise ValueError(
-#         f"{reaction.name} is not valid for molecule with SMILES '{Chem.MolToSmiles(mol)}'."
-#     )
-
-
 def find_possible_reactions(
     start_mol: Mol,
     all_reactions: list[Reaction],

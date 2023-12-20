@@ -8,7 +8,7 @@ from starlette.templating import Jinja2Templates
 
 from program import run_solver_mode
 from reaction import read_all_reactions_from_file
-from website2.fastapi_rdkit_utils import (
+from website.fastapi_rdkit_utils import (
     start_and_target_mols_are_valid,
     construct_query_url,
     img_to_base64,
@@ -77,26 +77,6 @@ async def solver_mode(request: Request, start_mol_smiles: str, target_mol_smiles
         solver_images,
     ) = run_solver_mode(start_mol, target_mol)
 
-    with tempfile.TemporaryDirectory() as solver_images_dir:
-        pass
-        # start_mol_img.save(pathlib.Path(solver_images_dir) / "start_mol.png", "PNG")
-        # target_mol_img.save(pathlib.Path(solver_images_dir) / "target_mol.png", "PNG")
-        # for imgs, _ in solver_images:
-        #     for img, fp in imgs:
-        #         img.save(pathlib.Path(solver_images_dir) / fp, "PNG")
-
-        # print(os.listdir(solver_images_dir))
-        # return templates.TemplateResponse(
-        #     "solver_mode.jinja",
-        #     {
-        #         "request": request,
-        #         "path_found": path_found,
-        #         "num_steps": num_steps,
-        #         "reaction_names": reaction_names,
-        #         "solver_images_dir": pathlib.Path(solver_images_dir).resolve(),
-        #         "max_num_solver_steps": MAX_NUM_SOLVER_STEPS,
-        #     },
-        # )
     return templates.TemplateResponse(
         "solver_mode.jinja",
         {

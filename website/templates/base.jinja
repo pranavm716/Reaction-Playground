@@ -47,37 +47,37 @@
     </nav>
 
     {# For flashing messages #}
-    {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %} {% for category, message in messages %}
-    {% if category == 'error' %}
-    <div class="alert alert-danger alter-dismissable fade show" role="alert" id="alert">
-        {{ message }}
-        <button type="button" class="close" data-dismiss="alert">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-    {% else %}
-    <div class="alert alert-success alter-dismissable fade show" role="alert">
-        {{ message }}
-        <button type="button" class="close" data-dismiss="alert" id="alert">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-    {% endif %}
-    {% endfor %} {% endif %}
-    {% endwith %}
+{#    {% with messages = get_flashed_messages(with_categories=true) %}#}
+{#    {% if messages %} {% for category, message in messages %}#}
+{#    {% if category == 'error' %}#}
+{#    <div class="alert alert-danger alter-dismissable fade show" role="alert" id="alert">#}
+{#        {{ message }}#}
+{#        <button type="button" class="close" data-dismiss="alert">#}
+{#            <span aria-hidden="true">&times;</span>#}
+{#        </button>#}
+{#    </div>#}
+{#    {% else %}#}
+{#    <div class="alert alert-success alter-dismissable fade show" role="alert">#}
+{#        {{ message }}#}
+{#        <button type="button" class="close" data-dismiss="alert" id="alert">#}
+{#            <span aria-hidden="true">&times;</span>#}
+{#        </button>#}
+{#    </div>#}
+{#    {% endif %}#}
+{#    {% endfor %} {% endif %}#}
+{#    {% endwith %}#}
 
-    <script>
-        // Auto-close the alert after 10 seconds and fade out
-        setTimeout(function () {
-            var alert = document.getElementById('alert');
-            alert.classList.remove('show');
-            alert.classList.add('fade');
-            setTimeout(function () {
-                alert.remove();
-            }, 500);
-        }, 10000);
-    </script>
+{#    <script>#}
+{#        // Auto-close the alert after 10 seconds and fade out#}
+{#        setTimeout(function () {#}
+{#            var alert = document.getElementById('alert');#}
+{#            alert.classList.remove('show');#}
+{#            alert.classList.add('fade');#}
+{#            setTimeout(function () {#}
+{#                alert.remove();#}
+{#            }, 500);#}
+{#        }, 10000);#}
+{#    </script>#}
 
     {# Content field - to be overriden by child templates #}
     <div id="container" class="container" style="padding-top: 15px;">{% block content %} {% endblock %}</div>

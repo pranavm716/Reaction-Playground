@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from rdkit import Chem
 from urllib.parse import quote
 
+from rdkit.Chem import Mol, Draw
 from rdkit.Chem.rdchem import Mol
 from io import BytesIO
 import base64
@@ -38,3 +39,7 @@ def img_to_base64(img: PILImage) -> str:
     img.save(buffered, format="PNG")
     image_data = base64.b64encode(buffered.getvalue()).decode("utf-8")
     return image_data
+
+
+def construct_mol_image(mol: Mol) -> PILImage:
+    return Draw.MolToImage(mol)

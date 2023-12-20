@@ -1,5 +1,15 @@
 {% extends "base.jinja" %}
 {% block content %}
+    <style>
+        .btn-icon {
+            display: flex;
+            align-items: center;
+        }
+
+        .btn-icon .material-icons {
+            padding-right: 5px;
+        }
+    </style>
     <form method="POST">
         <div class="form-group">
             <label for="start_mol_smiles">Start Molecule SMILES</label>
@@ -11,16 +21,6 @@
         </div>
         <div>
             <button type="button" class="btn btn-success btn-icon" id="addTargetButton">
-                <style>
-                .btn-icon {
-                    display: flex;
-                    align-items: center;
-                }
-
-                .btn-icon .material-icons {
-                    padding-right: 5px;
-                }
-                </style>
                 <span class="material-icons">add</span>
                 Add Target (optional)
             </button>
@@ -36,8 +36,8 @@
         <br />
         <button type="submit" class="btn btn-primary" id="submitButton">Run reactions</button>
         <script>
-        var btn = document.getElementById("addTargetButton");
-        btn.addEventListener("click", () => {
+            const btn = document.getElementById("addTargetButton");
+            btn.addEventListener("click", () => {
             btn.style.display = "none";
             document.getElementById('targetMolInput').style.display = "block";
             document.getElementById('submitButton').textContent = "Find synthetic pathway";

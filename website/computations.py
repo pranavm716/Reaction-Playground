@@ -4,9 +4,9 @@ from typing import Deque
 from rdkit import Chem
 from rdkit.Chem.rdchem import Mol
 
-from datatypes import Mol2dTuple, MolTuple
-from main import MAX_NUM_SOLVER_STEPS, ALL_REACTIONS
-from reaction import Reaction
+from website.config import MAX_NUM_SOLVER_STEPS
+from website.datatypes import Mol2dTuple, MolTuple
+from website.reaction import Reaction
 
 
 def copy_mol(mol: Mol) -> Mol:
@@ -89,12 +89,17 @@ def _generate_multi_step_product(
 #     )
 
 
-def find_possible_reactions(start_mol: Mol, *, solver_mode: bool) -> list[Reaction]:
+def find_possible_reactions(
+    start_mol: Mol,
+    all_reactions: list[Reaction],
+    *,
+    solver_mode: bool,
+) -> list[Reaction]:
     """
     Returns the reactions that can be performed on the given molecule.
     """
     possible_reactions = []
-    for reaction in ALL_REACTIONS:
+    for reaction in all_reactions:
         if solver_mode and reaction.num_reactants > 1:
             continue  # Solver mode will omit any reactions with more than one reactant
 
@@ -107,7 +112,7 @@ def find_possible_reactions(start_mol: Mol, *, solver_mode: bool) -> list[Reacti
 
 
 def find_synthetic_pathway(
-    start_mol: Mol, target_mol: Mol
+    start_mol: Mol, target_mol: Mol, all_reactions: list[Reaction]
 ) -> tuple[bool, list[Reaction], list[int]]:
     """
     Auto-solver, utilizes multi step products.
@@ -145,7 +150,9 @@ def find_synthetic_pathway(
                 path_found = True
                 break
 
-            possible_reactions = find_possible_reactions(cur, solver_mode=True)
+            possible_reactions = find_possible_reactions(
+                start_mol=cur, all_reactions=all_reactions, solver_mode=True
+            )
             all_reactions_products: list[MolTuple] = [
                 generate_multi_step_product(cur, rxn) for rxn in possible_reactions
             ]

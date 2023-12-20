@@ -1,18 +1,18 @@
+from PIL.Image import Image as PILImage
 from rdkit.Chem.rdchem import Mol
 
-from computations import (
+from website.computations import (
     copy_mol,
     find_synthetic_pathway,
     generate_multi_step_product,
 )
-from PIL.Image import Image as PILImage
-
-from datatypes import SolverModeImageData
+from website.datatypes import SolverModeImageData
 from website.fastapi_rdkit_utils import construct_mol_image
+from website.reaction import Reaction
 
 
 def run_solver_mode(
-    start_mol: Mol, target_mol: Mol
+    start_mol: Mol, target_mol: Mol, all_reactions: list[Reaction]
 ) -> tuple[bool, int, list[str], list[int], PILImage, PILImage, SolverModeImageData]:
     """
     Runs the auto synthetic pathway solver. Returns information about the calculated synthetic pathway,
@@ -21,10 +21,10 @@ def run_solver_mode(
 
     start_mol_img = construct_mol_image(start_mol)
     target_mol_img = construct_mol_image(target_mol)
-    solver_images: SolverModeImageData = []
+    solver_images: SolverModeImageData = {}
 
     path_found, reaction_pathway, choice_pathway = find_synthetic_pathway(
-        start_mol, target_mol
+        start_mol, target_mol, all_reactions
     )
     num_steps = len(choice_pathway)
 
@@ -37,13 +37,9 @@ def run_solver_mode(
         reaction_names.append(reaction.name)
         products = generate_multi_step_product(current_mol, reaction)
 
-        product_image_info: list[tuple[PILImage, str]] = []
-        for product_index, product in enumerate(products):
-            product_img = construct_mol_image(product)
-            product_img_filename = f"{step_number}_{product_index}.png"
-            product_image_info.append((product_img, product_img_filename))
+        product_images = [construct_mol_image(product) for product in products]
+        solver_images[step_number] = product_images
 
-        solver_images.append((product_image_info, choice))
         current_mol = products[choice]
 
     return (

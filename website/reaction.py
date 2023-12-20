@@ -7,6 +7,8 @@ from rdkit.Chem import AllChem
 from pydantic import BaseModel, Field, model_validator, TypeAdapter
 from functools import cached_property
 
+from website.config import DISABLE_RDKIT_WARNINGS
+
 
 class BaseReactionModel(BaseModel):
     class Config:
@@ -76,11 +78,11 @@ def read_all_reactions_from_file(path: pathlib.Path) -> list[Reaction]:
     """
     Returns a list of all available reactions.
     """
-    # all_reactions_file_path = os.path.join(
-    #     os.path.dirname(__file__), all_reactions_file_path
-    # )
-    #
-    # with open(all_reactions_file_path, "r") as f:
+    if DISABLE_RDKIT_WARNINGS:
+        from rdkit import RDLogger
+
+        RDLogger.DisableLog("rdApp.warning")
+
     reaction_dict = yaml.safe_load(path.read_text())
     ta = TypeAdapter(list[Reaction])
     all_reactions = ta.validate_python(reaction_dict)

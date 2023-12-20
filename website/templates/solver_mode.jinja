@@ -47,12 +47,12 @@
                 keyboard_double_arrow_right
             </span>
         </div>
-{#        <div class="card text-center border-0" style="width: 18rem;">#}
-{#            <img src="{{solver_images_dir ~ '/target_mol.png'}}" class="card-img-top">#}
-{#            <div class="card-body">#}
-{#                <p class="card-text">Target Molecule</p>#}
-{#            </div>#}
-{#        </div>#}
+        <div class="card text-center border-0" style="width: 18rem;">
+            <img src="data:image/png;base64, {{ target_mol }}" class="card-img-top" alt="Target molecule">
+            <div class="card-body">
+                <p class="card-text">Target Molecule</p>
+            </div>
+        </div>
     </div>
     {% if path_found %}
     {{ num_steps }}-step synthetic pathway found!

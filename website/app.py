@@ -1,41 +1,50 @@
 import pathlib
-from typing import Annotated
+from contextlib import asynccontextmanager
+from typing import Annotated, Dict, List
 
+from PIL.Image import Image
 from fastapi import FastAPI, Request, Form, HTTPException
 from starlette.responses import HTMLResponse, RedirectResponse
 from starlette.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
 
 from program import run_solver_mode
-from reaction import read_all_reactions_from_file
+from website.config import (
+    MAX_NUM_SOLVER_STEPS,
+    DISABLE_RDKIT_WARNINGS,
+    ALL_REACTIONS_FILE_PATH,
+)
 from website.fastapi_rdkit_utils import (
     start_and_target_mols_are_valid,
     construct_query_url,
     img_to_base64,
     get_mol_from_smiles,
 )
-import tempfile
-import os
+from website.reaction import read_all_reactions_from_file
 
 
-MULTI_STEP_REACT_MODE = True
-MAX_NUM_SOLVER_STEPS = 15
-DISABLE_RDKIT_WARNINGS = True
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    if DISABLE_RDKIT_WARNINGS:
+        from rdkit import RDLogger
 
-if DISABLE_RDKIT_WARNINGS:
-    from rdkit import RDLogger
+        RDLogger.DisableLog("rdApp.warning")
 
-    RDLogger.DisableLog("rdApp.warning")
+    all_reactions = read_all_reactions_from_file(ALL_REACTIONS_FILE_PATH)
+    app.state.all_reactions = all_reactions  # noqa
 
-ALL_REACTIONS_FILE_PATH = pathlib.Path("./all_reactions.yaml")
-ALL_REACTIONS = read_all_reactions_from_file(ALL_REACTIONS_FILE_PATH)
+    yield
 
-app = FastAPI()
 
+app = FastAPI(lifespan=lifespan)
+
+
+# Mount static folder
 static_dir = pathlib.Path(__file__).parent.resolve() / "static"
-templates_dir = pathlib.Path(__file__).parent.resolve() / "templates"
-
 app.mount("/static", StaticFiles(directory=static_dir), name="static")
+
+# Create jinja2 template engine
+templates_dir = pathlib.Path(__file__).parent.resolve() / "templates"
 templates = Jinja2Templates(directory=templates_dir)
 
 
@@ -75,7 +84,11 @@ async def solver_mode(request: Request, start_mol_smiles: str, target_mol_smiles
         start_mol_img,
         target_mol_img,
         solver_images,
-    ) = run_solver_mode(start_mol, target_mol)
+    ) = run_solver_mode(
+        start_mol=start_mol,
+        target_mol=target_mol,
+        all_reactions=app.state.all_reactions,  # noqa
+    )
 
     return templates.TemplateResponse(
         "solver_mode.jinja",
@@ -86,5 +99,6 @@ async def solver_mode(request: Request, start_mol_smiles: str, target_mol_smiles
             "reaction_names": reaction_names,
             "max_num_solver_steps": MAX_NUM_SOLVER_STEPS,
             "start_mol": img_to_base64(start_mol_img),
+            "target_mol": img_to_base64(target_mol_img),
         },
     )

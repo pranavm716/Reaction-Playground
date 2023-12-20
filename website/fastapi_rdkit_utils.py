@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from rdkit import Chem
 from urllib.parse import quote
 
-from rdkit.Chem import Mol, Draw
+from rdkit.Chem import Draw
 from rdkit.Chem.rdchem import Mol
 from io import BytesIO
 import base64

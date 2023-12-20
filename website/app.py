@@ -1,8 +1,7 @@
 import pathlib
 from contextlib import asynccontextmanager
-from typing import Annotated, Dict, List
+from typing import Annotated
 
-from PIL.Image import Image
 from fastapi import FastAPI, Request, Form, HTTPException
 from starlette.responses import HTMLResponse, RedirectResponse
 from starlette.staticfiles import StaticFiles
@@ -90,15 +89,28 @@ async def solver_mode(request: Request, start_mol_smiles: str, target_mol_smiles
         all_reactions=app.state.all_reactions,  # noqa
     )
 
+    solver_run_metrics = {
+        "path_found": path_found,
+        "num_steps": num_steps,
+        "reaction_names": reaction_names,
+        "choice_pathway": choice_pathway,
+    }
+
+    image_encodings = {
+        "start_mol": img_to_base64(start_mol_img),
+        "target_mol": img_to_base64(target_mol_img),
+    }
+    for step_number, product_images in solver_images.items():
+        image_encodings[str(step_number)] = [
+            img_to_base64(img) for img in product_images
+        ]
+
     return templates.TemplateResponse(
         "solver_mode.jinja",
         {
             "request": request,
-            "path_found": path_found,
-            "num_steps": num_steps,
-            "reaction_names": reaction_names,
+            **solver_run_metrics,
+            "image_encodings": image_encodings,
             "max_num_solver_steps": MAX_NUM_SOLVER_STEPS,
-            "start_mol": img_to_base64(start_mol_img),
-            "target_mol": img_to_base64(target_mol_img),
         },
     )

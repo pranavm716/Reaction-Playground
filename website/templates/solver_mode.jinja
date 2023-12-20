@@ -1,6 +1,6 @@
 {% extends "base.jinja" %}
-{% block content%}
-<style>
+{% block content %}
+    <style>
     .parent-container {
         display: flex;
         flex-direction: column;
@@ -28,10 +28,9 @@
         max-width: 100%;
         height: auto;
     }
-</style>
-
-{# For multiple products on the same line #}
-<style>
+    </style>
+    {# For multiple products on the same line #}
+    <style>
     .image-row {
       display: flex;
       align-items: center;
@@ -48,89 +47,87 @@
     .plus-icon {
       margin: 0 20px; /* Adjust the spacing around the plus icon */
     }
-</style>
-<div class="parent-container">
-    <div>
-        The goal is to find a reaction pathway that converts
-        the starting molecule into the target molecule.
-    </div>
-    <div class="container">
-        <div class="card text-center border-0" style="width: 18rem;">
-            <img src="data:image/png;base64, {{ image_encodings['start_mol'] }}" class="card-img-top" alt="Starting molecule">
-            <div class="card-body">
-                <p class="card-text">Starting Molecule</p>
-            </div>
+    </style>
+    <div class="parent-container">
+        <div>
+            The goal is to find a reaction pathway that converts
+            the starting molecule into the target molecule.
         </div>
-
-        <div class="image">
-            <span class="material-icons">
-                keyboard_double_arrow_right
-            </span>
-        </div>
-        <div class="card text-center border-0" style="width: 18rem;">
-            <img src="data:image/png;base64, {{ image_encodings['target_mol'] }}" class="card-img-top" alt="Target molecule">
-            <div class="card-body">
-                <p class="card-text">Target Molecule</p>
-            </div>
-        </div>
-    </div>
-    {% if path_found %}
-    {{ num_steps }}-step synthetic pathway found!
-    {% else %}
-    No synthetic pathway found in {{ max_num_solver_steps }} steps. It is also possible that no synthetic
-    pathway exists at all.
-    {% endif %}
-    <div>
-        <br />
-        {% if path_found %}
-            This is your starting molecule:
-            <div class="parent-container">
-                <div class="card text-center border-0" style="width: 18rem;">
-                    <img src="data:image/png;base64, {{ image_encodings['start_mol'] }}" class="card-img-top" alt="Starting molecule">
+        <div class="container">
+            <div class="card text-center border-0" style="width: 18rem;">
+                <img src="data:image/png;base64, {{ image_encodings['start_mol'] }}"
+                     class="card-img-top"
+                     alt="Starting molecule">
+                <div class="card-body">
+                    <p class="card-text">Starting Molecule</p>
                 </div>
-
-                {% for step in range(num_steps) %}
-                    <div class="container">
-                        Step {{ step + 1}}
-
-                        <div class="image">
-                            <span class="material-icons">
-                                arrow_downward
-                            </span>
-                        </div>
-
-                        {{ reaction_names[step] }}
-                    </div>
-
-                    {% if image_encodings[step|string]|length == 1 %}
-                        <div class="card text-center border-0" style="width: 18rem;">
-                            <img src="data:image/png;base64, {{ image_encodings[step|string][0] }}" class="card-img-top" alt="step_{{ step|string }}_product">
-                        </div>
-                    {% else %}
-                        <div class="image-row">
-                            {% for image_encoding in image_encodings[step|string][:-1] %}
-                                <div class="card text-center border-0" style="width: 18rem;">
-                                    <img src="data:image/png;base64, {{ image_encoding }}" class="card-img-top" alt="step_{{ step|string }}_product">
-                                </div>
-                                <div class="plus-icon">
-                                    <span class="material-icons">
-                                        add
-                                    </span>
-                                </div>
-                            {% endfor %}
-                            <div class="card text-center border-0" style="width: 18rem;">
-                                <img src="data:image/png;base64, {{ image_encodings[step|string][-1] }}" class="card-img-top" alt="step_{{ step|string }}_product">
-                            </div>
-                        </div>
-                    {% endif %}
-
-
-                {% endfor %}
             </div>
-            This is your target molecule.
+            <div class="image">
+                <span class="material-icons">keyboard_double_arrow_right</span>
+            </div>
+            <div class="card text-center border-0" style="width: 18rem;">
+                <img src="data:image/png;base64, {{ image_encodings['target_mol'] }}"
+                     class="card-img-top"
+                     alt="Target molecule">
+                <div class="card-body">
+                    <p class="card-text">Target Molecule</p>
+                </div>
+            </div>
+        </div>
+        {% if path_found %}
+            {{ num_steps }}-step synthetic pathway found!
+        {% else %}
+            No synthetic pathway found in {{ max_num_solver_steps }} steps. It is also possible that no synthetic
+            pathway exists at all.
         {% endif %}
-
+        <div>
+            <br />
+            {% if path_found %}
+                This is your starting molecule:
+                <div class="parent-container">
+                    <div class="card text-center border-0" style="width: 18rem;">
+                        <img src="data:image/png;base64, {{ image_encodings['start_mol'] }}"
+                             class="card-img-top"
+                             alt="Starting molecule">
+                    </div>
+                    {% for step in range(num_steps) %}
+                        <div class="container">
+                            Step {{ step + 1 }}
+                            <div class="image">
+                                <span class="material-icons">arrow_downward</span>
+                            </div>
+                            {{ reaction_names[step] }}
+                        </div>
+                        {% if image_encodings[step|string]|length == 1 %}
+                            <div class="card text-center border-0" style="width: 18rem;">
+                                <img src="data:image/png;base64, {{ image_encodings[step|string][0] }}"
+                                     class="card-img-top"
+                                     alt="step_{{ step|string }}_product">
+                            </div>
+                        {% else %}
+                            <div class="image-row">
+                                {% for image_encoding in image_encodings[step|string][:-1] %}
+                                    <div class="card text-center border-0" style="width: 18rem;">
+                                        <img src="data:image/png;base64, {{ image_encoding }}"
+                                             class="card-img-top"
+                                             alt="step_{{ step|string }}_product">
+                                    </div>
+                                    <div class="plus-icon">
+                                        <span class="material-icons">add</span>
+                                    </div>
+                                {% endfor %}
+                                <div class="card text-center border-0" style="width: 18rem;">
+                                    <img src="data:image/png;base64, {{ image_encodings[step|string][-1] }}"
+                                         class="card-img-top"
+                                         alt="step_{{ step|string }}_product">
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                This is your target molecule.
+            {% endif %}
+        </div>
+        <br />
     </div>
-    <br />
-</div>
 {% endblock %}

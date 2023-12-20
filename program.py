@@ -100,14 +100,13 @@ def construct_mol_image(mol: Mol) -> PILImage:
 #     intermediate_steps_images
 
 
-def run_solver_mode(start_mol: Mol, target_mol: Mol) -> SolverModeImageData:
+def run_solver_mode(
+    start_mol: Mol, target_mol: Mol
+) -> tuple[bool, int, list[str], list[int], PILImage, PILImage, SolverModeImageData]:
     """
     Runs the auto synthetic pathway solver.
     """
-    # solver_images: dict[str, list[PILImage]] = {
-    #     "start_mol": [construct_mol_image(start_mol)],
-    #     "target_mol": [construct_mol_image(target_mol)],
-    # }
+
     start_mol_img = construct_mol_image(start_mol)
     target_mol_img = construct_mol_image(target_mol)
     solver_images: SolverModeImageData = []
@@ -120,24 +119,26 @@ def run_solver_mode(start_mol: Mol, target_mol: Mol) -> SolverModeImageData:
     # Reconstruct the synthetic pathway
     reaction_names: list[str] = []
     current_mol = copy_mol(start_mol)
-    for reaction, choice in zip(reaction_pathway, choice_pathway):
-        solver_images.append((construct_mol_image(current_mol),))
+    for step_number, (reaction, choice) in enumerate(
+        zip(reaction_pathway, choice_pathway)
+    ):
+        reaction_names.append(reaction.name)
         products = generate_multi_step_product(current_mol, reaction)
 
-        num_products = len(products)
-        if num_products > 1:
-            multi_product_images = [construct_mol_image(p) for p in products]
-            solver_images.append((multi_product_images, choice))
+        product_image_info: list[tuple[PILImage, str]] = []
+        for product_index, product in enumerate(products):
+            product_img = construct_mol_image(product)
+            product_img_filename = f"{step_number}_{product_index}.png"
+            product_image_info.append((product_img, product_img_filename))
 
+        solver_images.append((product_image_info, choice))
         current_mol = products[choice]
-
-    # The last image in the list will be the target mol
-    solver_images.append(construct_mol_image(target_mol))
 
     return (
         path_found,
         num_steps,
         reaction_names,
+        choice_pathway,
         start_mol_img,
         target_mol_img,
         solver_images,

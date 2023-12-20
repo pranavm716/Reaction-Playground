@@ -24,6 +24,8 @@ from website.reaction import read_all_reactions_from_file
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    """Disables rdkit warnings if configured and loads all reactions from a file."""
+
     if DISABLE_RDKIT_WARNINGS:
         from rdkit import RDLogger
 
@@ -49,15 +51,20 @@ templates = Jinja2Templates(directory=templates_dir)
 
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request):
+    """Allows the user to enter SMILES for a starting and a target molecule."""
     return templates.TemplateResponse("home.jinja", {"request": request})
 
 
-@app.post("/", response_class=HTMLResponse)
+@app.post("/", response_class=RedirectResponse)
 async def run_program(
     request: Request,
     start_mol_smiles: Annotated[str, Form()],
     target_mol_smiles: Annotated[str, Form()],
 ):
+    """
+    Runs the solver mode if start and target SMILES are present and playground mode if only start SMILES is present.
+    Also validates the SMILES and raises an HTTPException if invalid.
+    """
     if not start_and_target_mols_are_valid(start_mol_smiles, target_mol_smiles):
         raise HTTPException(status_code=400, detail="Invalid form data")
 
@@ -73,8 +80,11 @@ async def run_program(
 
 @app.get("/solver-mode", response_class=HTMLResponse)
 async def solver_mode(request: Request, start_mol_smiles: str, target_mol_smiles: str):
+    """Displays the steps needed to synthesize the target molecule from the start molecule."""
+
     start_mol = get_mol_from_smiles(start_mol_smiles)
     target_mol = get_mol_from_smiles(target_mol_smiles)
+
     (
         path_found,
         num_steps,

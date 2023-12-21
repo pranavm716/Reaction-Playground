@@ -21,6 +21,8 @@ def run_solver_mode(
 
     start_mol_img = construct_mol_image(start_mol)
     target_mol_img = construct_mol_image(target_mol)
+
+    # Includes the target molecule as the last entry, does not include the starting molecule
     solver_images: SolverModeImageData = {}
 
     path_found, reaction_pathway, choice_pathway = find_synthetic_pathway(

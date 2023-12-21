@@ -1,17 +1,16 @@
 import pytest
 from rdkit import Chem
 
-from computations import (
+from website.computations import (
     copy_mol,
     find_possible_reactions,
     find_synthetic_pathway,
     generate_multi_step_product,
     generate_single_step_product,
     generate_unique_products,
-    get_reactant_position_of_mol_in_reaction,
 )
-from datatypes import Mol2dTuple
-from reaction import Reaction
+from website.datatypes import Mol2dTuple
+from website.reaction import Reaction
 
 SmilesTuple = tuple[str, ...]
 Smiles2dTuple = tuple[tuple[str, ...], ...]
@@ -129,32 +128,6 @@ def test_generate_multi_step_product(
 
 
 @pytest.mark.parametrize(
-    ["reactant_smiles", "reaction_index", "reactant_position"],
-    [
-        ["BrCC1CCCC1", 7, 0],  # NaCN nitrile synthesis
-        ["CCCO", -1, 2],  # A made up reaction
-        ["C#CCC(O)C#C", 12, None],  # Grignard reaction
-    ],
-)
-def test_get_reactant_position(
-    reactant_smiles: str,
-    reaction_index: int,
-    reactant_position: int | None,
-    all_reactions: list[Reaction],
-):
-    mol = Chem.MolFromSmiles(reactant_smiles)
-    reaction = all_reactions[reaction_index]
-
-    if reactant_position is None:
-        with pytest.raises(ValueError):
-            get_reactant_position_of_mol_in_reaction(mol, reaction)
-    else:
-        assert (
-            get_reactant_position_of_mol_in_reaction(mol, reaction) == reactant_position
-        )
-
-
-@pytest.mark.parametrize(
     ["start_mol_smiles", "solver_mode", "possible_reactions_indices"],
     [
         [r"C/C(C)=C\C=O", True, [2, 3, 4, 6, 8, 9]],
@@ -223,7 +196,6 @@ def test_find_synthetic_pathway(
     choice_pathway: list[int],
     all_reactions: list[Reaction],
 ):
-    max_solver_steps = 15
     start_mol = Chem.MolFromSmiles(start_mol_smiles)
     target_mol = Chem.MolFromSmiles(target_mol_smiles)
 
@@ -231,9 +203,7 @@ def test_find_synthetic_pathway(
         retrieved_path_found,
         retrieved_reaction_pathway,
         retrieved_choice_pathway,
-    ) = find_synthetic_pathway(
-        start_mol, target_mol, all_reactions, max_solver_steps=max_solver_steps
-    )
+    ) = find_synthetic_pathway(start_mol, target_mol, all_reactions)
 
     assert retrieved_path_found == path_found
     assert retrieved_reaction_pathway == [

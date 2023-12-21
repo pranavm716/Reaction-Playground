@@ -4,19 +4,17 @@ import yaml
 
 import rdkit.Chem.rdChemReactions as rd
 from rdkit.Chem import AllChem
-from pydantic import BaseModel, Field, model_validator, TypeAdapter
+from pydantic import BaseModel, Field, model_validator, TypeAdapter, ConfigDict
 from functools import cached_property
 
 from website.config import DISABLE_RDKIT_WARNINGS
 
-
-class BaseReactionModel(BaseModel):
-    class Config:
-        frozen = True
-        arbitrary_types_allowed = True
+BASE_REACTION_MODEL_CONFIG = ConfigDict(frozen=True, arbitrary_types_allowed=True)
 
 
-class Subreaction(BaseReactionModel):
+class Subreaction(BaseModel):
+    model_config = BASE_REACTION_MODEL_CONFIG
+
     reaction: rd.ChemicalReaction = Field(
         description="The reaction object representing this subreaction, created by parsing the SMARTS string."
     )
@@ -35,7 +33,7 @@ class Subreaction(BaseReactionModel):
         return values
 
 
-class Reaction(BaseReactionModel):
+class Reaction(BaseModel):
     """
     A class that holds all the necessary information for a reaction.
     This class defines reactions more broadly than RDKit.
@@ -45,6 +43,8 @@ class Reaction(BaseReactionModel):
     molecules vs. any specific oxidation reaction). Here, the specific cases of the
     broader reaction are called subreactions.
     """
+
+    model_config = BASE_REACTION_MODEL_CONFIG
 
     name: str
     subreactions: list[Subreaction] = Field(

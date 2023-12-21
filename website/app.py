@@ -19,7 +19,7 @@ from website.fastapi_rdkit_utils import (
     img_to_base64,
     get_mol_from_smiles,
 )
-from website.reaction import read_all_reactions_from_file
+from website.reaction import read_all_reactions_from_file, Reaction
 
 
 @asynccontextmanager
@@ -76,6 +76,11 @@ async def run_program(
             target_mol_smiles=target_mol_smiles,
         )
         return RedirectResponse(solver_mode_url, status_code=303)
+    else:
+        playground_mode_url = construct_query_url(
+            app, "playground_mode", start_mol_smiles=start_mol_smiles
+        )
+        return RedirectResponse(playground_mode_url, status_code=303)
 
 
 @app.get("/solver-mode", response_class=HTMLResponse)
@@ -84,6 +89,7 @@ async def solver_mode(request: Request, start_mol_smiles: str, target_mol_smiles
 
     start_mol = get_mol_from_smiles(start_mol_smiles)
     target_mol = get_mol_from_smiles(target_mol_smiles)
+    all_reactions: list[Reaction] = app.state.all_reactions  # noqa
 
     (
         path_found,
@@ -93,11 +99,7 @@ async def solver_mode(request: Request, start_mol_smiles: str, target_mol_smiles
         start_mol_img,
         target_mol_img,
         solver_images,
-    ) = run_solver_mode(
-        start_mol=start_mol,
-        target_mol=target_mol,
-        all_reactions=app.state.all_reactions,  # noqa
-    )
+    ) = run_solver_mode(start_mol, target_mol, all_reactions)
 
     solver_run_metrics = {
         "path_found": path_found,
@@ -124,3 +126,12 @@ async def solver_mode(request: Request, start_mol_smiles: str, target_mol_smiles
             "max_num_solver_steps": MAX_NUM_SOLVER_STEPS,
         },
     )
+
+
+@app.get("/playground-mode", response_class=HTMLResponse)
+async def playground_mode(request: Request, start_mol_smiles: str):
+    """
+    Runs the playground mode loop, where users can experiment with applying reactions freely to molecules.
+    """
+
+    start_mol = get_mol_from_smiles(start_mol_smiles)

@@ -47,6 +47,10 @@
         .plus-icon {
           margin: 0 20px; /* Adjust the spacing around the plus icon */
         }
+
+        .bordered-image {
+            border: 2px solid black;
+        }
     </style>
     <div class="parent-container">
         <div>
@@ -102,25 +106,32 @@
                             <div class="card text-center border-0" style="width: 18rem;">
                                 <img src="data:image/png;base64, {{ image_encodings[step|string][0] }}"
                                      class="card-img-top"
-                                     alt="step_{{ step|string }}_product">
+                                     alt="step_{{ step|string }}_single_product">
                             </div>
                         {% else %}
                             <div class="image-row">
-                                {% for image_encoding in image_encodings[step|string][:-1] %}
-                                    <div class="card text-center border-0" style="width: 18rem;">
-                                        <img src="data:image/png;base64, {{ image_encoding }}"
-                                             class="card-img-top"
-                                             alt="step_{{ step|string }}_product">
-                                    </div>
-                                    <div class="plus-icon">
-                                        <span class="material-icons">add</span>
-                                    </div>
+                                {% for image_encoding in image_encodings[step|string] %}
+                                    {% if loop.index0 == choice_pathway[step] %}
+                                        <div class="card text-center border-0" style="width: 18rem;">
+                                            <img src="data:image/png;base64, {{ image_encoding }}"
+                                                 class="card-img-top bordered-image"
+                                                 alt="step_{{ step|string }}_product_{{ loop.index }}">
+                                        </div>
+                                    {% else %}
+                                        <div class="card text-center border-0" style="width: 18rem;">
+                                            <img src="data:image/png;base64, {{ image_encoding }}"
+                                                 class="card-img-top"
+                                                 alt="step_{{ step|string }}_product_{{ loop.index }}">
+                                        </div>
+                                    {% endif %}
+                                    {% if loop.index0 < image_encodings[step|string]|length - 1 %}
+                                        <div class="plus-icon">
+                                            <span class="material-icons">add</span>
+                                        </div>
+                                    {% endif %}
                                 {% endfor %}
-                                <div class="card text-center border-0" style="width: 18rem;">
-                                    <img src="data:image/png;base64, {{ image_encodings[step|string][-1] }}"
-                                         class="card-img-top"
-                                         alt="step_{{ step|string }}_product">
-                                </div>
+                                This produces {{ image_encodings[step|string]|length }} products.
+                                Pick product #{{ choice_pathway[step] + 1 }}.
                             </div>
                         {% endif %}
                     {% endfor %}

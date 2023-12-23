@@ -10,14 +10,15 @@ from PIL.Image import Image as PILImage
 
 
 def start_and_target_mols_are_valid(
-    start_mol_smiles: str, target_mol_smiles: str
+    start_mol_smiles: str, target_mol_smiles: str | None = None
 ) -> bool:
     try:
         start_mol = Chem.MolFromSmiles(start_mol_smiles)
         Chem.SanitizeMol(start_mol)
 
-        target_mol = Chem.MolFromSmiles(target_mol_smiles)
-        Chem.SanitizeMol(target_mol)
+        if target_mol_smiles:
+            target_mol = Chem.MolFromSmiles(target_mol_smiles)
+            Chem.SanitizeMol(target_mol)
     except (TypeError, ValueError):
         return False
     else:

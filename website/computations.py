@@ -32,8 +32,7 @@ def generate_unique_products(products: Mol2dTuple) -> Mol2dTuple:
 
 
 def generate_single_step_product(
-    reactants: Mol | MolTuple,
-    reaction: Reaction,
+    reactants: Mol | MolTuple, reaction: Reaction
 ) -> Mol2dTuple:
     """
     Performs a reaction on a molecule once, and returns a 2d tuple of products.
@@ -72,6 +71,21 @@ def _generate_multi_step_product(
             products += _generate_multi_step_product(p, reaction, products)
 
     return products
+
+
+def get_reactant_position_of_mol_in_reaction(mol: Mol, reaction: Reaction) -> int:
+    """
+    Returns the position of the mol in the reactants of any of the reaction's subreactions.
+    Since all the subreactions have the same substructure pattern, we can return the first
+    instance of when the mol is found.
+    """
+    for subreaction in reaction.subreactions:
+        for index, reactant in enumerate(subreaction.reaction.GetReactants()):
+            if mol.HasSubstructMatch(reactant):
+                return index
+    raise ValueError(
+        f"{reaction.name} is not valid for molecule with SMILES {Chem.MolToSmiles(mol)!r}."
+    )
 
 
 def find_possible_reactions(

@@ -8,6 +8,7 @@ from website.computations import (
     generate_multi_step_product,
     generate_single_step_product,
     generate_unique_products,
+    get_reactant_position_of_mol_in_reaction,
 )
 from website.datatypes import Mol2dTuple
 from website.reaction import Reaction
@@ -77,6 +78,16 @@ def test_generate_unique_products():
             (("CC(=O)O",),),
         ],
         [
+            "CO",
+            1,  # DMP oxidation
+            (("C=O",),),
+        ],
+        [
+            "CCCO",
+            5,  # PBr3 bromination of alcohols
+            (("CCCBr",),),
+        ],
+        [
             r"C/C=C/C=C(\CC)C1CC1",
             6,  # Ozonolysis
             (("CCC(=O)C1CC1", "C/C=C/C=O"), ("CC=O", r"CC/C(=C\C=O)C1CC1")),
@@ -125,6 +136,32 @@ def test_generate_multi_step_product(
     assert set(multi_step_product_smiles) == set(
         Chem.MolToSmiles(p) for p in multi_step_product
     )
+
+
+@pytest.mark.parametrize(
+    ["reactant_smiles", "reaction_index", "reactant_position"],
+    [
+        ["BrCC1CCCC1", 7, 0],  # NaCN nitrile synthesis
+        ["CCCO", -1, 2],  # A made up reaction
+        ["C#CCC(O)C#C", 12, None],  # Grignard reaction
+    ],
+)
+def test_get_reactant_position(
+    reactant_smiles: str,
+    reaction_index: int,
+    reactant_position: int | None,
+    all_reactions: list[Reaction],
+):
+    mol = Chem.MolFromSmiles(reactant_smiles)
+    reaction = all_reactions[reaction_index]
+
+    if reactant_position is None:
+        with pytest.raises(ValueError):
+            get_reactant_position_of_mol_in_reaction(mol, reaction)
+    else:
+        assert (
+            get_reactant_position_of_mol_in_reaction(mol, reaction) == reactant_position
+        )
 
 
 @pytest.mark.parametrize(

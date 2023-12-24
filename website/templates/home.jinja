@@ -20,9 +20,9 @@
                    placeholder="Enter SMILES" />
         </div>
         <div>
-            <button type="button" class="btn btn-success btn-icon" id="addTargetButton">
+            <button type="button" class="btn btn-dark btn-icon" id="addTargetButton">
                 <span class="material-icons">add</span>
-                Add Target (optional)
+                Add Target Molecule
             </button>
         </div>
         <div class="form-group" style="display:none;" id="targetMolInput">
@@ -34,7 +34,7 @@
                    placeholder="Enter SMILES" />
         </div>
         <br />
-        <button type="submit" class="btn btn-primary" id="submitButton">Run reactions</button>
+        <button type="submit" class="btn btn-success" id="submitButton">Run reactions</button>
         <script>
             const btn = document.getElementById("addTargetButton");
             btn.addEventListener("click", () => {

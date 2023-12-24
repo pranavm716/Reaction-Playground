@@ -20,9 +20,8 @@ class Subreaction(BaseModel):
     )
     smarts: str = Field(description="The SMARTS string representing this reaction.")
     effect: str = Field(
-        default="Same as reaction description.",
         description="The effect of this specific rdkit defined reaction.",
-        examples=["Oxidation of aldehydes to carboxylic acids."],
+        examples=["Hydrolyze the amide into a carboxylic acid and an amine."],
     )
 
     @model_validator(mode="before")

@@ -2,73 +2,87 @@
 - name: Hydrolysis of esters, amides, and nitriles
   subreactions:
     - smarts: "[#6:1][O:2]C(=O)[#6:4]>>[#6:1][O:2].[O]C(=O)[#6:4]"
-      effect: "Hydrolyze the ester into a carboxylic acid."
+      effect: "Hydrolyze the ester to produce a carboxylic acid and an alcohol."
     - smarts: "[#6:4][CX3:1](=[O:2])[NX3:3]>>[#6:4][CX3:1](=[O:2])[OX2H].[NX3:3]"
-      effect: "Hydrolyze the amide into a carboxylic acid."
+      effect: "Hydrolyze the amide to produce a carboxylic acid and an amine."
     - smarts: "[#6:1][C:2]#N>>[#6:1][C:2](=O)[OH]"
-      effect: "Hydrolyze the nitrile into a carboxylic acid."
+      effect: "Hydrolyze the nitrile to produce a carboxylic acid."
   description: Hydrolyzes esters/amides/nitriles into carboxylic acids.
 
 - name: DMP/PCC oxidation of alcohols
   subreactions:
     - smarts: "[CH3:1][OH:2]>>[CH2:1]=[O:2]"
-      effect: ""
-    - smarts: "[CH,CH2:1][OH:2]>>[C:1]=[O:2]"
-      effect: ""
+      effect: "Oxidize methanol to formaldehyde."
+    - smarts: "[CH2:1][OH:2]>>[C:1]=[O:2]"
+      effect: "Oxidize the primary alcohol to an aldehyde."
+    - smarts: "[CH:1][OH:2]>>[C:1]=[O:2]"
+      effect: "Oxidize the secondary alcohol to a ketone."
   description: Oxidizes primary alcohols to aldehydes and secondary alcohols to ketones.
 
 - name: H2CrO4 (chromic acid) oxidation of alcohols and aldehydes
   subreactions:
-    - smarts: "[CH2,CH3:1][OH:2]>>[C:1](=O)[OH:2]"
-      effect: ""
+    - smarts: "[CH3:1][OH:2]>>[C:1](=O)[OH:2]"
+      effect: "Oxidize methanol to formic acid."
+    - smarts: "[CH2:1][OH:2]>>[C:1](=O)[OH:2]"
+      effect: "Oxidize the primary alcohol to a carboxylic acid."
     - smarts: "[CH:1][OH:2]>>[C:1]=[O:2]"
-      effect: ""
+      effect: "Oxidize the secondary alcohol to a ketone."
     - smarts: "[CX3H1:1](=[O:2])[#6:3]>>[#6:3][CX3:1](=[O:2])[OX2H]"
-      effect: ""
+      effect: "Oxidize the aldehyde to a carboxylic acid."
   description: Oxidizes aldehydes and primary alcohols to carboxylic acids; and secondary alcohols to ketones.
 
 - name: NaBH4 (sodium borohydride) reduction of aldehydes and ketones
   subreactions:
     - smarts: "[CX3H1:1](=[O:2])[#6:3]>>[CX3H2:1]([OX2H:2])[#6:3]"
-      effect: ""
+      effect: "Reduce the aldehyde to a primary alcohol."
     - smarts: "[#6:1][CX3:2](=[O:3])[#6:4]>>[#6:1][CX3:2]([OH:3])[#6:4]"
-      effect: ""
+      effect: "Reduce the ketone to a secondary alcohol."
   description: Reduces aldehydes to primary alcohols and ketones to secondary alcohols.
 
 - name: LiAlH4 (lithium aluminum hydride) reduction of aldehyes, ketones, esters, carboxylic acids, amides, and nitriles
   subreactions:
     - smarts: "[CX3H1:1](=[O:2])[#6:3]>>[CX3H2:1]([OX2H:2])[#6:3]"
-      effect: ""
+      effect: "Reduce the aldehyde to a primary alcohol."
     - smarts: "[#6:1][CX3:2](=[O:3])[#6:4]>>[#6:1][CX3:2]([OH:3])[#6:4]"
-      effect: ""
+      effect: "Reduce the ketone to a secondary alcohol."
     - smarts: "[#6:1][O:2][C:3](=O)[#6:4]>>[#6:1][O:2].[O][C:3][#6:4]"
-      effect: ""
+      effect: "Reduce the ester to a primary alcohol."
     - smarts: "[#6:4][CX3:1](=O)[OX2H:3]>>[#6:4][CX3H2:1][OX2H:3]"
-      effect: ""
+      effect: "Reduce the carboxylic acid to a primary alcohol."
     - smarts: "[#6:4][CX3:1](=O)[NX3:3]>>[#6:4][CX3H2:1][NX3:3]"
-      effect: ""
+      effect: "Reduce the amide to an amine."
     - smarts: "[#6:2][C:3]#[N:1]>>[#6:2][C:3][N:1]"
-      effect: ""
+      effect: "Reduce the nitrile to an amine."
   description: Reduces aldehydes, esters, and carboxylic acids to primary alcohols; ketones to secondary alcohols; and amides/nitriles to amines.
 
 - name: PBr3 bromination of alcohols
   subreactions:
-    - smarts: "[CH,CH2,CH3:1][OX2H]>>[C:1][Br]"
+    - smarts: "[CH3:1][OX2H]>>[C:1][Br]"
+      effect: "Convert methanol to methyl bromide."
+    - smarts: "[CH2:1][OX2H]>>[C:1][Br]"
+      effect: "Convert the primary alcohol to a primary alkyl bromide."
+    - smarts: "[CH:1][OX2H]>>[C:1][Br]"
+      effect: "Convert the secondary alcohol to a secondary alkyl bromide."
   description: Converts primary and secondary alcohols into alkyl bromides.
 
 - name: Ozonolysis
   subreactions:
     - smarts: "[C:2]=[C:3]>>[C:2](=O).[C:3](=O)"
-      effect: ""
+      effect: "Cleave the alkene to produce carbonyl(s)."
     - smarts: "[#6:1][C:2]#[C:3][#6:4]>>[#6:1][C:2](=O)[OX2H].[#6:4][C:3](=O)[OX2H]"
-      effect: ""
+      effect: "Cleave the internal alkyne to produce carboxylic acid(s)."
     - smarts: "[#6:1][C:2]#[CH:3]>>[#6:1][C:2](=O)[OX2H].O=[C:3]=O"
-      effect: ""
+      effect: "Cleave the terminal alkyne to produce a carboxylic acid and carbon dioxide."
   description: Cleaves alkenes/alkynes into carbonyls.
 
 - name: NaCN (sodium cyanide) nitrile synthesis
   subreactions:
-    - smarts: "[CH,CH2,CH3:1][Br]>>[C:1]C#N"
+    - smarts: "[CH3:1][Br]>>[C:1]C#N"
+      effect: "Convert methyl bromide to acetonitrile."
+    - smarts: "[CH2:1][Br]>>[C:1]C#N"
+      effect: "Convert the primary alkyl bromide to a nitrile."
+    - smarts: "[CH:1][Br]>>[C:1]C#N"
+      effect: "Convert the secondary alkyl bromide to a nitrile."
   description: Converts primary/secondary alkyl bromides into nitriles via SN2.
 
 - name: Oxymercuration/demercuration (OM/DM)
@@ -106,11 +120,13 @@
 - name: Grignard reagent
   subreactions:
     - smarts: "[#6:1][Br]>>[#6-:1]"
+      effect: "Convert the alkyl bromide to a carbon nucleophile."
   description: Converts an alkyl bromide into a carbon nucleophile for use in Grignard reactions.
 
 - name: SOCl2 (thionyl chloride) acid chloride synthesis
   subreactions:
     - smarts: "[#6:4][CX3:1](=[O:2])[OX2H]>>[#6:4][CX3:1](=[O:2])Cl"
+      effect: "Convert the carboxylic acid to an acid chloride."
   description: Converts carboxylic acids into acid chlorides.
 
 # Reactions involving multiple reactants
@@ -147,6 +163,7 @@
 - name: Ester synthesis from acid chloride
   subreactions:
     - smarts: "[#6:3][CX3:1](=[O:2])Cl.[CH2,CH3:4][OX2H]>>[#6:3][CX3:1](=[O:2])O[CH2,CH3:4]"
+      effect: ""
   multiple_reactants_prompts:
     - "Enter the SMILES of the acid chloride: "
     - "Enter the SMILES of the primary alcohol: "
@@ -155,6 +172,7 @@
 - name: Fischer esterification
   subreactions:
     - smarts: "[#6:1][C:2](=[O:3])[OH:4].[CH,CH2,CH3,CX4,c:5][OX2H]>>[#6:1][C:2](=[O:3])[O:4][#6:5]"
+      effect: ""
   multiple_reactants_prompts:
     - "Enter the SMILES of the carboxylic acid: "
     - "Enter the SMILES of the alcohol: "

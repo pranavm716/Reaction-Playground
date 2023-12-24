@@ -29,6 +29,29 @@
             height: auto;
         }
     </style>
+    {# For multiple products on the same line #}
+    <style>
+        .image-row {
+          display: flex;
+          align-items: center;
+        }
+
+        .image-row img {
+          margin-right: 15px; /* Adjust the spacing between images */
+        }
+
+        .image-row img:last-child {
+          margin-right: 0; /* Remove margin for the last image */
+        }
+
+        .plus-icon {
+          margin: 0 20px; /* Adjust the spacing around the plus icon */
+        }
+
+        .bordered-image {
+            border: 2px solid black;
+        }
+    </style>
     <div class="parent-container">
         <div>
             <img src="data:image/png;base64, {{ current_mol }}"
@@ -36,7 +59,7 @@
                  alt="Current molecule">
         </div>
         {% if possible_reactions %}
-            Compatible reactions are listed below. Click on a reaction:
+            Compatible reactions are listed below. Choose a reaction:
         {% else %}
             There are no compatible reactions.
         {% endif %}
@@ -53,11 +76,19 @@
             {% endif %}
             <input type="hidden" name="choice" id="choiceInput">
         </form>
+        <div id="newContent"></div>
     </div>
     <script>
-        function submitForm(choice) {
-            document.getElementById('reactionForm').elements['choice'].value = choice;
-            document.getElementById('reactionForm').submit();
+        async function submitForm(choice) {
+            // Use Fetch API to send a POST request to the server
+            const response = await fetch("/playground-mode/display-products", {
+                method: "POST",
+                body: new URLSearchParams({choice: choice}),
+            });
+
+            // Update the new content without refreshing the page
+            document.getElementById("newContent").innerHTML = await response.text();
+
         }
     </script>
 {% endblock %}

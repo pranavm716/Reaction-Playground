@@ -1,0 +1,63 @@
+{% extends "base.jinja" %}
+{% block content %}
+    <style>
+        .parent-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .text {
+            text-align: left;
+            margin-bottom: 10px;
+            width: 100%;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .image {
+            flex: 1;
+            text-align: center;
+        }
+
+        .image img {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+    <div class="parent-container">
+        <div>
+            <img src="data:image/png;base64, {{ current_mol }}"
+                 class="card-img-top"
+                 alt="Current molecule">
+        </div>
+        {% if possible_reactions %}
+            Compatible reactions are listed below. Click on a reaction:
+        {% else %}
+            There are no compatible reactions.
+        {% endif %}
+        <form method="post" id="reactionForm">
+            {% for reaction in possible_reactions %}
+                <button type="button"
+                        class="btn btn-outline-secondary btn-lg btn-block"
+                        onclick="submitForm({{ loop.index0 }})">{{ reaction.name }}</button>
+            {% endfor %}
+            {% if history_exists %}
+                <button type="button"
+                        class="btn btn-outline-danger btn-lg btn-block"
+                        onclick="submitForm('back')">Back</button>
+            {% endif %}
+            <input type="hidden" name="choice" id="choiceInput">
+        </form>
+    </div>
+    <script>
+        function submitForm(choice) {
+            document.getElementById('reactionForm').elements['choice'].value = choice;
+            document.getElementById('reactionForm').submit();
+        }
+    </script>
+{% endblock %}

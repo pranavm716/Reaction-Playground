@@ -44,3 +44,7 @@ def img_to_base64(img: PILImage) -> str:
 
 def construct_mol_image(mol: Mol) -> PILImage:
     return Draw.MolToImage(mol)
+
+
+def mol_to_base64(mol: Mol) -> str:
+    return img_to_base64(construct_mol_image(mol))

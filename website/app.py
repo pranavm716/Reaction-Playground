@@ -3,21 +3,29 @@ from contextlib import asynccontextmanager
 from typing import Annotated
 
 from fastapi import FastAPI, Request, Form, HTTPException
-from starlette.responses import HTMLResponse, RedirectResponse
+from rdkit.Chem.rdchem import Mol
+from starlette.responses import HTMLResponse, RedirectResponse, JSONResponse
 from starlette.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
 
 from program import run_solver_mode
+from website.computations import (
+    find_possible_reactions,
+    generate_single_step_product,
+    generate_multi_step_product,
+)
 from website.config import (
     MAX_NUM_SOLVER_STEPS,
     DISABLE_RDKIT_WARNINGS,
     ALL_REACTIONS_FILE_PATH,
+    MULTI_STEP_REACT_MODE,
 )
 from website.fastapi_rdkit_utils import (
     start_and_target_mols_are_valid,
     construct_query_url,
     img_to_base64,
     get_mol_from_smiles,
+    mol_to_base64,
 )
 from website.reaction import read_all_reactions_from_file, Reaction
 
@@ -59,14 +67,16 @@ async def home(request: Request):
 async def run_program(
     request: Request,
     start_mol_smiles: Annotated[str, Form()],
-    target_mol_smiles: Annotated[str, Form()],
+    target_mol_smiles: Annotated[str | None, Form()] = None,
 ):
     """
     Runs the solver mode if start and target SMILES are present and playground mode if only start SMILES is present.
     Also validates the SMILES and raises an HTTPException if invalid.
     """
     if not start_and_target_mols_are_valid(start_mol_smiles, target_mol_smiles):
-        raise HTTPException(status_code=400, detail="Invalid form data")
+        raise HTTPException(
+            status_code=400, detail="Invalid starting and/or target molecule SMILES."
+        )
 
     if target_mol_smiles:
         solver_mode_url = construct_query_url(
@@ -78,7 +88,7 @@ async def run_program(
         return RedirectResponse(solver_mode_url, status_code=303)
     else:
         playground_mode_url = construct_query_url(
-            app, "playground_mode", start_mol_smiles=start_mol_smiles
+            app, "playground_mode", mol_smiles=start_mol_smiles
         )
         return RedirectResponse(playground_mode_url, status_code=303)
 
@@ -129,9 +139,54 @@ async def solver_mode(request: Request, start_mol_smiles: str, target_mol_smiles
 
 
 @app.get("/playground-mode", response_class=HTMLResponse)
-async def playground_mode(request: Request, start_mol_smiles: str):
+async def playground_mode(request: Request, mol_smiles: str):
     """
     Runs the playground mode loop, where users can experiment with applying reactions freely to molecules.
     """
 
-    start_mol = get_mol_from_smiles(start_mol_smiles)
+    all_reactions: list[Reaction] = app.state.all_reactions  # noqa
+
+    history: list[Mol] = []
+    app.state.history = history
+
+    current_mol = get_mol_from_smiles(mol_smiles)
+
+    possible_reactions = find_possible_reactions(
+        current_mol, all_reactions, solver_mode=False
+    )
+    app.state.possible_reactions = possible_reactions
+
+    return templates.TemplateResponse(
+        "playground_mode.jinja",
+        {
+            "request": request,
+            "current_mol": mol_to_base64(current_mol),
+            "possible_reactions": possible_reactions,
+            "history_exists": bool(history),
+        },
+    )
+
+
+@app.post("/playground-mode", response_class=JSONResponse)
+async def run_playground_mode_step(
+    request: Request, mol_smiles: str, choice: Annotated[str, Form()]
+):
+    current_mol = get_mol_from_smiles(mol_smiles)
+    possible_reactions = app.state.possible_reactions
+
+    if choice in [str(i) for i in range(1, len(possible_reactions) + 1)]:
+        chosen_reaction = possible_reactions[int(choice) - 1]
+    elif choice == "back":
+        return  # TODO
+    else:
+        raise HTTPException(status_code=404, detail=f"Invalid choice {choice!r}.")
+
+    if chosen_reaction.num_reactants > 1:
+        # Handling the reactions that require additional reactants (need to prompt user)
+        # reactants = get_missing_reactants(current_mol, chosen_reaction)
+        # products = generate_single_step_product(reactants, chosen_reaction)
+        pass  # TODO
+    elif not MULTI_STEP_REACT_MODE:
+        products = generate_single_step_product(current_mol, chosen_reaction)
+    else:
+        products = (generate_multi_step_product(current_mol, chosen_reaction),)

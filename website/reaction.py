@@ -1,4 +1,5 @@
 import pathlib
+from typing import Iterator
 
 import yaml
 
@@ -63,6 +64,10 @@ class Reaction(BaseModel):
     def num_reactants(self) -> int:
         # All the subreactions have the same number of reactants, so we can just use the first one
         return self.subreactions[0].reaction.GetNumReactantTemplates()  # noqa
+
+    def __iter__(self) -> Iterator[rd.ChemicalReaction]:
+        """Makes it easy to iterate over the subreactions by yielding the actual rd.ChemicalReaction objects"""
+        yield from (subreaction.reaction for subreaction in self.subreactions)
 
     def __str__(self):
         return f"{self.name}: {self.smarts_list}"

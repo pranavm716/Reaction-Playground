@@ -41,8 +41,8 @@ def generate_single_step_product(
         reactants = (reactants,)
 
     products: Mol2dTuple = tuple()
-    for subreaction in reaction.subreactions:
-        products += subreaction.reaction.RunReactants(reactants)
+    for subreaction in reaction:
+        products += subreaction.RunReactants(reactants)
 
     return generate_unique_products(products)
 
@@ -79,8 +79,8 @@ def get_reactant_position_of_mol_in_reaction(mol: Mol, reaction: Reaction) -> in
     Since all the subreactions have the same substructure pattern, we can return the first
     instance of when the mol is found.
     """
-    for subreaction in reaction.subreactions:
-        for index, reactant in enumerate(subreaction.reaction.GetReactants()):
+    for subreaction in reaction:
+        for index, reactant in enumerate(subreaction.GetReactants()):
             if mol.HasSubstructMatch(reactant):
                 return index
     raise ValueError(
@@ -102,8 +102,8 @@ def find_possible_reactions(
         if solver_mode and reaction.num_reactants > 1:
             continue  # Solver mode will omit any reactions with more than one reactant
 
-        for subreaction in reaction.subreactions:
-            if subreaction.reaction.IsMoleculeReactant(start_mol):
+        for subreaction in reaction:
+            if subreaction.IsMoleculeReactant(start_mol):
                 possible_reactions.append(reaction)
                 break
 

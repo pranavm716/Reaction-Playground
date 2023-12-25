@@ -8,11 +8,14 @@
         <div class="image-row">
             {# Assuming multi step products for now #}
             {% for product in products[0] %}
-                <div class="card text-center border-0" style="width: 18rem;">
+                <div class="card text-center border-0"
+                     style="width: 18rem"
+                     id="productsDiv">
                     <img src="data:image/png;base64, {{ product }}"
                          class="card-img-top"
-                         id="product"
-                         alt="product_{{ loop.index0 }}">
+                         id="product_{{ loop.index0 }}"
+                         alt="product_{{ loop.index0 }}"
+                         onclick="chooseProduct({{ loop.index0 }})">
                 </div>
                 {% if loop.index0 < products[0]|length - 1 %}
                     <div class="plus-icon">

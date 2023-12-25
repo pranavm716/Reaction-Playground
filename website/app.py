@@ -13,6 +13,7 @@ from website.computations import (
     find_possible_reactions,
     generate_single_step_product,
     generate_multi_step_product,
+    copy_mol,
 )
 from website.config import (
     MAX_NUM_SOLVER_STEPS,
@@ -20,6 +21,7 @@ from website.config import (
     ALL_REACTIONS_FILE_PATH,
     MULTI_STEP_REACT_MODE,
 )
+from website.datatypes import Mol2dTuple
 from website.fastapi_rdkit_utils import (
     start_and_target_mols_are_valid,
     construct_query_url,
@@ -165,6 +167,7 @@ async def playground_mode_choose_reaction(request: Request):
     possible_reactions = find_possible_reactions(
         current_mol, all_reactions, solver_mode=False
     )
+    app.state.possible_reactions = possible_reactions  # noqa
 
     return templates.TemplateResponse(
         "playground_mode_choose_reaction.jinja",
@@ -181,15 +184,19 @@ async def playground_mode_choose_reaction(request: Request):
 async def playground_mode_display_products(
     request: Request, choice: Annotated[str, Form()]
 ):
-    current_mol = app.state.current_mol
-    possible_reactions = app.state.possible_reactions
+    """Displays the products that result from running the chosen reaction."""
+
+    current_mol = app.state.current_mol  # noqa
+    possible_reactions = app.state.possible_reactions  # noqa
 
     if choice in {str(i) for i in range(len(possible_reactions))}:
         chosen_reaction = possible_reactions[int(choice)]
     elif choice == "back":
         return  # TODO
     else:
-        raise HTTPException(status_code=404, detail=f"Invalid choice {choice!r}.")
+        raise HTTPException(
+            status_code=404, detail=f"Invalid reaction choice {choice!r}."
+        )
 
     if chosen_reaction.num_reactants > 1:
         # Handling the reactions that require additional reactants (need to prompt user)
@@ -200,6 +207,7 @@ async def playground_mode_display_products(
         products = generate_single_step_product(current_mol, chosen_reaction)
     else:
         products = (generate_multi_step_product(current_mol, chosen_reaction),)
+    app.state.products = products  # noqa
 
     return templates.TemplateResponse(
         "playground_mode_display_products.jinja",
@@ -211,3 +219,22 @@ async def playground_mode_display_products(
             ],
         },
     )
+
+
+@app.post("/playground-mode/choose-product", response_class=HTMLResponse)
+def playground_mode_choose_product(
+    request: Request, product_index: Annotated[str, Form()]
+):
+    # Assume multi step react mode for now
+    products: Mol2dTuple = app.state.products  # noqa
+    if product_index not in {str(i) for i in range(len(products[0]))}:
+        raise HTTPException(
+            status_code=404, detail=f"Invalid product index {product_index!r}"
+        )
+
+    product_index = int(product_index)
+    scenario_index = 0
+
+    app.state.history.append(app.state.current_mol)
+    next_mol = products[scenario_index][product_index]
+    app.state.current_mol = copy_mol(next_mol)

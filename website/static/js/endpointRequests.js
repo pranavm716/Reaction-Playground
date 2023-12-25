@@ -26,9 +26,7 @@ async function displayProducts(choice) {
 // Updates the app's state with the chosen product.
 // Called from reaction_playground_display_products.jinja
 async function chooseProduct(productIndex) {
-    if (productIndex !== 0) {
-        disableOnClickForAllProducts();
-    }
+    disableOnClickForAllProducts();
     await fetch("/playground-mode/choose-product", {
         method: "POST",
         body: new URLSearchParams({product_index: productIndex}),

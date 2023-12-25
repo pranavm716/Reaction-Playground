@@ -1,10 +1,14 @@
 <div>
-    <div class="image-row">
+    <div>
+        <div class="image">
+            <span class="material-icons">arrow_downward</span>
+            {{ chosen_reaction.name }}
+        </div>
+    </div>
+    <div class="image-row" id="productsDiv">
         {# Assuming multi step products for now #}
         {% for product in products[0] %}
-            <div class="card text-center border-0"
-                 style="width: 18rem"
-                 id="productsDiv">
+            <div class="card text-center border-0" style="width: 18rem">
                 <img src="data:image/png;base64, {{ product }}"
                      class="card-img-top"
                      id="product_{{ loop.index0 }}"

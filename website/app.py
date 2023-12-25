@@ -213,6 +213,7 @@ async def playground_mode_display_products(
         "playground_mode_display_products.jinja",
         {
             "request": request,
+            "chosen_reaction": chosen_reaction,
             "products": [
                 [mol_to_base64(product) for product in scenario]
                 for scenario in products

@@ -1,0 +1,27 @@
+<div>
+    {% if products %}
+        {% if products|length == 1 and products[0]|length == 1 %}
+            The product is:
+        {% else %}
+            The products are shown below. Choose a product to analyze next:
+        {% endif %}
+        <div class="image-row">
+            {# Assuming multi step products for now #}
+            {% for product in products[0] %}
+                <div class="card text-center border-0" style="width: 18rem;">
+                    <img src="data:image/png;base64, {{ product }}"
+                         class="card-img-top"
+                         id="product"
+                         alt="product_{{ loop.index0 }}">
+                </div>
+                {% if loop.index0 < products[0]|length - 1 %}
+                    <div class="plus-icon">
+                        <span class="material-icons">add</span>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% else %}
+        No reaction!
+    {% endif %}
+</div>

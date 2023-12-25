@@ -4,7 +4,7 @@ from typing import Annotated
 
 from fastapi import FastAPI, Request, Form, HTTPException
 from rdkit.Chem.rdchem import Mol
-from starlette.responses import HTMLResponse, RedirectResponse, JSONResponse
+from starlette.responses import HTMLResponse, RedirectResponse
 from starlette.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
 
@@ -73,6 +73,7 @@ async def run_program(
     Runs the solver mode if start and target SMILES are present and playground mode if only start SMILES is present.
     Also validates the SMILES and raises an HTTPException if invalid.
     """
+
     if not start_and_target_mols_are_valid(start_mol_smiles, target_mol_smiles):
         raise HTTPException(
             status_code=400, detail="Invalid starting and/or target molecule SMILES."
@@ -141,41 +142,50 @@ async def solver_mode(request: Request, start_mol_smiles: str, target_mol_smiles
 @app.get("/playground-mode", response_class=HTMLResponse)
 async def playground_mode(request: Request, mol_smiles: str):
     """
-    Runs the playground mode loop, where users can experiment with applying reactions freely to molecules.
+    Starts the playground mode loop, where users can experiment with applying reactions freely to molecules.
     """
 
-    all_reactions: list[Reaction] = app.state.all_reactions  # noqa
-
     history: list[Mol] = []
-    app.state.history = history
+    app.state.history = history  # noqa
 
     current_mol = get_mol_from_smiles(mol_smiles)
+    app.state.current_mol = current_mol  # noqa
+
+    return templates.TemplateResponse("playground_mode.jinja", {"request": request})
+
+
+@app.get("/playground-mode/choose-reaction", response_class=HTMLResponse)
+async def playground_mode_choose_reaction(request: Request):
+    """Displays the valid reactions for a molecule."""
+
+    all_reactions: list[Reaction] = app.state.all_reactions  # noqa
+    current_mol = app.state.current_mol  # noqa
+    history = app.state.history  # noqa
 
     possible_reactions = find_possible_reactions(
         current_mol, all_reactions, solver_mode=False
     )
-    app.state.possible_reactions = possible_reactions
 
     return templates.TemplateResponse(
-        "playground_mode.jinja",
+        "playground_mode_choose_reaction.jinja",
         {
             "request": request,
             "current_mol": mol_to_base64(current_mol),
             "possible_reactions": possible_reactions,
-            "history_exists": bool(history),
+            "history": history,
         },
     )
 
 
-@app.post("/playground-mode", response_class=JSONResponse)
-async def run_playground_mode_step(
-    request: Request, mol_smiles: str, choice: Annotated[str, Form()]
+@app.post("/playground-mode/display-products", response_class=HTMLResponse)
+async def playground_mode_display_products(
+    request: Request, choice: Annotated[str, Form()]
 ):
-    current_mol = get_mol_from_smiles(mol_smiles)
+    current_mol = app.state.current_mol
     possible_reactions = app.state.possible_reactions
 
-    if choice in [str(i) for i in range(1, len(possible_reactions) + 1)]:
-        chosen_reaction = possible_reactions[int(choice) - 1]
+    if choice in {str(i) for i in range(len(possible_reactions))}:
+        chosen_reaction = possible_reactions[int(choice)]
     elif choice == "back":
         return  # TODO
     else:
@@ -185,8 +195,19 @@ async def run_playground_mode_step(
         # Handling the reactions that require additional reactants (need to prompt user)
         # reactants = get_missing_reactants(current_mol, chosen_reaction)
         # products = generate_single_step_product(reactants, chosen_reaction)
-        pass  # TODO
+        return  # TODO
     elif not MULTI_STEP_REACT_MODE:
         products = generate_single_step_product(current_mol, chosen_reaction)
     else:
         products = (generate_multi_step_product(current_mol, chosen_reaction),)
+
+    return templates.TemplateResponse(
+        "playground_mode_display_products.jinja",
+        {
+            "request": request,
+            "products": [
+                [mol_to_base64(product) for product in scenario]
+                for scenario in products
+            ],
+        },
+    )

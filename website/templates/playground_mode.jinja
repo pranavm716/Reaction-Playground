@@ -52,43 +52,26 @@
             border: 2px solid black;
         }
     </style>
-    <div class="parent-container">
-        <div>
-            <img src="data:image/png;base64, {{ current_mol }}"
-                 class="card-img-top"
-                 alt="Current molecule">
-        </div>
-        {% if possible_reactions %}
-            Compatible reactions are listed below. Choose a reaction:
-        {% else %}
-            There are no compatible reactions.
-        {% endif %}
-        <form method="post" id="reactionForm">
-            {% for reaction in possible_reactions %}
-                <button type="button"
-                        class="btn btn-outline-secondary btn-lg btn-block"
-                        onclick="submitForm({{ loop.index0 }})">{{ reaction.name }}</button>
-            {% endfor %}
-            {% if history_exists %}
-                <button type="button"
-                        class="btn btn-outline-danger btn-lg btn-block"
-                        onclick="submitForm('back')">Back</button>
-            {% endif %}
-            <input type="hidden" name="choice" id="choiceInput">
-        </form>
-        <div id="newContent"></div>
-    </div>
+    <div class="parent-container" id="parentContainer"></div>
     <script>
-        async function submitForm(choice) {
-            // Use Fetch API to send a POST request to the server
+        async function displayReactions() {
+            const response = await fetch("/playground-mode/choose-reaction", {
+                method: "GET",
+            });
+            updateContent(await response.text());
+        }
+
+        async function displayProducts(choice) {
             const response = await fetch("/playground-mode/display-products", {
                 method: "POST",
                 body: new URLSearchParams({choice: choice}),
             });
-
-            // Update the new content without refreshing the page
-            document.getElementById("newContent").innerHTML = await response.text();
-
+            updateContent(await response.text());
         }
+
+        function updateContent(html){
+            document.getElementById("parentContainer").innerHTML += html
+        }
+        displayReactions()
     </script>
 {% endblock %}

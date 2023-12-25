@@ -225,6 +225,8 @@ async def playground_mode_display_products(
 def playground_mode_choose_product(
     request: Request, product_index: Annotated[str, Form()]
 ):
+    """Updates the app's state with the chosen product."""
+
     # Assume multi step react mode for now
     products: Mol2dTuple = app.state.products  # noqa
     if product_index not in {str(i) for i in range(len(products[0]))}:

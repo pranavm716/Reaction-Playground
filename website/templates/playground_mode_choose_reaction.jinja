@@ -1,13 +1,15 @@
 <div>
     <img src="data:image/png;base64, {{ current_mol }}"
          class="card-img-top"
-         alt="Current molecule">
+         id="current_mol">
 </div>
-{% if possible_reactions %}
-    Compatible reactions are listed below. Choose a reaction:
-{% else %}
-    There are no compatible reactions.
-{% endif %}
+<span id="reactionSummary">
+    {% if possible_reactions %}
+        Compatible reactions are listed below. Choose a reaction:
+    {% else %}
+        There are no compatible reactions.
+    {% endif %}
+</span>
 <form method="post" id="reactionForm">
     {% for reaction in possible_reactions %}
         <button type="button"
@@ -19,5 +21,4 @@
                 class="btn btn-outline-danger btn-lg btn-block"
                 onclick="displayProducts('back')">Back</button>
     {% endif %}
-    <input type="hidden" name="choice" id="choiceInput">
 </form>

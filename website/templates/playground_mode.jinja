@@ -53,53 +53,10 @@
         }
     </style>
     <div class="parent-container" id="parentContainer"></div>
+    <script src="{{ url_for('static', path='js/endpointRequests.js') }}"></script>
+    <script src="{{ url_for('static', path='js/domCleanup.js') }}"></script>
+    <script src="{{ url_for('static', path='js/utils.js') }}"></script>
     <script>
-        // Displays the valid reactions for a molecule.
-        // Called from this script
-        async function displayReactions() {
-            const response = await fetch("/playground-mode/choose-reaction", {
-                method: "GET",
-            });
-            updateContent(await response.text());
-        }
-
-        // Displays the products that result from running the chosen reaction
-        // Called from reaction_playground_choose_reaction.jinja
-        async function displayProducts(choice) {
-            const response = await fetch("/playground-mode/display-products", {
-                method: "POST",
-                body: new URLSearchParams({choice: choice}),
-            });
-            updateContent(await response.text());
-
-            if (onlyOneProductDisplayed()) {
-                await chooseProduct(0);
-            }
-        }
-
-        async function chooseProduct(productIndex) {
-            await fetch("/playground-mode/choose-product", {
-                method: "POST",
-                body: new URLSearchParams({product_index: productIndex}),
-            });
-            await displayReactions()
-        }
-
-        // Helper functions
-        function updateContent(html){
-            document.getElementById("parentContainer").innerHTML += html
-        }
-
-        function onlyOneProductDisplayed() {
-            let result = false;
-            if ($('#productsDiv').length) {
-                // Select images inside the div with id 'productsDiv' whose ids start with 'product_'
-                const numberOfImages = $('#productsDiv img[id^="product_"]').length;
-                result = numberOfImages === 1;
-            }
-            return result;
-        }
-
         // Initial call to start loop
         displayReactions()
     </script>

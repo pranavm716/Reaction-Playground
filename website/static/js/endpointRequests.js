@@ -30,5 +30,5 @@ async function chooseProduct(productIndex) {
         method: "POST",
         body: new URLSearchParams({product_index: productIndex}),
     });
-    await displayReactions()
+    await displayReactions();
 }

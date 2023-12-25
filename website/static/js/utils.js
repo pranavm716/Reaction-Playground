@@ -1,5 +1,5 @@
 function updateContent(html) {
-    document.getElementById("parentContainer").innerHTML += html
+    document.getElementById("parentContainer").innerHTML += html;
 }
 
 function onlyOneProductDisplayed() {

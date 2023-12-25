@@ -1,35 +1,38 @@
 import pathlib
+from functools import cached_property
 from typing import Iterator
 
-import yaml
-
 import rdkit.Chem.rdChemReactions as rd
-from rdkit.Chem import AllChem
+import yaml
 from pydantic import BaseModel, Field, model_validator, TypeAdapter, ConfigDict
-from functools import cached_property
+from rdkit.Chem import AllChem
 
-from website.config import DISABLE_RDKIT_WARNINGS
 
-BASE_REACTION_MODEL_CONFIG = ConfigDict(frozen=True, arbitrary_types_allowed=True)
+class Substructure(BaseModel):
+    model_config = ConfigDict(frozen=True)
+
+    smarts: str
+    classification: str
 
 
 class Subreaction(BaseModel):
-    model_config = BASE_REACTION_MODEL_CONFIG
+    model_config = ConfigDict(frozen=True, arbitrary_types_allowed=True)
 
+    reactants: list[Substructure]
+    products: list[Substructure]
     reaction: rd.ChemicalReaction = Field(
         description="The reaction object representing this subreaction, created by parsing the SMARTS string."
-    )
-    smarts: str = Field(description="The SMARTS string representing this reaction.")
-    effect: str = Field(
-        description="The effect of this specific rdkit defined reaction.",
-        examples=["Hydrolyze the amide into a carboxylic acid and an amine."],
     )
 
     @model_validator(mode="before")
     def transform_smarts_string(cls, values):
-        smarts_reaction = AllChem.ReactionFromSmarts(values["smarts"])
-        smarts_reaction.Initialize()
-        values["reaction"] = smarts_reaction
+        reactant_smarts = ".".join(r["smarts"] for r in values["reactants"])
+        product_smarts = ".".join(p["smarts"] for p in values["products"])
+        subreaction = AllChem.ReactionFromSmarts(
+            ">>".join((reactant_smarts, product_smarts))
+        )
+        subreaction.Initialize()
+        values["reaction"] = subreaction
         return values
 
 
@@ -44,15 +47,12 @@ class Reaction(BaseModel):
     broader reaction are called subreactions.
     """
 
-    model_config = BASE_REACTION_MODEL_CONFIG
+    model_config = ConfigDict(frozen=True)
 
     name: str
     subreactions: list[Subreaction] = Field(
-        description="A list of the more specific rdkit reactions that are sub-scenarios of this more general reaction object."
-    )
-    multiple_reactants_prompts: list[str] | None = Field(
-        default=None,
-        description="<...> Should only be set for reactions with more than one reactant.",  # TODO
+        description="A list of the more specific rdkit reactions that are sub-scenarios "
+        "of this more general reaction object."
     )
     description: str
 
@@ -63,10 +63,12 @@ class Reaction(BaseModel):
     @cached_property
     def num_reactants(self) -> int:
         # All the subreactions have the same number of reactants, so we can just use the first one
-        return self.subreactions[0].reaction.GetNumReactantTemplates()  # noqa
+        return len(self.subreactions[0].reactants)
 
     def __iter__(self) -> Iterator[rd.ChemicalReaction]:
-        """Makes it easy to iterate over the subreactions by yielding the actual rd.ChemicalReaction objects"""
+        """
+        Makes it more convenient to iterate over the subreactions by yielding the underlying rd.ChemicalReaction objects
+        """
         yield from (subreaction.reaction for subreaction in self.subreactions)
 
     def __str__(self):
@@ -82,12 +84,8 @@ def read_all_reactions_from_file(path: pathlib.Path) -> list[Reaction]:
     """
     Returns a list of all available reactions.
     """
-    if DISABLE_RDKIT_WARNINGS:
-        from rdkit import RDLogger
 
-        RDLogger.DisableLog("rdApp.warning")
-
-    reaction_dict = yaml.safe_load(path.read_text())
+    reaction_list = yaml.safe_load(path.read_text())
     ta = TypeAdapter(list[Reaction])
-    all_reactions = ta.validate_python(reaction_dict)
+    all_reactions = ta.validate_python(reaction_list)
     return all_reactions

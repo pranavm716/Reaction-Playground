@@ -1,7 +1,7 @@
 import pytest
 
-from website.config import ALL_REACTIONS_FILE_PATH
-from website.reaction import Reaction, read_all_reactions_from_file, Subreaction
+from website.config import ALL_REACTIONS_FILE_PATH, DISABLE_RDKIT_WARNINGS
+from website.reaction import Reaction, read_all_reactions_from_file
 import pathlib
 
 
@@ -14,14 +14,27 @@ def all_reactions() -> list[Reaction]:
     )
     real_reactions = read_all_reactions_from_file(all_reactions_file_path)
 
-    made_up_reaction = Reaction(
-        name="Made up reaction",
-        subreactions=[
-            Subreaction(
-                smarts="[CX3H1](=[O])[#6].[#6][CH]=[CH2].[CH,CH2][OH]>>[C]",
-                effect="A made up reaction.",
-            )
+    made_up_reaction = {
+        "name": "Made up reaction",
+        "subreactions": [
+            {
+                "reactants": [
+                    {"smarts": "[CX3H1](=[O])[#6]", "classification": "something"},
+                    {"smarts": "[#6][CH]=[CH2]", "classification": "something"},
+                    {"smarts": "[CH,CH2][OH]", "classification": "something"},
+                ],
+                "products": [{"smarts": "[C]", "classification": "something"}],
+            }
         ],
-        description="Some description",
-    )
-    return real_reactions + [made_up_reaction]
+        "description": "Some description",
+    }
+
+    return real_reactions + [Reaction(**made_up_reaction)]
+
+
+@pytest.fixture(autouse=True)
+def disable_rdkit_warnings_if_configured() -> None:
+    if DISABLE_RDKIT_WARNINGS:
+        from rdkit import RDLogger
+
+        RDLogger.DisableLog("rdApp.warning")

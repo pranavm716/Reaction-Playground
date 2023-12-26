@@ -12,7 +12,7 @@ function highlightSelectedProductAndDisableOnClicks(productIndex) {
     let productsDiv = document.getElementById("productsDiv");
 
     // Select images inside the div with id 'productsDiv' whose ids start with 'product_'
-    const products = $('img[id^="product_"]');
+    const products = $('#productsDiv img[id^="product_"]');
     for (let index = 0; index < products.length; index++) {
         let product = products[index];
         product.removeAttribute("onclick");

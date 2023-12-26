@@ -58,7 +58,10 @@ class Reaction(BaseModel):
 
     @cached_property
     def smarts_list(self) -> list[str]:
-        return [subreaction.smarts for subreaction in self.subreactions]
+        return [
+            AllChem.ReactionToSmarts(subreaction.reaction)
+            for subreaction in self.subreactions
+        ]
 
     @cached_property
     def num_reactants(self) -> int:
@@ -78,6 +81,9 @@ class Reaction(BaseModel):
         return isinstance(other, Reaction) and set(self.smarts_list) == set(
             other.smarts_list
         )
+
+    def __hash__(self):
+        return hash(tuple(self.smarts_list))
 
 
 def read_all_reactions_from_file(path: pathlib.Path) -> list[Reaction]:

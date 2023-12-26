@@ -1,5 +1,5 @@
 from collections import deque
-from typing import Deque
+from typing import Deque, Generator
 
 from rdkit import Chem
 from rdkit.Chem.rdchem import Mol
@@ -52,25 +52,31 @@ def generate_multi_step_product(start_mol: Mol, reaction: Reaction) -> MolTuple:
     Recursively performs a reaction on a starting molecule and on its products until no more products can be formed.
     Returns the final tuple of products (always 1 x n).
     """
-    products = _generate_multi_step_product(start_mol, reaction, tuple())
-    return generate_unique_products((products,))[0]
+    products = _generate_multi_step_product(start_mol, reaction)
+    return tuple(sorted(set(products), key=lambda x: Chem.MolToSmiles(x)))
 
 
 def _generate_multi_step_product(
-    start_mol: Mol, reaction: Reaction, products: MolTuple
-) -> MolTuple:
+    start_mol: Mol,
+    reaction: Reaction,
+    processed: set[str] | None = None,
+) -> Generator[Mol, None, None]:
     """
-    Recursive sub-method for the method above.
+    Recursive sub-method for the method above. Uses a set to keep track of which products have already been processed.
     """
+    if processed is None:
+        processed = set()
+    if Chem.MolToSmiles(start_mol) in processed:
+        return
+    processed.add(Chem.MolToSmiles(start_mol))
+
     single_step_product = generate_single_step_product(start_mol, reaction)
     if not single_step_product:
-        return (start_mol,)
+        yield start_mol
 
     for scenario in single_step_product:
         for p in scenario:
-            products += _generate_multi_step_product(p, reaction, products)
-
-    return products
+            yield from _generate_multi_step_product(p, reaction, processed)
 
 
 def get_reactant_position_of_mol_in_reaction(mol: Mol, reaction: Reaction) -> int:

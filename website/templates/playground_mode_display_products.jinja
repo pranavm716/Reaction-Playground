@@ -12,7 +12,7 @@
                 <img src="data:image/png;base64, {{ product }}"
                      class="card-img-top"
                      id="product_{{ loop.index0 }}"
-                     alt="product_{{ loop.index0 }}"
+                     alt="{{ product_smiles[0][loop.index0] }}"
                      onclick="chooseProduct({{ loop.index0 }})">
             </div>
             {% if loop.index0 < products[0]|length - 1 %}
@@ -23,6 +23,6 @@
         {% endfor %}
     </div>
     {% if products|length != 1 or products[0]|length != 1 %}
-        The products are shown above. Choose a product to analyze next.
+        <span id="multipleProductsPrompt">The products are shown above. Choose a product to analyze next.</span>
     {% endif %}
 </div>

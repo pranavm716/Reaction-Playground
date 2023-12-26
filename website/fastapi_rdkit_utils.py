@@ -31,10 +31,6 @@ def construct_query_url(app: FastAPI, url_path_for: str, **query_params: str) ->
     return f"{url}?{'&'.join(query_string)}"
 
 
-def get_mol_from_smiles(smiles: str) -> Mol:
-    return Chem.MolFromSmiles(smiles)
-
-
 def img_to_base64(img: PILImage) -> str:
     buffered = BytesIO()
     img.save(buffered, format="PNG")

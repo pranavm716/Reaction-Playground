@@ -1,7 +1,5 @@
-<div>
-    <img src="data:image/png;base64, {{ current_mol }}"
-         class="card-img-top"
-         id="current_mol">
+<div id="currentMolDiv">
+    <img src="data:image/png;base64, {{ current_mol }}" class="card-img-top" alt={{ current_mol_smiles }}>
 </div>
 <span id="reactionSummary">
     {% if possible_reactions %}

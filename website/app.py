@@ -3,6 +3,7 @@ from contextlib import asynccontextmanager
 from typing import Annotated
 
 from fastapi import FastAPI, Request, Form, HTTPException
+from rdkit import Chem
 from rdkit.Chem.rdchem import Mol
 from starlette.responses import HTMLResponse, RedirectResponse
 from starlette.staticfiles import StaticFiles
@@ -26,7 +27,6 @@ from website.fastapi_rdkit_utils import (
     start_and_target_mols_are_valid,
     construct_query_url,
     img_to_base64,
-    get_mol_from_smiles,
     mol_to_base64,
 )
 from website.reaction import read_all_reactions_from_file, Reaction
@@ -100,8 +100,8 @@ async def run_program(
 async def solver_mode(request: Request, start_mol_smiles: str, target_mol_smiles: str):
     """Displays the steps needed to synthesize the target molecule from the start molecule."""
 
-    start_mol = get_mol_from_smiles(start_mol_smiles)
-    target_mol = get_mol_from_smiles(target_mol_smiles)
+    start_mol = Chem.MolFromSmiles(start_mol_smiles)
+    target_mol = Chem.MolFromSmiles(target_mol_smiles)
     all_reactions: list[Reaction] = app.state.all_reactions  # noqa
 
     (
@@ -150,7 +150,7 @@ async def playground_mode(request: Request, mol_smiles: str):
     history: list[Mol] = []
     app.state.history = history  # noqa
 
-    current_mol = get_mol_from_smiles(mol_smiles)
+    current_mol = Chem.MolFromSmiles(mol_smiles)
     app.state.current_mol = current_mol  # noqa
 
     return templates.TemplateResponse("playground_mode.jinja", {"request": request})
@@ -174,6 +174,7 @@ async def playground_mode_choose_reaction(request: Request):
         {
             "request": request,
             "current_mol": mol_to_base64(current_mol),
+            "current_mol_smiles": Chem.MolToSmiles(current_mol),
             "possible_reactions": possible_reactions,
             "history": history,
         },
@@ -216,6 +217,10 @@ async def playground_mode_display_products(
             "chosen_reaction": chosen_reaction,
             "products": [
                 [mol_to_base64(product) for product in scenario]
+                for scenario in products
+            ],
+            "product_smiles": [
+                [Chem.MolToSmiles(product) for product in scenario]
                 for scenario in products
             ],
         },

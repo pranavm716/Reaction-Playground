@@ -3,16 +3,30 @@ function cleanUpDisplayReactions() {
     document.getElementById("reactionSummary").remove();
 }
 
-function disableOnClickForAllProducts() {
+function cleanUpMultipleProducts(productIndex) {
+    highlightSelectedProductAndDisableOnClicks(productIndex);
+    removeMultipleProductsPrompt();
+}
+
+function highlightSelectedProductAndDisableOnClicks(productIndex) {
     let productsDiv = document.getElementById("productsDiv");
-    if (!productsDiv) {
-        return;
-    }
 
     // Select images inside the div with id 'productsDiv' whose ids start with 'product_'
     const products = $('img[id^="product_"]');
-    for (let product of products) {
+    for (let index = 0; index < products.length; index++) {
+        let product = products[index];
         product.removeAttribute("onclick");
+        if (index === productIndex) {
+            product.className = "card-img-top bordered-image"
+        }
     }
     productsDiv.removeAttribute("id");
+}
+
+function removeMultipleProductsPrompt() {
+    document.getElementById("multipleProductsPrompt").remove();
+}
+
+function updateCurrentMolDiv() {
+    document.getElementById("currentMolDiv").removeAttribute("id");
 }

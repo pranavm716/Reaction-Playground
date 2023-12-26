@@ -14,9 +14,4 @@
                 class="btn btn-outline-secondary btn-lg btn-block"
                 onclick="displayProducts({{ loop.index0 }})">{{ reaction.name }}</button>
     {% endfor %}
-    {% if history %}
-        <button type="button"
-                class="btn btn-outline-danger btn-lg btn-block"
-                onclick="displayProducts('back')">Back</button>
-    {% endif %}
 </form>

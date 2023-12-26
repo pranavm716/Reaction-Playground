@@ -147,9 +147,6 @@ async def playground_mode(request: Request, mol_smiles: str):
     Starts the playground mode loop, where users can experiment with applying reactions freely to molecules.
     """
 
-    history: list[Mol] = []
-    app.state.history = history  # noqa
-
     current_mol = Chem.MolFromSmiles(mol_smiles)
     app.state.current_mol = current_mol  # noqa
 
@@ -162,7 +159,6 @@ async def playground_mode_choose_reaction(request: Request):
 
     all_reactions: list[Reaction] = app.state.all_reactions  # noqa
     current_mol = app.state.current_mol  # noqa
-    history = app.state.history  # noqa
 
     possible_reactions = find_possible_reactions(
         current_mol, all_reactions, solver_mode=False
@@ -176,7 +172,6 @@ async def playground_mode_choose_reaction(request: Request):
             "current_mol": mol_to_base64(current_mol),
             "current_mol_smiles": Chem.MolToSmiles(current_mol),
             "possible_reactions": possible_reactions,
-            "history": history,
         },
     )
 
@@ -192,8 +187,6 @@ async def playground_mode_display_products(
 
     if choice in {str(i) for i in range(len(possible_reactions))}:
         chosen_reaction = possible_reactions[int(choice)]
-    elif choice == "back":
-        return  # TODO
     else:
         raise HTTPException(
             status_code=404, detail=f"Invalid reaction choice {choice!r}."
@@ -243,6 +236,5 @@ def playground_mode_choose_product(
     product_index = int(product_index)
     scenario_index = 0
 
-    app.state.history.append(app.state.current_mol)
     next_mol = products[scenario_index][product_index]
     app.state.current_mol = copy_mol(next_mol)

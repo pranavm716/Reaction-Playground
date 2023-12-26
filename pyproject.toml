@@ -15,6 +15,11 @@ flask = "^3.0.0"
 pillow = "^10.1.0"
 fastapi = {extras = ["all"], version = "^0.105.0"}
 
+[tool.pytest.ini_options]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "serial",
+]
 
 [build-system]
 requires = ["poetry-core"]

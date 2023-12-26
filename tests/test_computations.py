@@ -228,6 +228,14 @@ def test_find_possible_reactions(
             [],
             [],
         ],
+        pytest.param(
+            "C=C(C#CCC1CC1)/C=C/C(C#CC/C=C/C)=C(/C)CC",
+            "CCC(C)C(O)(CC(=O)Cl)C(CC(C)(O)CC(=O)Cl)C(=O)Cl",
+            True,
+            [8, 6, 4, 5, 7, 0, 11],
+            [2, 1, 0, 0, 0, 0, 0],
+            marks=pytest.mark.slow,
+        ),
     ],
 )
 def test_find_synthetic_pathway(

@@ -122,6 +122,11 @@ def test_generate_single_step_product(
         ["CC(=O)OC1=CCC(=O)C1", 4, ("CCO", "OC1=CCC(O)C1")],  # LiAlH4 reduction
         ["C=CC", 8, ("CC(C)O",)],  # OM/DM
         ["C=CC", 9, ("CCCO",)],  # BH3/[O]
+        [
+            "C=C(C#CCC1CC1)/C=C/C(C#CC/C=C/C)=C(/C)CC",
+            6,
+            ("C=O", "CCC(C)=O", "CC=O", "O=CC(=O)C(=O)O", "O=CCC(=O)O", "O=C(O)CC1CC1"),
+        ],  # Ozonolysis,
     ],
 )
 def test_generate_multi_step_product(

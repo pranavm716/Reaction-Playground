@@ -1,3 +1,5 @@
+import copy
+
 from PIL.Image import Image as PILImage
 from rdkit.Chem.rdchem import Mol
 
@@ -117,25 +119,13 @@ def run_playground_mode() -> None:
         current_mol = copy_mol(next_mol)
 
 
-def get_missing_reactants(current_mol: Mol, reaction: Reaction) -> MolTuple:
+def get_missing_reactant_prompts(current_mol: Mol, reaction: Reaction) -> list[str]:
     """
     For reactions that require additional reactants, this method will prompt the
     user for those additional missing reactants.
     """
 
     reactant_position = get_reactant_position_of_mol_in_reaction(current_mol, reaction)
-    reactants: list[Mol] = []
-    for i, prompt in enumerate(reaction.multiple_reactants_prompts):
-        if i == reactant_position:
-            reactants.append(current_mol)
-        else:
-            missing_reactant_smiles = self.ui.get_user_input(prompt)
-            missing_reactant = Chem.MolFromSmiles(missing_reactant_smiles)
-
-            self.ui.print("\nYou entered:")
-            self.ui.save_mol(missing_reactant)
-            self.ui.print()
-
-            reactants.append(missing_reactant)
-
-    return tuple(reactants)
+    multiple_reactant_prompts = copy.copy(reaction.multiple_reactants_prompts)
+    multiple_reactant_prompts.pop(reactant_position)
+    return multiple_reactant_prompts

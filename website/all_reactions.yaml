@@ -67,11 +67,17 @@
 - name: NaBH4 (sodium borohydride) reduction of aldehydes and ketones
   subreactions:
   - reactants:
-    - smarts: "[CX3H1:1](=[O:2])[#6:3]"
-      classification: 'aldehyde'
+    - smarts: "[CH2:1]=[O:2]"
+      classification: 'formaldehyde'
     products:
-    - smarts: "[CX3H2:1]([OX2H:2])[#6:3]"
-      classification: 'primary alcohol'
+    - smarts: "[C:1][O:2]"
+      classification: 'methanol'
+  - reactants:
+      - smarts: "[CX3H1:1](=[O:2])[#6:3]"
+        classification: 'aldehyde'
+    products:
+      - smarts: "[CX3H2:1]([OX2H:2])[#6:3]"
+        classification: 'primary alcohol'
   - reactants:
     - smarts: "[#6:1][CX3:2](=[O:3])[#6:4]"
       classification: 'ketone'
@@ -83,6 +89,12 @@
 - name: LiAlH4 (lithium aluminum hydride) reduction of aldehyes, ketones, esters,
     carboxylic acids, amides, and nitriles
   subreactions:
+  - reactants:
+      - smarts: "[CH2:1]=[O:2]"
+        classification: 'formaldehyde'
+    products:
+      - smarts: "[C:1][O:2]"
+        classification: 'methanol'
   - reactants:
     - smarts: "[CX3H1:1](=[O:2])[#6:3]"
       classification: 'aldehyde'
@@ -338,11 +350,14 @@
     products:
     - smarts: "[#6-0:1]C(=O)[OH]"
       classification: 'carboxylic acid'
+  multiple_reactants_prompts:
+    - "Enter the SMILES of the carbon nucleophile:"
+    - "Enter the SMILES of carbon dioxide (O=C=O) or an aldehyde, ketone, or nitrile:"
   description: Converts a carbon nucleophile + (formaldehyde/aldehydes/ketones into
     primary/secondary/tertiary alcohols), respectively; or a carbon nucleophile +
     (nitriles/CO2 into ketones/carboxylic acids), respectively.
 
-- name: Amide synthesis from acid chloride
+- name: Amide synthesis from acid chlorides and amines
   subreactions:
   - reactants:
     - smarts: "[#6:4][CX3:1](=[O:2])Cl"
@@ -368,10 +383,13 @@
     products:
     - smarts: "[#6:4][CX3:1](=[O:2])[NX3:3]([CX4:5])[CX4:6]"
       classification: 'tertiary amide'
+  multiple_reactants_prompts:
+    - "Enter the SMILES of the acid chloride:"
+    - "Enter the SMILES of ammonia (N) or an amine:"
   description: Converts an acid chloride + (ammonia/ primary/secondary amine into
     a primary/secondary/tertiary amide), respectively.
 
-- name: Ester synthesis from acid chloride
+- name: Ester synthesis from acid chlorides and primary alcohols
   subreactions:
   - reactants:
     - smarts: "[#6:3][CX3:1](=[O:2])Cl"
@@ -381,6 +399,9 @@
     products:
     - smarts: "[#6:3][CX3:1](=[O:2])O[CH2,CH3:4]"
       classification: 'ester'
+  multiple_reactants_prompts:
+    - "Enter the SMILES of the acid chloride:"
+    - "Enter the SMILES of the primary alcohol:"
   description: Converts an acid chloride + a primary alcohol into an ester.
 
 - name: Fischer esterification
@@ -409,5 +430,8 @@
     products:
       - smarts: "[#6:1][C:2](=[O:3])[O:4][#6:5]"
         classification: 'ester'
+  multiple_reactants_prompts:
+    - "Enter the SMILES of the carboxylic acid:"
+    - "Enter the SMILES of the alcohol (not tertiary):"
   description: Esterifies a carboxylic acid by reacting it with a primary/secondary
     alcohol or phenol.

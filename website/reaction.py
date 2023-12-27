@@ -54,6 +54,10 @@ class Reaction(BaseModel):
         description="A list of the more specific rdkit reactions that are sub-scenarios "
         "of this more general reaction object."
     )
+    multiple_reactants_prompts: list[str] | None = Field(
+        default=None,
+        description="<...> Should only be set for reactions with more than one reactant.",  # TODO
+    )
     description: str
 
     @cached_property

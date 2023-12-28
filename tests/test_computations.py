@@ -1,5 +1,9 @@
+import io
+import pathlib
+from unittest.mock import patch
+
 import pytest
-from rdkit import Chem
+from rdkit import Chem, rdBase
 
 from website.computations import (
     copy_mol,
@@ -10,8 +14,9 @@ from website.computations import (
     generate_unique_products,
     get_reactant_position_of_mol_in_reaction,
 )
+from website.config import ALL_REACTIONS_FILE_PATH
 from website.datatypes import Mol2dTuple
-from website.reaction import Reaction
+from website.reaction import Reaction, read_all_reactions_from_file
 
 SmilesTuple = tuple[str, ...]
 Smiles2dTuple = tuple[tuple[str, ...], ...]
@@ -110,6 +115,9 @@ def test_generate_single_step_product(
         reactants = Chem.MolFromSmiles(reactants_smiles)
     elif isinstance(reactants_smiles, tuple):
         reactants = tuple(Chem.MolFromSmiles(s) for s in reactants_smiles)
+    else:
+        raise TypeError("reactants_smiles must be str or tuple.")
+
     single_step_product = generate_single_step_product(reactants, reaction)
     assert smiles_2d_tuples_match(
         single_step_product_smiles, mol_2d_tuple_to_smiles(single_step_product)
@@ -260,3 +268,17 @@ def test_find_synthetic_pathway(
         all_reactions[i] for i in reaction_pathway_indices
     ]
     assert retrieved_choice_pathway == choice_pathway
+
+
+def test_all_reactions_are_configured_properly():
+    # Ensure that rdkit does not throw any warnings
+    rdBase.LogToPythonStderr()
+    with patch("sys.stderr", new_callable=io.StringIO) as s:
+        all_reactions_file_path = (
+            pathlib.Path(__file__).resolve().parent.parent
+            / "website"
+            / ALL_REACTIONS_FILE_PATH
+        )
+        read_all_reactions_from_file(all_reactions_file_path)
+
+    assert not s.getvalue()

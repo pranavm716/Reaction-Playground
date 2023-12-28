@@ -22,14 +22,21 @@ class Reaction(BaseModel):
     model_config = ConfigDict(frozen=True, arbitrary_types_allowed=True)
 
     name: str
-    smarts_list: list[str]
+    smarts_list: list[str] = Field(
+        description="A list of the SMARTS strings that represent the subreactions "
+        "for this reaction."
+    )
     subreactions: list[rd.ChemicalReaction] = Field(
         description="A list of the more specific rdkit reactions that are sub-scenarios "
         "of this more general reaction object."
     )
     multiple_reactants_prompts: list[str] | None = Field(
         default=None,
-        description="<...> Should only be set for reactions with more than one reactant.",  # TODO
+        description="List of prompts that ask the user to enter the SMILES of the missing reactants. "
+        "Should only be set for reactions with more than one reactant.",
+        examples=[
+            "Enter the SMILES of carbon dioxide (O=C=O) or an aldehyde, ketone, or nitrile: "
+        ],
     )
     description: str
 
@@ -59,7 +66,6 @@ def read_all_reactions_from_file(path: pathlib.Path) -> list[Reaction]:
     """
     Returns a list of all available reactions.
     """
-
     reaction_list = yaml.safe_load(path.read_text())
     ta = TypeAdapter(list[Reaction])
     all_reactions = ta.validate_python(reaction_list)

@@ -101,7 +101,7 @@
 # Reactions involving multiple reactants
 - name: Grignard reaction
   smarts_list:
-    - "[#6-:1].[CH2:2]=O>>[#6:1][C:2][OH]" # carbon nucleophile + formaldehyde -> primary alcohol
+    - "[#6-:1].[CH2:2]=O>>[#6-0:1][C:2][OH]" # carbon nucleophile + formaldehyde -> primary alcohol
     - "[#6-:1].[CX3H1:2](=[O:3])[#6:4]>>[#6-0:1][C:2]([OH:3])[#6:4]" # carbon nucleophile + aldehyde -> secondary alcohol
     - "[#6-:1].[#6:2][CX3:3](=[O:4])[#6:5]>>[#6:2][CX3:3]([OH:4])([#6-0:1])[#6:5]" # carbon nucleophile + ketone -> tertiary alcohol
     - "[#6-:1].[#6:2][C:3]#N>>[#6-0:1][C:3](=O)[#6:2]" # carbon nucleophile + nitrile -> ketone

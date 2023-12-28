@@ -30,3 +30,7 @@ function removeMultipleProductsPrompt() {
 function updateCurrentMolDiv() {
     document.getElementById("currentMolDiv").removeAttribute("id");
 }
+
+function cleanUpExtraReactantsDiv() {
+    document.getElementById("extraReactantsDiv").remove();
+}

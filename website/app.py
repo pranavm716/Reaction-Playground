@@ -9,12 +9,13 @@ from starlette.responses import HTMLResponse, RedirectResponse
 from starlette.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
 
-from program import run_solver_mode
+from program import run_solver_mode, get_missing_reactant_prompts
 from website.computations import (
     find_possible_reactions,
     generate_single_step_product,
     generate_multi_step_product,
     copy_mol,
+    get_reactant_position_of_mol_in_reaction,
 )
 from website.config import (
     MAX_NUM_SOLVER_STEPS,
@@ -187,6 +188,7 @@ async def playground_mode_display_products(
 
     if choice in {str(i) for i in range(len(possible_reactions))}:
         chosen_reaction = possible_reactions[int(choice)]
+        app.state.chosen_reaction = chosen_reaction  # noqa
     else:
         raise HTTPException(
             status_code=404, detail=f"Invalid reaction choice {choice!r}."
@@ -194,9 +196,11 @@ async def playground_mode_display_products(
 
     if chosen_reaction.num_reactants > 1:
         # Handling the reactions that require additional reactants (need to prompt user)
-        # reactants = get_missing_reactants(current_mol, chosen_reaction)
-        # products = generate_single_step_product(reactants, chosen_reaction)
-        return  # TODO
+        prompts = get_missing_reactant_prompts(current_mol, chosen_reaction)
+        return templates.TemplateResponse(
+            "playground_mode_add_reactants.jinja",
+            {"request": request, "prompts": prompts},
+        )
     elif not MULTI_STEP_REACT_MODE:
         products = generate_single_step_product(current_mol, chosen_reaction)
     else:
@@ -208,6 +212,41 @@ async def playground_mode_display_products(
         {
             "request": request,
             "chosen_reaction": chosen_reaction,
+            "products": [
+                [mol_to_base64(product) for product in scenario]
+                for scenario in products
+            ],
+            "product_smiles": [
+                [Chem.MolToSmiles(product) for product in scenario]
+                for scenario in products
+            ],
+        },
+    )
+
+
+@app.post("/playground-mode/process-added-reactants", response_class=HTMLResponse)
+def playground_mode_process_added_reactants(
+    request: Request, extra_reactant_smiles: Annotated[list[str], Form()]
+):
+    current_mol: Mol = app.state.current_mol  # noqa
+    chosen_reaction: Reaction = app.state.chosen_reaction  # noqa
+
+    reactants: list[Mol] = [
+        Chem.MolFromSmiles(smiles) for smiles in extra_reactant_smiles
+    ]
+    reactant_position = get_reactant_position_of_mol_in_reaction(
+        current_mol, chosen_reaction
+    )
+    reactants.insert(reactant_position, current_mol)
+
+    products = generate_single_step_product(tuple(reactants), chosen_reaction)
+    app.state.products = products  # noqa
+
+    return templates.TemplateResponse(
+        "playground_mode_display_products.jinja",
+        {
+            "request": request,
+            "chosen_reaction": app.state.chosen_reaction,  # noqa
             "products": [
                 [mol_to_base64(product) for product in scenario]
                 for scenario in products

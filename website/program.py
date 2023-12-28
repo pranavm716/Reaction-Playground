@@ -58,71 +58,9 @@ def run_solver_mode(
     )
 
 
-def run_playground_mode() -> None:
-    """
-    Runs the playground mode loop, where users can experiment with applying reactions
-    freely to molecules.
-    """
-    history: list[Mol] = []
-    current_mol = copy_mol(self.start_mol)
-    while True:
-        possible_reactions = find_possible_reactions(
-            current_mol, self.all_reactions, solver_mode=False
-        )
-        self.ui.display_compatible_reactions(current_mol, possible_reactions)
-
-        if history:
-            self.ui.print("[b] Back\n")
-        self.ui.print("[q] Quit\n")
-
-        choice = self.ui.get_user_input()
-        if choice == "q":
-            break
-        elif history and choice == "b":
-            current_mol = history.pop()
-            continue
-        elif choice in [str(i) for i in range(1, len(possible_reactions) + 1)]:
-            chosen_reaction = possible_reactions[int(choice) - 1]
-        else:
-            self.ui.print("Invalid input!")
-            continue
-
-        if chosen_reaction.num_reactants > 1:
-            # Handling the reactions that require additional reactants (need to prompt user)
-            reactants = self.get_missing_reactants(current_mol, chosen_reaction)
-            products = generate_single_step_product(reactants, chosen_reaction)
-        elif not self.multi_step_react_mode:
-            products = generate_single_step_product(current_mol, chosen_reaction)
-        else:
-            products = (generate_multi_step_product(current_mol, chosen_reaction),)
-
-        if not products:
-            self.ui.print("\nNo reaction!\n")
-            continue
-
-        self.ui.print()
-        if len(products[0]) == 1 and len(products) == 1:
-            self.ui.print("The product is:")
-        else:
-            self.ui.print("The products are:")
-
-        chosen_scenario, chosen_product = 0, 0
-        if len(products) > 1:
-            self.ui.display_2d_mol_tuple(products)
-            chosen_scenario = self.ui.prompt_for_scenario_index(products)
-        if len(products[0]) > 1:
-            self.ui.save_mol_tuple(products[chosen_scenario])
-            chosen_product = self.ui.prompt_for_product_index(products[chosen_scenario])
-
-        history.append(current_mol)
-        next_mol = products[chosen_scenario][chosen_product]
-        current_mol = copy_mol(next_mol)
-
-
 def get_missing_reactant_prompts(current_mol: Mol, reaction: Reaction) -> list[str]:
     """
-    For reactions that require additional reactants, this method will prompt the
-    user for those additional missing reactants.
+    This method will return the prompts for reactions that require additional reactants.
     """
 
     reactant_position = get_reactant_position_of_mol_in_reaction(current_mol, reaction)

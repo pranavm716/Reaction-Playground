@@ -42,3 +42,25 @@ async function chooseProduct(productIndex, onlyOneProductDisplayed = false) {
     });
     await displayReactions(onlyOneProductDisplayed);
 }
+
+async function processAddedReactants(numSmiles) {
+    let smilesList = [];
+
+    for (let index = 0; index < numSmiles; index++) {
+        const inputId = "extra_reactant_smiles_" + index;
+        const inputValue = document.getElementById(inputId).value;
+        smilesList.push(inputValue);
+    }
+
+    const response = await fetch("/playground-mode/process-added-reactants", {
+        method: "POST",
+        body: new URLSearchParams({extra_reactant_smiles: smilesList}),
+    });
+    updateContent(await response.text());
+
+    cleanUpExtraReactantsDiv();
+    if (onlyOneProductDisplayed()) {
+        document.getElementById("productsDiv").remove();
+        await chooseProduct(0, true);
+    }
+}

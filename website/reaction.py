@@ -8,34 +8,6 @@ from pydantic import BaseModel, Field, model_validator, TypeAdapter, ConfigDict
 from rdkit.Chem import AllChem
 
 
-class Substructure(BaseModel):
-    model_config = ConfigDict(frozen=True)
-
-    smarts: str
-    classification: str
-
-
-class Subreaction(BaseModel):
-    model_config = ConfigDict(frozen=True, arbitrary_types_allowed=True)
-
-    reactants: list[Substructure]
-    products: list[Substructure]
-    reaction: rd.ChemicalReaction = Field(
-        description="The reaction object representing this subreaction, created by parsing the SMARTS string."
-    )
-
-    @model_validator(mode="before")
-    def transform_smarts_string(cls, values):
-        reactant_smarts = ".".join(r["smarts"] for r in values["reactants"])
-        product_smarts = ".".join(p["smarts"] for p in values["products"])
-        subreaction = AllChem.ReactionFromSmarts(
-            ">>".join((reactant_smarts, product_smarts))
-        )
-        subreaction.Initialize()
-        values["reaction"] = subreaction
-        return values
-
-
 class Reaction(BaseModel):
     """
     A class that holds all the necessary information for a reaction.
@@ -47,10 +19,11 @@ class Reaction(BaseModel):
     broader reaction are called subreactions.
     """
 
-    model_config = ConfigDict(frozen=True)
+    model_config = ConfigDict(frozen=True, arbitrary_types_allowed=True)
 
     name: str
-    subreactions: list[Subreaction] = Field(
+    smarts_list: list[str]
+    subreactions: list[rd.ChemicalReaction] = Field(
         description="A list of the more specific rdkit reactions that are sub-scenarios "
         "of this more general reaction object."
     )
@@ -60,34 +33,26 @@ class Reaction(BaseModel):
     )
     description: str
 
-    @cached_property
-    def smarts_list(self) -> list[str]:
-        return [
-            AllChem.ReactionToSmarts(subreaction.reaction)
-            for subreaction in self.subreactions
-        ]
+    @model_validator(mode="before")
+    def transform_smarts_list(cls, values):
+        subreactions: list[rd.ChemicalReaction] = []
+        for smarts in values["smarts_list"]:
+            subreaction = AllChem.ReactionFromSmarts(smarts)
+            subreaction.Initialize()
+            subreactions.append(subreaction)
+        values["subreactions"] = subreactions
+        return values
 
     @cached_property
     def num_reactants(self) -> int:
         # All the subreactions have the same number of reactants, so we can just use the first one
-        return len(self.subreactions[0].reactants)
+        return self.subreactions[0].GetNumReactantTemplates()  # noqa
 
     def __iter__(self) -> Iterator[rd.ChemicalReaction]:
         """
         Makes it more convenient to iterate over the subreactions by yielding the underlying rd.ChemicalReaction objects
         """
-        yield from (subreaction.reaction for subreaction in self.subreactions)
-
-    def __str__(self):
-        return f"{self.name}: {self.smarts_list}"
-
-    def __eq__(self, other: object) -> bool:
-        return isinstance(other, Reaction) and set(self.smarts_list) == set(
-            other.smarts_list
-        )
-
-    def __hash__(self):
-        return hash(tuple(self.smarts_list))
+        yield from self.subreactions
 
 
 def read_all_reactions_from_file(path: pathlib.Path) -> list[Reaction]:

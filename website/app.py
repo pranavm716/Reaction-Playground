@@ -19,7 +19,6 @@ from website.computations import (
 )
 from website.config import (
     MAX_NUM_SOLVER_STEPS,
-    DISABLE_RDKIT_WARNINGS,
     ALL_REACTIONS_FILE_PATH,
     MULTI_STEP_REACT_MODE,
 )
@@ -35,12 +34,7 @@ from website.reaction import read_all_reactions_from_file, Reaction
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """Disables rdkit warnings if configured and loads all reactions from a file."""
-
-    if DISABLE_RDKIT_WARNINGS:
-        from rdkit import RDLogger
-
-        RDLogger.DisableLog("rdApp.warning")
+    """Loads all reactions from a file."""
 
     all_reactions = read_all_reactions_from_file(ALL_REACTIONS_FILE_PATH)
     app.state.all_reactions = all_reactions  # noqa

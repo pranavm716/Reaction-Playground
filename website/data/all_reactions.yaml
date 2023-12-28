@@ -91,6 +91,13 @@
     - "[#6:4][CX3:1](=[O:2])[OX2H]>>[#6:4][CX3:1](=[O:2])Cl" # carboxylic acid -> acid chloride
   description: Converts carboxylic acids into acid chlorides.
 
+- name: Deprotonation of alcohols and carboxylic acids
+  smarts_list:
+    - "[#6:1][OX2H:2]>>[#6:1][O-:2]" # alcohol/phenol -> alkoxide/phenoxide anion
+    - "[CH:1](=[O:2])[OX2H:3]>>[CH:1](=[O:2])[O-:3]" # formic acid -> formate anion
+    - "[#6:1][CX3:2](=[O:3])[OX2H:4]>>[#6:1][C:2](=[O:3])[O-:4]" # carboxylic acid -> carboxylate anion
+  description: Deprotonates an alcohol into an alkoxide anion and a carboxylic acid into a carboxylate anion.
+
 # Reactions involving multiple reactants
 - name: Grignard reaction
   smarts_list:
@@ -129,3 +136,13 @@
     - "Enter the SMILES of the carboxylic acid: "
     - "Enter the SMILES of the alcohol (not tertiary): "
   description: Esterifies a carboxylic acid by reacting it with an alcohol.
+
+- name: Williamson ether synthesis
+  smarts_list:
+    - "[CH3:1][Br].[#6:2][O-:3]>>[#6:2][O-0:3][C:1]" # methyl bromide + alkoxide/phenoxide -> methoxy ether
+    - "[#6:1][CH2:2][Br].[#6:3][O-:4]>>[#6:3][O-0:4][C:2][#6:1]" # primary alkyl bromide + alkoxide/phenoxide -> ether
+    - "[#6:1][CH:2]([#6:3])[Br].[#6:4][O-:5]>>[#6:4][O-0:5][C:2]([#6:3])[#6:1]" # secondary alkyl bromide + alkoxide/phenoxide -> ether
+  multiple_reactants_prompts:
+    - "Enter the SMILES of the alkyl bromide (primary or secondary): "
+    - "Enter the SMILES of the alkoxide or phenoxide: "
+  description: "Converts a primary/ secondary alkyl bromide + an alkoxide/ phenoxide into an ether."

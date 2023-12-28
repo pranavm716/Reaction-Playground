@@ -41,6 +41,7 @@ internal_alkyne: "[#6][CH0]#[CH0][#6]"
 terminal_alkyne: "[#6][CH0]#[CH]"
 
 # Other
+ether: "[#6]O[#6]"
 acid_chloride: "[#6][CX3](=O)Cl"
 carbon_dioxide: "O=[CHO]=O"
 carbon_nucleophile: "[#6-]"

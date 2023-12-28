@@ -99,7 +99,7 @@ def test_generate_unique_products():
         ],
         [
             ("CC[CH-]C1CC1", "CCC=O"),
-            12,  # Grignard reaction
+            13,  # Grignard reaction
             (("CCC(O)C(CC)C1CC1",),),
         ],
     ],
@@ -156,7 +156,7 @@ def test_generate_multi_step_product(
     [
         ["BrCC1CCCC1", 7, 0],  # NaCN nitrile synthesis
         ["CCCO", -1, 2],  # A made up reaction
-        ["C#CCC(O)C#C", 12, None],  # Grignard reaction
+        ["C#CCC(O)C#C", 13, None],  # Grignard reaction
     ],
 )
 def test_get_reactant_position(
@@ -181,7 +181,7 @@ def test_get_reactant_position(
     ["start_mol_smiles", "solver_mode", "possible_reactions_indices"],
     [
         [r"C/C(C)=C\C=O", True, [2, 3, 4, 6, 8, 9]],
-        [r"C/C(C)=C\C=O", False, [2, 3, 4, 6, 8, 9, 12, -1]],
+        [r"C/C(C)=C\C=O", False, [2, 3, 4, 6, 8, 9, 13, -1]],
         ["COC(=O)C1C#CCC1", False, [0, 4, 6]],
     ],
 )

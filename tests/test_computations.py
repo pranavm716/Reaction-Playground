@@ -15,11 +15,8 @@ from website.computations import (
     get_reactant_position_of_mol_in_reaction,
 )
 from website.config import ALL_REACTIONS_FILE_PATH
-from website.datatypes import Mol2dTuple
+from website.datatypes import Mol2dTuple, SmilesTuple, Smiles2dTuple
 from website.reaction import Reaction, read_all_reactions_from_file
-
-SmilesTuple = tuple[str, ...]
-Smiles2dTuple = tuple[tuple[str, ...], ...]
 
 
 def mol_2d_tuple_to_smiles(mol_2d_tuple: Mol2dTuple) -> Smiles2dTuple:

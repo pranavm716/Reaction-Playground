@@ -77,46 +77,6 @@ def generate_multi_step_product(start_mol: Mol, reaction: Reaction) -> MolTuple:
     return tuple(sorted(set(products), key=lambda x: Chem.MolToSmiles(x)))
 
 
-def generate_multi_step_product_with_multiple_reactants(
-    existing_mol: Mol,
-    added_reactants: MolTuple,
-    existing_mol_position: int,
-    reaction: Reaction,
-) -> MolTuple:
-    """
-    Recursively performs a reaction on a starting molecule and on its products until no more products can be formed.
-    Returns the final tuple of products (always 1 x n).
-    """
-
-    # Use a set to keep track of which products have already been processed
-    processed: set[str] = set()
-
-    def _generate_multi_step_product(current_mol: Mol) -> Generator[Mol, None, None]:
-        """
-        Recursive sub-method for the method above.
-        """
-        if (smiles := Chem.MolToSmiles(current_mol)) in processed:
-            return
-        processed.add(smiles)
-
-        reactants = (
-            *added_reactants[:existing_mol_position],
-            current_mol,
-            *added_reactants[existing_mol_position:],
-        )
-        single_step_product = generate_single_step_product(reactants, reaction)
-        if not single_step_product:
-            yield current_mol
-            return
-
-        for scenario in single_step_product:
-            for p in scenario:
-                yield from _generate_multi_step_product(p)
-
-    products = _generate_multi_step_product(existing_mol)
-    return tuple(sorted(set(products), key=lambda x: Chem.MolToSmiles(x)))
-
-
 def get_reactant_position_of_mol_in_reaction(mol: Mol, reaction: Reaction) -> int:
     """
     Returns the position of the mol in the reactants of any of the reaction's subreactions.

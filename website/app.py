@@ -16,7 +16,6 @@ from website.computations import (
     generate_multi_step_product,
     copy_mol,
     get_reactant_position_of_mol_in_reaction,
-    generate_multi_step_product_with_multiple_reactants,
 )
 from website.config import (
     MAX_NUM_SOLVER_STEPS,
@@ -223,25 +222,24 @@ async def playground_mode_display_products(
 def playground_mode_process_added_reactants(
     request: Request, extra_reactant_smiles: Annotated[list[str], Form()]
 ):
+    """
+    Takes the SMILES for the extra needed reactants (for reactions with multiple products) and runs
+    the chosen reaction.
+    """
+
+    # TODO: single step products are still not supported in the UI
     current_mol: Mol = app.state.current_mol  # noqa
     chosen_reaction: Reaction = app.state.chosen_reaction  # noqa
 
-    reactants: MolTuple = tuple(
+    reactants: list[Mol] = [
         Chem.MolFromSmiles(smiles) for smiles in extra_reactant_smiles
-    )
-
+    ]
     reactant_position = get_reactant_position_of_mol_in_reaction(
         current_mol, chosen_reaction
     )
+    reactants.insert(reactant_position, current_mol)
 
-    products = (
-        generate_multi_step_product_with_multiple_reactants(
-            existing_mol=current_mol,
-            added_reactants=reactants,
-            existing_mol_position=reactant_position,
-            reaction=chosen_reaction,
-        ),
-    )
+    products = generate_single_step_product(tuple(reactants), chosen_reaction)
     app.state.products = products  # noqa
 
     return templates.TemplateResponse(

@@ -5,7 +5,7 @@ from rdkit import Chem
 from rdkit.Chem.rdchem import Mol
 
 from website.config import MAX_NUM_SOLVER_STEPS
-from website.datatypes import Mol2dTuple, MolTuple
+from website.datatypes import Mol2dTuple, MolTuple, SubstructureDict
 from website.reaction import Reaction
 
 
@@ -112,6 +112,19 @@ def find_possible_reactions(
                 break
 
     return possible_reactions
+
+
+def get_substructure_classifications(
+    mol: Mol, all_substructures: SubstructureDict
+) -> list[str]:
+    """
+    Returns a list of classifications (essentially functional groups) that the given mol falls under.
+    """
+    return [
+        name
+        for name, patterns in all_substructures.items()
+        if any(mol.HasSubstructMatch(pattern) for pattern in patterns)
+    ]
 
 
 def find_synthetic_pathway(

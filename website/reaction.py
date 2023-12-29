@@ -5,7 +5,10 @@ from typing import Iterator
 import rdkit.Chem.rdChemReactions as rd
 import yaml
 from pydantic import BaseModel, Field, model_validator, TypeAdapter, ConfigDict
+from rdkit import Chem
 from rdkit.Chem import AllChem
+
+from website.datatypes import SubstructureDict
 
 
 class Reaction(BaseModel):
@@ -70,3 +73,13 @@ def read_all_reactions_from_file(path: pathlib.Path) -> list[Reaction]:
     ta = TypeAdapter(list[Reaction])
     all_reactions = ta.validate_python(reaction_list)
     return all_reactions
+
+
+def read_all_substructures_from_file(path: pathlib.Path) -> SubstructureDict:
+    substructure_data: dict[str, list[str]] = yaml.safe_load(path.read_text())
+
+    substructures: SubstructureDict = {}
+    for name, smarts_list in substructure_data.items():
+        name = name.replace("_", " ")
+        substructures[name] = [Chem.MolFromSmarts(smarts) for smarts in smarts_list]
+    return substructures

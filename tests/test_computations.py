@@ -99,6 +99,11 @@ def test_generate_unique_products():
             13,  # Grignard reaction
             (("CCC(O)C(CC)C1CC1",),),
         ],
+        [
+            ("CCC[C-]", "N#CC1CCCCC1"),
+            13,  # Grignard reaction
+            (("CCCCC(=O)C1CCCCC1",),),
+        ],
     ],
 )
 def test_generate_single_step_product(
@@ -113,7 +118,7 @@ def test_generate_single_step_product(
     elif isinstance(reactants_smiles, tuple):
         reactants = tuple(Chem.MolFromSmiles(s) for s in reactants_smiles)
     else:
-        raise TypeError("reactants_smiles must be str or tuple.")
+        raise TypeError("reactants_smiles must be of type str or tuple[str].")
 
     single_step_product = generate_single_step_product(reactants, reaction)
     assert smiles_2d_tuples_match(

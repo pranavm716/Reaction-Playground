@@ -132,6 +132,20 @@ def test_generate_single_step_product(
             6,
             ("C=O", "CCC(C)=O", "CC=O", "O=CC(=O)C(=O)O", "O=CCC(=O)O", "O=C(O)CC1CC1"),
         ],  # Ozonolysis,
+        [
+            "C=C(C#CCC1CC1)/C=C/C(C#CC/C=C/C)=C(/C)CC",
+            8,
+            (
+                "CCC(C)(O)C(C#CCCC(C)O)C(O)CC(C)(O)C#CCC1CC1",
+                "CCC(C)(O)C(C#CCCC(C)O)CC(O)C(C)(O)C#CCC1CC1",
+                "CCC(C)C(O)(C#CCCC(C)O)C(O)CC(C)(O)C#CCC1CC1",
+                "CCC(C)C(O)(C#CCCC(C)O)CC(O)C(C)(O)C#CCC1CC1",
+                "CCC(O)CC#CC(C(O)CC(C)(O)C#CCC1CC1)C(C)(O)CC",
+                "CCC(O)CC#CC(CC(O)C(C)(O)C#CCC1CC1)C(C)(O)CC",
+                "CCC(O)CC#CC(O)(C(C)CC)C(O)CC(C)(O)C#CCC1CC1",
+                "CCC(O)CC#CC(O)(CC(O)C(C)(O)C#CCC1CC1)C(C)CC",
+            ),
+        ],  # OM/DM
     ],
 )
 def test_generate_multi_step_product(

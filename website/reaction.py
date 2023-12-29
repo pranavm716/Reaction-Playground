@@ -30,8 +30,9 @@ class Reaction(BaseModel):
         "for this reaction."
     )
     subreactions: list[rd.ChemicalReaction] = Field(
+        exclude=True,
         description="A list of the more specific rdkit reactions that are sub-scenarios "
-        "of this more general reaction object."
+        "of this more general reaction object.",
     )
     multiple_reactants_prompts: list[str] | None = Field(
         default=None,

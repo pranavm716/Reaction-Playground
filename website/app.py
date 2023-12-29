@@ -22,7 +22,7 @@ from website.config import (
     ALL_REACTIONS_FILE_PATH,
     MULTI_STEP_REACT_MODE,
 )
-from website.datatypes import Mol2dTuple, MolTuple
+from website.datatypes import Mol2dTuple
 from website.fastapi_rdkit_utils import (
     start_and_target_mols_are_valid,
     construct_query_url,
@@ -277,3 +277,8 @@ def playground_mode_choose_product(
 
     next_mol = products[scenario_index][product_index]
     app.state.current_mol = copy_mol(next_mol)
+
+
+@app.get("/reactions/all", response_model=list[Reaction])
+def all_reactions(request: Request) -> list[Reaction]:
+    return app.state.all_reactions

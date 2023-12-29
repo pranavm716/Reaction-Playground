@@ -13,9 +13,10 @@ from website.computations import (
     generate_single_step_product,
     generate_unique_products,
     get_reactant_position_of_mol_in_reaction,
+    get_substructure_classifications,
 )
 from website.config import ALL_REACTIONS_FILE_PATH
-from website.datatypes import Mol2dTuple, SmilesTuple, Smiles2dTuple
+from website.datatypes import Mol2dTuple, SmilesTuple, Smiles2dTuple, SubstructureDict
 from website.reaction import Reaction, read_all_reactions_from_file
 
 
@@ -286,8 +287,49 @@ def test_find_synthetic_pathway(
     assert retrieved_choice_pathway == choice_pathway
 
 
+@pytest.mark.parametrize(
+    ["mol_smiles", "expected_substructures"],
+    [
+        ["N#CC1CCCCC1", ["nitrile"]],
+        ["CCCCC(=O)C1CCCCC1", ["ketone"]],
+        ["C#CCC(=O)O", ["carboxylic acid", "terminal alkyne"]],
+        [
+            "CC(C)(O)CCC(Br)C=O",
+            ["aldehyde", "secondary alkyl bromide", "tertiary alcohol"],
+        ],
+        ["C/C=C/OCCCC(=O)NC", ["alkene", "ether", "secondary amide"]],
+        ["CCN(C)CC=O", ["tertiary amine", "aldehyde"]],
+        ["CCOC(=O)CCC(=O)N(C)C", ["tertiary amide", "ester"]],
+        ["[C-]CC#CC(=O)Cl", ["acid chloride", "internal alkyne", "carbon nucleophile"]],
+        [
+            "NC(=O)CC(O)CCBr",
+            ["primary alkyl bromide", "secondary alcohol", "primary amide"],
+        ],
+        [
+            "NC(CO)CCNC1CCC1",
+            ["primary alcohol", "secondary amine", "primary amine"],
+        ],
+        ["C", []],
+        # Single carbon molecules
+        ["C=O", ["aldehyde"]],
+        ["CO", ["primary alcohol"]],
+        ["C(=O)O", ["carboxylic acid"]],
+        ["CBr", ["primary alkyl bromide"]],
+    ],
+)
+def test_substructure_classifications(
+    mol_smiles: str,
+    expected_substructures: list[str],
+    all_substructures: SubstructureDict,
+):
+    mol = Chem.MolFromSmiles(mol_smiles)
+    assert set(get_substructure_classifications(mol, all_substructures)) == set(
+        expected_substructures
+    )
+
+
 def test_all_reactions_are_configured_properly():
-    # Ensure that rdkit does not throw any warnings
+    """Ensures that rdkit does not throw any warnings when parsing all the reactions."""
     rdBase.LogToPythonStderr()
     with patch("sys.stderr", new_callable=io.StringIO) as s:
         all_reactions_file_path = (

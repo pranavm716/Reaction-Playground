@@ -16,13 +16,14 @@ from website.computations import (
     generate_multi_step_product,
     copy_mol,
     get_reactant_position_of_mol_in_reaction,
+    generate_multi_step_product_with_multiple_reactants,
 )
 from website.config import (
     MAX_NUM_SOLVER_STEPS,
     ALL_REACTIONS_FILE_PATH,
     MULTI_STEP_REACT_MODE,
 )
-from website.datatypes import Mol2dTuple
+from website.datatypes import Mol2dTuple, MolTuple
 from website.fastapi_rdkit_utils import (
     start_and_target_mols_are_valid,
     construct_query_url,
@@ -225,15 +226,22 @@ def playground_mode_process_added_reactants(
     current_mol: Mol = app.state.current_mol  # noqa
     chosen_reaction: Reaction = app.state.chosen_reaction  # noqa
 
-    reactants: list[Mol] = [
+    reactants: MolTuple = tuple(
         Chem.MolFromSmiles(smiles) for smiles in extra_reactant_smiles
-    ]
+    )
+
     reactant_position = get_reactant_position_of_mol_in_reaction(
         current_mol, chosen_reaction
     )
-    reactants.insert(reactant_position, current_mol)
 
-    products = generate_single_step_product(tuple(reactants), chosen_reaction)
+    products = (
+        generate_multi_step_product_with_multiple_reactants(
+            existing_mol=current_mol,
+            added_reactants=reactants,
+            existing_mol_position=reactant_position,
+            reaction=chosen_reaction,
+        ),
+    )
     app.state.products = products  # noqa
 
     return templates.TemplateResponse(

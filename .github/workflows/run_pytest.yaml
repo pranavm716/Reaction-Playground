@@ -1,0 +1,39 @@
+name: pytest
+
+on:
+  push:
+    branches: '*'
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: read
+
+jobs:
+  run_pytest:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python 3.12
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.12"
+    - uses: actions/cache@v3
+      id: cache
+      with:
+        path: |
+          ~/.cache/pip
+          ~/.cache/pypoetry
+        key: ${{ runner.os }}-pip-poetry-${{ hashFiles('**/pyproject.toml') }}-${{ hashFiles('**/*.lock') }}-${{ hashFiles('**/poetry.toml') }}-${{ runner.pythonVersion }}
+        restore-keys: |
+          ${{ runner.os }}-pip-poetry-
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install poetry
+        poetry install
+    - name: Run pytest
+      run: |
+        poetry run pytest

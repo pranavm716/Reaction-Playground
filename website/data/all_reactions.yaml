@@ -1,0 +1,170 @@
+# Reactions involving a single reactant
+hydrolysis:
+  name: Hydrolysis of esters, amides, and nitriles
+  smarts_list:
+    - "[#6:1][O:2][C:3](=[O:4])[#6:5]>>[#6:1][O:2].[O][C:3](=[O:4])[#6:5]" # ester -> carboxylic acid + alcohol
+    - "[#6:1][CX3:2](=[O:3])[NX3;H2,H1,H0:4]>>[#6:1][CX3:2](=[O:3])[OX2H].[NX4:4]" # amide -> carboxylic acid + amine
+    - "[#6:1][C:2]#N>>[#6:1][C:2](=O)[OH]" # nitrile -> carboxylic acid
+  description: Hydrolyzes esters/amides/nitriles into carboxylic acids.
+
+dmp_pcc_oxidation:
+  name: DMP/PCC oxidation of alcohols
+  smarts_list:
+    - "[CH3:1][OH:2]>>[C:1]=[O:2]" # methanol -> formaldehyde
+    - "[#6:1][CH2:2][OH:3]>>[#6:1][C:2]=[O:3]" # primary alcohol -> aldehyde
+    - "[#6:1][CH:2]([#6:3])[OH:4]>>[#6:1][C:2](=[O:4])[#6:3]" # secondary alcohol -> ketone
+  description: Oxidizes primary alcohols to aldehydes and secondary alcohols to ketones.
+
+h2cro4_oxidation:
+  name: H2CrO4 (chromic acid) oxidation of alcohols and aldehydes
+  smarts_list:
+    - "[CH3:1][OH:2]>>[C:1](=O)[OH:2]" # methanol -> formic acid
+    - "[#6:1][CH2:2][OH:3]>>[#6:1][C:2](=O)[OH:3]" # primary alcohol -> carboxylic acid
+    - "[#6:1][CH:2]([#6:3])[OH:4]>>[#6:1][C:2](=[O:4])[#6:3]" # secondary alcohol -> ketone
+    - "[#6:1][CX3H1:2]=[O:3]>>[#6:1][C:2](=[O:3])[OX2H]" # aldehyde -> carboxylic acid
+  description: Oxidizes aldehydes and primary alcohols to carboxylic acids; and secondary alcohols to ketones.
+
+nabh4_reduction:
+  name: NaBH4 (sodium borohydride) reduction of aldehydes and ketones
+  smarts_list:
+    - "[CH2:1]=[O:2]>>[C:1][O:2]" # formaldehyde -> methanol
+    - "[#6:1][CX3H1:2]=[O:3]>>[#6:1][CX3H2:2][OX2H:3]" # aldehyde -> primary alcohol
+    - "[#6:1][CX3H0:2](=[O:3])[#6:4]>>[#6:1][CX3:2]([OH:3])[#6:4]" # ketone -> secondary alcohol
+  description: Reduces aldehydes to primary alcohols and ketones to secondary alcohols.
+
+lialh4_reduction:
+  name: LiAlH4 (lithium aluminum hydride) reduction of aldehyes, ketones, esters, carboxylic acids, amides, and nitriles
+  smarts_list:
+    - "[CH2:1]=[O:2]>>[C:1][O:2]" # formaldehyde -> methanol
+    - "[#6:1][CX3H1:2]=[O:3]>>[#6:1][CX3H2:2][OX2H:3]" # aldehyde -> primary alcohol
+    - "[#6:1][CX3H0:2](=[O:3])[#6:4]>>[#6:1][CX3:2]([OH:3])[#6:4]" # ketone -> secondary alcohol
+    - "[#6:1][O:2][C:3](=O)[#6:4]>>[#6:1][O:2].[O][C:3][#6:4]" # ester -> primary alcohol + alcohol
+    - "[CH:1](=O)[OH:2]>>[C:1][O:2]" # formic acid -> methanol
+    - "[#6:1][CX3:2](=O)[OX2H:3]>>[#6:1][CX3H2:2][OX2H:3]" # carboxylic acid -> primary alcohol
+    - "[#6:1][CX3:2](=O)[NX3;H2,H1,H0:3]>>[#6:1][CX3H2:2][NX3:3]" # amide -> amine
+    - "[#6:1][C:2]#[N:3]>>[#6:1][C:2][N:3]" # nitrile -> amine
+  description: Reduces aldehydes, esters, and carboxylic acids to primary alcohols; ketones to secondary alcohols; and amides/nitriles to amines.
+
+pbr3_bromination:
+  name: PBr3 bromination of alcohols
+  smarts_list:
+    - "[CH3:1][OH]>>[C:1][Br]" # methanol -> methyl bromide
+    - "[#6:1][CH2:2][OH]>>[#6:1][C:2][Br]" # primary alcohol -> primary alkyl bromide
+    - "[#6:1][CH:2]([#6:3])[OH]>>[#6:1][C:2]([#6:3])[Br]" # secondary alcohol -> secondary alkyl bromide
+  description: Converts primary and secondary alcohols into alkyl bromides.
+
+ozonolysis:
+  name: Ozonolysis
+  smarts_list:
+    - "[C:2]=[C:3]>>[C:2](=O).[C:3](=O)" # alkene -> carbonyl + carbonyl
+    - "[#6:1][CH0:2]#[CH0:3][#6:4]>>[#6:1][C:2](=O)[OX2H].[#6:4][C:3](=O)[OX2H]" # internal alkyne -> carboxylic acid + carboxylic acid
+    - "[#6:1][CH0:2]#[CH:3]>>[#6:1][C:2](=O)[OX2H].O=[C:3]=O" # terminal alkyne -> carboxylic acid + carbon dioxide
+  description: Cleaves alkenes/alkynes into carbonyls.
+
+nacn_nitrile_synthesis:
+  name: NaCN (sodium cyanide) nitrile synthesis
+  smarts_list:
+    - "[CH3:1][Br]>>[C:1]C#N" # methyl bromide -> acetonitrile
+    - "[#6:1][CH2:2][Br]>>[#6:1][C:2]C#N" # primary alkyl bromide -> nitrile
+    - "[#6:1][CH:2]([#6:3])[Br]>>[#6:1][C:2]([#6:3])C#N" # secondary alkyl bromide -> nitrile
+  description: Converts primary/secondary alkyl bromides into nitriles via SN2.
+
+om_dm:
+  name: Oxymercuration/demercuration (OM/DM)
+  smarts_list:
+    - "[CH2:1]=[CH2:2]>>[C:1][C:2][OH]" # ethylene -> ethanol
+    - "[#6:1][CH:2]=[CH2:3]>>[#6:1][C:2]([OH])[C:3]" # terminal monosubstituted alkene -> alcohol
+    - "[#6:1][C:2]([#6:4])=[CH2:3]>>[#6:1][C:2]([OH])([#6:4])[C:3]" # terminal 1,1 disubstituted alkene -> alcohol
+    - "[#6:1][C:2]([#6:4])=[CH:3][#6:5]>>[#6:1][C:2]([OH])([#6:4])[C:3][#6:5]" # internal trisubstituted alkene -> alcohol
+    - "[#6:1][CH:2]=[CH:3][#6:4]>>[#6:1][C:2]([OH])[C:3][#6:4]" # internal 1,2 disubstituted alkene -> alcohol #1
+    - "[#6:1][CH:2]=[CH:3][#6:4]>>[#6:1][C:2][C:3]([OH])[#6:4]" # internal 1,2 disubstituted alkene -> alcohol #2
+    - "[#6:1][C:2]([#6:4])=[C:3]([#6:6])[#6:5]>>[#6:1][C:2]([OH])([#6:4])[C:3]([#6:6])[#6:5]" # internal tetrasubstituted alkene -> alcohol #1
+    - "[#6:1][C:2]([#6:4])=[C:3]([#6:6])[#6:5]>>[#6:1][C:2]([#6:4])[C:3]([OH])([#6:6])[#6:5]" # internal tetrasubstituted alkene -> alcohol #2
+  description: Attaches an -OH group to the more substituted carbon atom of an alkene (Markovnikov addition).
+
+hydroboration_oxidation:
+  name: Hydroboration/oxidation (BH3/[O])
+  smarts_list:
+    - "[CH2:1]=[CH2:2]>>[C:1][C:2][OH]" # ethylene -> ethanol
+    - "[#6:1][CH:2]=[CH2:3]>>[#6:1][C:2][C:3]([OH])" # terminal monosubstituted alkene -> alcohol
+    - "[#6:1][C:2]([#6:4])=[CH2:3]>>[#6:1][C:2]([#6:4])[C:3]([OH])" # terminal 1,1 disubstituted alkene -> alcohol
+    - "[#6:1][C:2]([#6:4])=[CH:3][#6:5]>>[#6:1][C:2]([#6:4])[C:3]([OH])[#6:5]" # internal trisubstituted alkene -> alcohol
+    - "[#6:1][CH:2]=[CH:3][#6:4]>>[#6:1][C:2]([OH])[C:3][#6:4]" # internal 1,2 disubstituted alkene -> alcohol #1
+    - "[#6:1][CH:2]=[CH:3][#6:4]>>[#6:1][C:2][C:3]([OH])[#6:4]" # internal 1,2 disubstituted alkene -> alcohol #2
+    - "[#6:1][C:2]([#6:4])=[C:3]([#6:6])[#6:5]>>[#6:1][C:2]([OH])([#6:4])[C:3]([#6:6])[#6:5]" # internal tetrasubstituted alkene -> alcohol #1
+    - "[#6:1][C:2]([#6:4])=[C:3]([#6:6])[#6:5]>>[#6:1][C:2]([#6:4])[C:3]([OH])([#6:6])[#6:5]" # internal tetrasubstituted alkene -> alcohol #2
+  description: Attaches an -OH group to the less substituted carbon atom of an alkene (Anti-Markovnikov addition).
+
+grignard_reagent:
+  name: Grignard reagent
+  smarts_list:
+    - "[#6:1][Br]>>[#6-:1]" # alkyl bromide -> carbon nucleophile
+  description: Converts an alkyl bromide into a carbon nucleophile for use in Grignard reactions.
+
+socl2_acid_chloride_synthesis:
+  name: SOCl2 (thionyl chloride) acid chloride synthesis
+  smarts_list:
+    - "[#6:1][CX3:2](=[O:3])[OH]>>[#6:1][CX3:2](=[O:3])Cl" # carboxylic acid (NOT formic acid) -> acid chloride
+  description: Converts carboxylic acids into acid chlorides.
+
+deprotonation:
+  name: Deprotonation of alcohols and carboxylic acids
+  smarts_list:
+    - "[#6:1][OX2H:2]>>[#6:1][O-:2]" # Any C-OH bond -> C-[O-] bond. Includes:
+    # alcohol/phenol -> alkoxide/phenoxide anion
+    # carboxylic acid (+formic acid) -> carboxylate anion
+  description: Deprotonates an alcohol into an alkoxide anion and a carboxylic acid into a carboxylate anion.
+
+# Reactions involving multiple reactants
+grignard_reaction:
+  name: Grignard reaction
+  smarts_list:
+    - "[#6-:1].[CH2:2]=O>>[#6-0:1][C:2][OH]" # carbon nucleophile + formaldehyde -> primary alcohol
+    - "[#6-:1].[CX3H1:2](=[O:3])[#6:4]>>[#6-0:1][C:2]([OH:3])[#6:4]" # carbon nucleophile + aldehyde -> secondary alcohol
+    - "[#6-:1].[#6:2][CX3:3](=[O:4])[#6:5]>>[#6:2][CX3:3]([OH:4])([#6-0:1])[#6:5]" # carbon nucleophile + ketone -> tertiary alcohol
+    - "[#6-:1].[#6:2][C:3]#N>>[#6-0:1][C:3](=O)[#6:2]" # carbon nucleophile + nitrile -> ketone
+    - "[#6-:1].O=[C:2]=O>>[#6-0:1][C:2](=O)[OH]" # carbon nucleophile + carbon dioxide -> carboxylic acid
+  multiple_reactants_prompts:
+    - "Enter the SMILES of the carbon nucleophile: "
+    - "Enter the SMILES of carbon dioxide (O=C=O) or an aldehyde, ketone, or nitrile: "
+  description: Converts a carbon nucleophile + (formaldehyde/aldehydes/ketones into primary/secondary/tertiary alcohols), respectively; or a carbon nucleophile + (nitriles/CO2 into ketones/carboxylic acids), respectively.
+
+amide_synthesis_from_acid_chloride:
+  name: Amide synthesis from acid chlorides and amines
+  smarts_list:
+    - "[#6:1][CX3:2](=[O:3])Cl.[NH3:4]>>[#6:1][CX3:2](=[O:3])[NX3H2:4]" # acid chloride + ammonia -> primary amide
+    - "[#6:1][CX3:2](=[O:3])Cl.[#6:4][NX3;H2;!$(NC=O):5]>>[#6:1][CX3:2](=[O:3])[NX3H:5]([#6:4])" # acid chloride + primary amine -> secondary amide
+    - "[#6:1][CX3:2](=[O:3])Cl.[#6:4][NX3;H1;!$(NC=O):5][#6:6]>>[#6:1][CX3:2](=[O:3])[NX3:5]([#6:4])[#6:6]" # acid chloride + secondary amine -> tertiary amide
+  multiple_reactants_prompts:
+    - "Enter the SMILES of the acid chloride: "
+    - "Enter the SMILES of ammonia (N) or a primary/ secondary amine: "
+  description: Converts an acid chloride + (ammonia/ primary/secondary amine into a primary/secondary/tertiary amide), respectively.
+
+ester_synthesis_from_acid_chloride:
+  name: Ester synthesis from acid chlorides and alcohols
+  smarts_list:
+    - "[#6:1][CX3:2](=[O:3])Cl.[CX4H,CX4H2,CX4H3,CX4H0,c:4][OX2H]>>[#6:1][CX3:2](=[O:3])O[#6:4]" # acid chloride + alcohol -> ester
+  multiple_reactants_prompts:
+    - "Enter the SMILES of the acid chloride: "
+    - "Enter the SMILES of the alcohol: "
+  description: Converts an acid chloride + an alcohol into an ester.
+
+fischer_esterification:
+  name: Fischer esterification
+  smarts_list:
+    - "[#6:1][C:2](=[O:3])[OH:4].[CX4H,CX4H2,CX4H3,c:5][OX2H]>>[#6:1][C:2](=[O:3])[O:4][#6:5]" # carboxylic acid + alcohol (not tertiary) -> ester
+  multiple_reactants_prompts:
+    - "Enter the SMILES of the carboxylic acid: "
+    - "Enter the SMILES of the alcohol (not tertiary): "
+  description: Esterifies a carboxylic acid by reacting it with an alcohol.
+
+williamson_ether_synthesis:
+  name: Williamson ether synthesis
+  smarts_list:
+    - "[CH3:1][Br].[CX4H,CX4H2,CX4H3,CX4H0,c:2][O-:3]>>[#6:2][O-0:3][C:1]" # methyl bromide + alkoxide/phenoxide -> methoxy ether
+    - "[#6:1][CH2:2][Br].[CX4H,CX4H2,CX4H3,CX4H0,c:3][O-:4]>>[#6:3][O-0:4][C:2][#6:1]" # primary alkyl bromide + alkoxide/phenoxide -> ether
+    - "[#6:1][CH:2]([#6:3])[Br].[CX4H,CX4H2,CX4H3,CX4H0,c:4][O-:5]>>[#6:4][O-0:5][C:2]([#6:3])[#6:1]" # secondary alkyl bromide + alkoxide/phenoxide -> ether
+  multiple_reactants_prompts:
+    - "Enter the SMILES of the alkyl bromide (primary or secondary): "
+    - "Enter the SMILES of the alkoxide or phenoxide: "
+  description: "Converts a primary/ secondary alkyl bromide + an alkoxide/ phenoxide into an ether."

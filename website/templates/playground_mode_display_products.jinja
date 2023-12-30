@@ -1,0 +1,26 @@
+<div>
+    <div class="image">
+        <span class="material-icons">arrow_downward</span>
+        {{ chosen_reaction.name }}
+    </div>
+</div>
+<div class="image-row" id="productsDiv">
+    {# Assuming multi step products for now #}
+    {% for product in products[0] %}
+        <div class="card text-center border-0" style="width: 18rem">
+            <img src="data:image/png;base64, {{ product }}"
+                 class="card-img-top"
+                 id="product_{{ loop.index0 }}"
+                 alt="{{ product_smiles[0][loop.index0] }}"
+                 onclick="chooseProduct({{ loop.index0 }})">
+        </div>
+        {% if loop.index0 < products[0]|length - 1 %}
+            <div class="plus-icon">
+                <span class="material-icons">add</span>
+            </div>
+        {% endif %}
+    {% endfor %}
+</div>
+{% if products|length != 1 or products[0]|length != 1 %}
+    <span id="multipleProductsPrompt">The products are shown above. Choose a product to analyze next.</span>
+{% endif %}

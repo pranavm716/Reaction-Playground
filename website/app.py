@@ -265,6 +265,13 @@ def playground_mode_choose_product(
     app.state.current_mol = copy_mol(next_mol)
 
 
-@app.get("/reactions/all", response_model=Iterable[Reaction])
+@app.get("/reactions/", response_model=Iterable[Reaction])
 def all_reactions(request: Request):
+    """Returns a list of all available reactions."""
     return ALL_REACTIONS.values()
+
+
+@app.get("/reactions/{reaction_key}", response_model=Reaction)
+def get_reaction(request: Request, reaction_key: ReactionKey):
+    """Gets an individual reaction by its reaction key."""
+    return ALL_REACTIONS[reaction_key]

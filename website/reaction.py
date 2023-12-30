@@ -10,6 +10,10 @@ from rdkit.Chem import AllChem
 
 
 class ReactionKey(StrEnum):
+    """
+    Enum class representing a reaction. Used internally only.
+    """
+
     # Reactions involving a single reactant
     hydrolysis = auto()
     dmp_pcc_oxidation = auto()

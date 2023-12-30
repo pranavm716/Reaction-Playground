@@ -3,11 +3,13 @@ import pathlib
 import pytest
 
 from website.config import ALL_REACTIONS_FILE_PATH, ALL_SUBSTRUCTURES_FILE_PATH
-from website.datatypes import SubstructureDict
 from website.reaction import (
     Reaction,
     read_all_reactions_from_file,
+)
+from website.mol_classification import (
     read_all_substructures_from_file,
+    SubstructureDict,
 )
 
 

@@ -5,7 +5,8 @@ from rdkit import Chem
 from rdkit.Chem.rdchem import Mol
 
 from website.config import MAX_NUM_SOLVER_STEPS
-from website.datatypes import Mol2dTuple, MolTuple, SubstructureDict
+from website.datatypes import Mol2dTuple, MolTuple
+from website.mol_classification import SubstructureDict
 from website.reaction import Reaction
 
 

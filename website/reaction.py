@@ -1,11 +1,36 @@
 import pathlib
+from enum import StrEnum, auto
 from functools import cached_property
 from typing import Iterator
 
 import rdkit.Chem.rdChemReactions as rd
 import yaml
-from pydantic import BaseModel, Field, model_validator, TypeAdapter, ConfigDict
+from pydantic import BaseModel, Field, model_validator, ConfigDict
 from rdkit.Chem import AllChem
+
+
+class ReactionKey(StrEnum):
+    # Reactions involving a single reactant
+    hydrolysis = auto()
+    dmp_pcc_oxidation = auto()
+    h2cr04_oxidation = auto()
+    nabh4_reduction = auto()
+    lialh4_reduction = auto()
+    pbr3_bromination = auto()
+    ozonolysis = auto()
+    nacn_nitrile_synthesis = auto()
+    om_dm = auto()
+    hydroboration_oxidation = auto()
+    grignard_reagent = auto()
+    socl2_acid_chloride_synthesis = auto()
+    deprotonation = auto()
+
+    # Reactions involving multiple reactants
+    grignard_reaction = auto()
+    amide_synthesis_from_acid_chloride = auto()
+    ester_synthesis_from_acid_chloride = auto()
+    fischer_esterification = auto()
+    williamson_ether_synthesis = auto()
 
 
 class Reaction(BaseModel):
@@ -63,11 +88,19 @@ class Reaction(BaseModel):
         yield from self.subreactions
 
 
-def read_all_reactions_from_file(path: pathlib.Path) -> list[Reaction]:
+# Mapping of the reaction key to its pydantic Reaction object
+ReactionDict = dict[ReactionKey, Reaction]
+
+
+def read_all_reactions_from_file(path: pathlib.Path) -> ReactionDict:
     """
-    Returns a list of all available reactions.
+    Returns a dict of all available reactions.
     """
-    reaction_list = yaml.safe_load(path.read_text())
-    ta = TypeAdapter(list[Reaction])
-    all_reactions = ta.validate_python(reaction_list)
+
+    data = yaml.safe_load(path.read_text())
+    all_reactions: ReactionDict = {}
+    for key, reaction_data in data.items():
+        key = ReactionKey(key)
+        all_reactions[key] = Reaction(**reaction_data)
+
     return all_reactions

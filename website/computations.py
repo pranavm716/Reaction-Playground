@@ -4,10 +4,26 @@ from typing import Deque, Generator
 from rdkit import Chem
 from rdkit.Chem.rdchem import Mol
 
-from website.config import MAX_NUM_SOLVER_STEPS
+from website.config import (
+    MAX_NUM_SOLVER_STEPS,
+    ALL_REACTIONS_FILE_PATH,
+    ALL_SUBSTRUCTURES_FILE_PATH,
+)
 from website.datatypes import Mol2dTuple, MolTuple
-from website.mol_classification import SubstructureDict
-from website.reaction import Reaction
+from website.mol_classification import (
+    SubstructureDict,
+    read_all_substructures_from_file,
+)
+from website.reaction import (
+    ReactionKey,
+    ReactionDict,
+    read_all_reactions_from_file,
+)
+
+ALL_REACTIONS: ReactionDict = read_all_reactions_from_file(ALL_REACTIONS_FILE_PATH)
+ALL_SUBSTRUCTURES: SubstructureDict = read_all_substructures_from_file(
+    ALL_SUBSTRUCTURES_FILE_PATH
+)
 
 
 def copy_mol(mol: Mol) -> Mol:
@@ -33,7 +49,7 @@ def generate_unique_products(products: Mol2dTuple) -> Mol2dTuple:
 
 
 def generate_single_step_product(
-    reactants: Mol | MolTuple, reaction: Reaction
+    reactants: Mol | MolTuple, reaction_key: ReactionKey
 ) -> Mol2dTuple:
     """
     Performs a reaction on a molecule once, and returns a 2d tuple of products.
@@ -42,13 +58,13 @@ def generate_single_step_product(
         reactants = (reactants,)
 
     products: Mol2dTuple = tuple()
-    for subreaction in reaction:
+    for subreaction in ALL_REACTIONS[reaction_key]:
         products += subreaction.RunReactants(reactants)
 
     return generate_unique_products(products)
 
 
-def generate_multi_step_product(start_mol: Mol, reaction: Reaction) -> MolTuple:
+def generate_multi_step_product(start_mol: Mol, reaction_key: ReactionKey) -> MolTuple:
     """
     Recursively performs a reaction on a starting molecule and on its products until no more products can be formed.
     Returns the final tuple of products (always 1 x n).
@@ -65,7 +81,7 @@ def generate_multi_step_product(start_mol: Mol, reaction: Reaction) -> MolTuple:
             return
         processed.add(smiles)
 
-        single_step_product = generate_single_step_product(current_mol, reaction)
+        single_step_product = generate_single_step_product(current_mol, reaction_key)
         if not single_step_product:
             yield current_mol
             return
@@ -78,12 +94,15 @@ def generate_multi_step_product(start_mol: Mol, reaction: Reaction) -> MolTuple:
     return tuple(sorted(set(products), key=lambda x: Chem.MolToSmiles(x)))
 
 
-def get_reactant_position_of_mol_in_reaction(mol: Mol, reaction: Reaction) -> int:
+def get_reactant_position_of_mol_in_reaction(
+    mol: Mol, reaction_key: ReactionKey
+) -> int:
     """
     Returns the position of the mol in the reactants of any of the reaction's subreactions.
     Since all the subreactions have the same substructure pattern, we can return the first
     instance of when the mol is found.
     """
+    reaction = ALL_REACTIONS[reaction_key]
     for subreaction in reaction:
         for index, reactant in enumerate(subreaction.GetReactants()):
             if mol.HasSubstructMatch(reactant):
@@ -93,44 +112,37 @@ def get_reactant_position_of_mol_in_reaction(mol: Mol, reaction: Reaction) -> in
     )
 
 
-def find_possible_reactions(
-    start_mol: Mol,
-    all_reactions: list[Reaction],
-    *,
-    solver_mode: bool,
-) -> list[Reaction]:
+def find_possible_reactions(start_mol: Mol, *, solver_mode: bool) -> list[ReactionKey]:
     """
     Returns the reactions that can be performed on the given molecule.
     """
-    possible_reactions = []
-    for reaction in all_reactions:
+    possible_reaction_keys = []
+    for key, reaction in ALL_REACTIONS.items():
         if solver_mode and reaction.num_reactants > 1:
             continue  # Solver mode will omit any reactions with more than one reactant
 
         for subreaction in reaction:
             if subreaction.IsMoleculeReactant(start_mol):
-                possible_reactions.append(reaction)
+                possible_reaction_keys.append(key)
                 break
 
-    return possible_reactions
+    return possible_reaction_keys
 
 
-def get_substructure_classifications(
-    mol: Mol, all_substructures: SubstructureDict
-) -> list[str]:
+def get_substructure_classifications(mol: Mol) -> list[str]:
     """
     Returns a list of classifications (essentially functional groups) that the given mol falls under.
     """
     return [
         name
-        for name, patterns in all_substructures.items()
+        for name, patterns in ALL_SUBSTRUCTURES.items()
         if any(mol.HasSubstructMatch(pattern) for pattern in patterns)
     ]
 
 
 def find_synthetic_pathway(
-    start_mol: Mol, target_mol: Mol, all_reactions: list[Reaction]
-) -> tuple[bool, list[Reaction], list[int]]:
+    start_mol: Mol, target_mol: Mol
+) -> tuple[bool, list[ReactionKey], list[int]]:
     """
     Auto-solver, utilizes multi step products.
     Performs breadth first search (BFS) to find the SHORTEST possible reaction pathway to the target molecule.
@@ -153,9 +165,9 @@ def find_synthetic_pathway(
     }
 
     # The format of this dictionary is:
-    # key = (reactant SMILES, product SMILES) -> value = (reaction, product_index) that converts
+    # key = (reactant SMILES, product SMILES) -> value = (reaction key, product_index) that converts
     # the reactant into the product. Needed to reconstruct the reaction pathway later.
-    choices: dict[tuple[str, str], tuple[Reaction, int]] = {}
+    choices: dict[tuple[str, str], tuple[ReactionKey, int]] = {}
 
     # BFS loop
     dist = 0
@@ -168,14 +180,14 @@ def find_synthetic_pathway(
                 break
 
             possible_reactions = find_possible_reactions(
-                start_mol=cur, all_reactions=all_reactions, solver_mode=True
+                start_mol=cur, solver_mode=True
             )
             all_reactions_products: list[MolTuple] = [
                 generate_multi_step_product(cur, rxn) for rxn in possible_reactions
             ]
 
             # Loop through all compatible reactions
-            for reaction, multi_step_product in zip(
+            for reaction_key, multi_step_product in zip(
                 possible_reactions, all_reactions_products
             ):
                 # Loop through all products of each compatible reaction
@@ -186,7 +198,7 @@ def find_synthetic_pathway(
 
                         parent[Chem.MolToSmiles(mol)] = Chem.MolToSmiles(cur)
                         choices[(Chem.MolToSmiles(cur), Chem.MolToSmiles(mol))] = (
-                            reaction,
+                            reaction_key,
                             product_index,
                         )
         if path_found:

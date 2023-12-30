@@ -1,5 +1,5 @@
 import pathlib
-from contextlib import asynccontextmanager
+from typing import Iterable
 from typing import Annotated
 
 from fastapi import FastAPI, Request, Form, HTTPException
@@ -16,10 +16,10 @@ from website.computations import (
     generate_multi_step_product,
     copy_mol,
     get_reactant_position_of_mol_in_reaction,
+    ALL_REACTIONS,
 )
 from website.config import (
     MAX_NUM_SOLVER_STEPS,
-    ALL_REACTIONS_FILE_PATH,
     MULTI_STEP_REACT_MODE,
 )
 from website.datatypes import Mol2dTuple
@@ -29,20 +29,9 @@ from website.fastapi_rdkit_utils import (
     img_to_base64,
     mol_to_base64,
 )
-from website.reaction import read_all_reactions_from_file, Reaction
+from website.reaction import Reaction
 
-
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    """Loads all reactions from a file."""
-
-    all_reactions = read_all_reactions_from_file(ALL_REACTIONS_FILE_PATH)
-    app.state.all_reactions = all_reactions  # noqa
-
-    yield
-
-
-app = FastAPI(lifespan=lifespan)
+app = FastAPI()
 
 
 # Mount static folder
@@ -97,7 +86,6 @@ async def solver_mode(request: Request, start_mol_smiles: str, target_mol_smiles
 
     start_mol = Chem.MolFromSmiles(start_mol_smiles)
     target_mol = Chem.MolFromSmiles(target_mol_smiles)
-    all_reactions: list[Reaction] = app.state.all_reactions  # noqa
 
     (
         path_found,
@@ -107,7 +95,7 @@ async def solver_mode(request: Request, start_mol_smiles: str, target_mol_smiles
         start_mol_img,
         target_mol_img,
         solver_images,
-    ) = run_solver_mode(start_mol, target_mol, all_reactions)
+    ) = run_solver_mode(start_mol, target_mol)
 
     solver_run_metrics = {
         "path_found": path_found,
@@ -152,12 +140,9 @@ async def playground_mode(request: Request, mol_smiles: str):
 async def playground_mode_choose_reaction(request: Request):
     """Displays the valid reactions for a molecule."""
 
-    all_reactions: list[Reaction] = app.state.all_reactions  # noqa
     current_mol = app.state.current_mol  # noqa
 
-    possible_reactions = find_possible_reactions(
-        current_mol, all_reactions, solver_mode=False
-    )
+    possible_reaction_keys = find_possible_reactions(current_mol, solver_mode=False)
     app.state.possible_reactions = possible_reactions  # noqa
 
     return templates.TemplateResponse(
@@ -166,7 +151,9 @@ async def playground_mode_choose_reaction(request: Request):
             "request": request,
             "current_mol": mol_to_base64(current_mol),
             "current_mol_smiles": Chem.MolToSmiles(current_mol),
-            "possible_reactions": possible_reactions,
+            "possible_reactions": [
+                ALL_REACTIONS[key] for key in possible_reaction_keys
+            ],
         },
     )
 
@@ -279,6 +266,6 @@ def playground_mode_choose_product(
     app.state.current_mol = copy_mol(next_mol)
 
 
-@app.get("/reactions/all", response_model=list[Reaction])
-def all_reactions(request: Request) -> list[Reaction]:
-    return app.state.all_reactions
+@app.get("/reactions/all", response_model=Iterable[Reaction])
+def all_reactions(request: Request):
+    return ALL_REACTIONS.values()

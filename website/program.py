@@ -8,14 +8,15 @@ from website.computations import (
     find_synthetic_pathway,
     generate_multi_step_product,
     get_reactant_position_of_mol_in_reaction,
+    ALL_REACTIONS,
 )
-from website.datatypes import SolverModeImageData, MolTuple
+from website.datatypes import SolverModeImageData
 from website.fastapi_rdkit_utils import construct_mol_image
 from website.reaction import Reaction
 
 
 def run_solver_mode(
-    start_mol: Mol, target_mol: Mol, all_reactions: list[Reaction]
+    start_mol: Mol, target_mol: Mol
 ) -> tuple[bool, int, list[str], list[int], PILImage, PILImage, SolverModeImageData]:
     """
     Runs the auto synthetic pathway solver. Returns information about the calculated synthetic pathway,
@@ -29,18 +30,18 @@ def run_solver_mode(
     solver_images: SolverModeImageData = {}
 
     path_found, reaction_pathway, choice_pathway = find_synthetic_pathway(
-        start_mol, target_mol, all_reactions
+        start_mol, target_mol
     )
     num_steps = len(choice_pathway)
 
     # Reconstruct the synthetic pathway
     reaction_names: list[str] = []
     current_mol = copy_mol(start_mol)
-    for step_number, (reaction, choice) in enumerate(
+    for step_number, (reaction_key, choice) in enumerate(
         zip(reaction_pathway, choice_pathway)
     ):
-        reaction_names.append(reaction.name)
-        products = generate_multi_step_product(current_mol, reaction)
+        reaction_names.append(ALL_REACTIONS[reaction_key].name)
+        products = generate_multi_step_product(current_mol, reaction_key)
 
         product_images = [construct_mol_image(product) for product in products]
         solver_images[step_number] = product_images

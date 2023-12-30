@@ -1,5 +1,4 @@
 import io
-import pathlib
 from unittest.mock import patch
 
 import pytest
@@ -15,10 +14,10 @@ from website.computations import (
     get_reactant_position_of_mol_in_reaction,
     get_substructure_classifications,
 )
-from website.config import ALL_REACTIONS_FILE_PATH
+from website.config import ALL_REACTIONS_FILE_PATH, ALL_SUBSTRUCTURES_FILE_PATH
 from website.datatypes import Mol2dTuple, SmilesTuple, Smiles2dTuple
-from website.mol_classification import SubstructureDict, MolClass
-from website.reaction import Reaction, read_all_reactions_from_file
+from website.mol_classification import MolClass, read_all_substructures_from_file
+from website.reaction import read_all_reactions_from_file, ReactionKey
 
 
 def mol_2d_tuple_to_smiles(mol_2d_tuple: Mol2dTuple) -> Smiles2dTuple:
@@ -74,47 +73,45 @@ def test_generate_unique_products():
 
 
 @pytest.mark.parametrize(
-    ["reactants_smiles", "reaction_index", "single_step_product_smiles"],
+    ["reactants_smiles", "reaction_key", "single_step_product_smiles"],
     [
         [
             "CCO",
-            2,  # H2CrO4 oxidation
+            ReactionKey.h2cr04_oxidation,
             (("CC(=O)O",),),
         ],
         [
             "CO",
-            1,  # DMP oxidation
+            ReactionKey.dmp_pcc_oxidation,
             (("C=O",),),
         ],
         [
             "CCCO",
-            5,  # PBr3 bromination of alcohols
+            ReactionKey.pbr3_bromination,
             (("CCCBr",),),
         ],
         [
             r"C/C=C/C=C(\CC)C1CC1",
-            6,  # Ozonolysis
+            ReactionKey.ozonolysis,
             (("CCC(=O)C1CC1", "C/C=C/C=O"), ("CC=O", r"CC/C(=C\C=O)C1CC1")),
         ],
         [
             ("CC[CH-]C1CC1", "CCC=O"),
-            13,  # Grignard reaction
+            ReactionKey.grignard_reaction,
             (("CCC(O)C(CC)C1CC1",),),
         ],
         [
             ("CCC[C-]", "N#CC1CCCCC1"),
-            13,  # Grignard reaction
+            ReactionKey.grignard_reaction,
             (("CCCCC(=O)C1CCCCC1",),),
         ],
     ],
 )
 def test_generate_single_step_product(
     reactants_smiles: str | SmilesTuple,
-    reaction_index: int,
+    reaction_key: ReactionKey,
     single_step_product_smiles: Smiles2dTuple,
-    all_reactions: list[Reaction],
 ):
-    reaction = all_reactions[reaction_index]
     if isinstance(reactants_smiles, str):
         reactants = Chem.MolFromSmiles(reactants_smiles)
     elif isinstance(reactants_smiles, tuple):
@@ -122,26 +119,37 @@ def test_generate_single_step_product(
     else:
         raise TypeError("reactants_smiles must be of type str or tuple[str].")
 
-    single_step_product = generate_single_step_product(reactants, reaction)
+    single_step_product = generate_single_step_product(reactants, reaction_key)
     assert smiles_2d_tuples_match(
         single_step_product_smiles, mol_2d_tuple_to_smiles(single_step_product)
     )
 
 
 @pytest.mark.parametrize(
-    ["reactant_smiles", "reaction_index", "multi_step_product_smiles"],
+    ["reactant_smiles", "reaction_key", "multi_step_product_smiles"],
     [
-        ["CC(=O)OC1=CCC(=O)C1", 4, ("CCO", "OC1=CCC(O)C1")],  # LiAlH4 reduction
-        ["C=CC", 8, ("CC(C)O",)],  # OM/DM
-        ["C=CC", 9, ("CCCO",)],  # BH3/[O]
+        [
+            "CC(=O)OC1=CCC(=O)C1",
+            ReactionKey.lialh4_reduction,
+            ("CCO", "OC1=CCC(O)C1"),
+        ],
+        ["C=CC", ReactionKey.om_dm, ("CC(C)O",)],
+        ["C=CC", ReactionKey.hydroboration_oxidation, ("CCCO",)],
         [
             "C=C(C#CCC1CC1)/C=C/C(C#CC/C=C/C)=C(/C)CC",
-            6,
-            ("C=O", "CCC(C)=O", "CC=O", "O=CC(=O)C(=O)O", "O=CCC(=O)O", "O=C(O)CC1CC1"),
-        ],  # Ozonolysis,
+            ReactionKey.ozonolysis,
+            (
+                "C=O",
+                "CCC(C)=O",
+                "CC=O",
+                "O=CC(=O)C(=O)O",
+                "O=CCC(=O)O",
+                "O=C(O)CC1CC1",
+            ),
+        ],
         [
             "C=C(C#CCC1CC1)/C=C/C(C#CC/C=C/C)=C(/C)CC",
-            8,
+            ReactionKey.om_dm,
             (
                 "CCC(C)(O)C(C#CCCC(C)O)C(O)CC(C)(O)C#CCC1CC1",
                 "CCC(C)(O)C(C#CCCC(C)O)CC(O)C(C)(O)C#CCC1CC1",
@@ -152,69 +160,92 @@ def test_generate_single_step_product(
                 "CCC(O)CC#CC(O)(C(C)CC)C(O)CC(C)(O)C#CCC1CC1",
                 "CCC(O)CC#CC(O)(CC(O)C(C)(O)C#CCC1CC1)C(C)CC",
             ),
-        ],  # OM/DM
+        ],
     ],
 )
 def test_generate_multi_step_product(
     reactant_smiles: str,
-    reaction_index: int,
+    reaction_key: ReactionKey,
     multi_step_product_smiles: SmilesTuple,
-    all_reactions: list[Reaction],
 ):
     start_mol = Chem.MolFromSmiles(reactant_smiles)
-    reaction = all_reactions[reaction_index]
-    multi_step_product = generate_multi_step_product(start_mol, reaction)
+    multi_step_product = generate_multi_step_product(start_mol, reaction_key)
     assert set(multi_step_product_smiles) == set(
         Chem.MolToSmiles(p) for p in multi_step_product
     )
 
 
 @pytest.mark.parametrize(
-    ["reactant_smiles", "reaction_index", "reactant_position"],
+    ["reactant_smiles", "reaction_key", "reactant_position"],
     [
-        ["BrCC1CCCC1", 7, 0],  # NaCN nitrile synthesis
-        ["CCCO", -1, 2],  # A made up reaction
-        ["C#CCC(O)C#C", 13, None],  # Grignard reaction
+        ["BrCC1CCCC1", ReactionKey.nacn_nitrile_synthesis, 0],
+        ["C#CCC(O)C#C", ReactionKey.grignard_reaction, None],
     ],
 )
 def test_get_reactant_position(
     reactant_smiles: str,
-    reaction_index: int,
+    reaction_key: ReactionKey,
     reactant_position: int | None,
-    all_reactions: list[Reaction],
 ):
     mol = Chem.MolFromSmiles(reactant_smiles)
-    reaction = all_reactions[reaction_index]
 
     if reactant_position is None:
         with pytest.raises(ValueError):
-            get_reactant_position_of_mol_in_reaction(mol, reaction)
+            get_reactant_position_of_mol_in_reaction(mol, reaction_key)
     else:
         assert (
-            get_reactant_position_of_mol_in_reaction(mol, reaction) == reactant_position
+            get_reactant_position_of_mol_in_reaction(mol, reaction_key)
+            == reactant_position
         )
 
 
 @pytest.mark.parametrize(
-    ["start_mol_smiles", "solver_mode", "possible_reactions_indices"],
+    ["start_mol_smiles", "solver_mode", "expected_possible_reactions_keys"],
     [
-        [r"C/C(C)=C\C=O", True, [2, 3, 4, 6, 8, 9]],
-        [r"C/C(C)=C\C=O", False, [2, 3, 4, 6, 8, 9, 13, -1]],
-        ["COC(=O)C1C#CCC1", False, [0, 4, 6]],
+        [
+            r"C/C(C)=C\C=O",
+            True,
+            [
+                ReactionKey.h2cr04_oxidation,
+                ReactionKey.nabh4_reduction,
+                ReactionKey.lialh4_reduction,
+                ReactionKey.ozonolysis,
+                ReactionKey.om_dm,
+                ReactionKey.hydroboration_oxidation,
+            ],
+        ],
+        [
+            r"C/C(C)=C\C=O",
+            False,
+            [
+                ReactionKey.h2cr04_oxidation,
+                ReactionKey.nabh4_reduction,
+                ReactionKey.lialh4_reduction,
+                ReactionKey.ozonolysis,
+                ReactionKey.om_dm,
+                ReactionKey.hydroboration_oxidation,
+                ReactionKey.grignard_reaction,
+            ],
+        ],
+        [
+            "COC(=O)C1C#CCC1",
+            False,
+            [
+                ReactionKey.hydrolysis,
+                ReactionKey.lialh4_reduction,
+                ReactionKey.ozonolysis,
+            ],
+        ],
     ],
 )
 def test_find_possible_reactions(
     start_mol_smiles: str,
     solver_mode: bool,
-    possible_reactions_indices: list[int],
-    all_reactions: list[Reaction],
+    expected_possible_reactions_keys: list[ReactionKey],
 ):
     start_mol = Chem.MolFromSmiles(start_mol_smiles)
-    possible_reactions = find_possible_reactions(
-        start_mol, all_reactions, solver_mode=solver_mode
-    )
-    correct_possible_reactions = [all_reactions[i] for i in possible_reactions_indices]
-    assert possible_reactions == correct_possible_reactions
+    possible_reactions = find_possible_reactions(start_mol, solver_mode=solver_mode)
+    assert possible_reactions == expected_possible_reactions_keys
 
 
 @pytest.mark.parametrize(
@@ -222,7 +253,7 @@ def test_find_possible_reactions(
         "start_mol_smiles",
         "target_mol_smiles",
         "path_found",
-        "reaction_pathway_indices",
+        "reaction_pathway_keys",
         "choice_pathway",
     ],
     [
@@ -230,14 +261,24 @@ def test_find_possible_reactions(
             "CC(=O)OC1=CCC(=O)C1",
             "OCC1CC=C(O)C1",
             True,
-            [3, 5, 7, 0, 4],
+            [
+                ReactionKey.nabh4_reduction,
+                ReactionKey.pbr3_bromination,
+                ReactionKey.nacn_nitrile_synthesis,
+                ReactionKey.hydrolysis,
+                ReactionKey.lialh4_reduction,
+            ],
             [0, 0, 0, 1, 0],
         ],
         [
             "OC1CC1C2C#CC2",
             "O=CCC1CC1=O",
             True,
-            [6, 4, 1],
+            [
+                ReactionKey.ozonolysis,
+                ReactionKey.lialh4_reduction,
+                ReactionKey.dmp_pcc_oxidation,
+            ],
             [1, 0, 0],
         ],
         [
@@ -258,7 +299,15 @@ def test_find_possible_reactions(
             "C=C(C#CCC1CC1)/C=C/C(C#CC/C=C/C)=C(/C)CC",
             "CCC(C)C(O)(CC(=O)Cl)C(CC(C)(O)CC(=O)Cl)C(=O)Cl",
             True,
-            [8, 6, 4, 5, 7, 0, 11],
+            [
+                ReactionKey.om_dm,
+                ReactionKey.ozonolysis,
+                ReactionKey.lialh4_reduction,
+                ReactionKey.pbr3_bromination,
+                ReactionKey.nacn_nitrile_synthesis,
+                ReactionKey.hydrolysis,
+                ReactionKey.socl2_acid_chloride_synthesis,
+            ],
             [2, 1, 0, 0, 0, 0, 0],
             marks=pytest.mark.slow,
         ),
@@ -268,23 +317,20 @@ def test_find_synthetic_pathway(
     start_mol_smiles: str,
     target_mol_smiles: str,
     path_found: bool,
-    reaction_pathway_indices: list[int],
+    reaction_pathway_keys: list[ReactionKey],
     choice_pathway: list[int],
-    all_reactions: list[Reaction],
 ):
     start_mol = Chem.MolFromSmiles(start_mol_smiles)
     target_mol = Chem.MolFromSmiles(target_mol_smiles)
 
     (
         retrieved_path_found,
-        retrieved_reaction_pathway,
+        retrieved_reaction_pathway_keys,
         retrieved_choice_pathway,
-    ) = find_synthetic_pathway(start_mol, target_mol, all_reactions)
+    ) = find_synthetic_pathway(start_mol, target_mol)
 
     assert retrieved_path_found == path_found
-    assert retrieved_reaction_pathway == [
-        all_reactions[i] for i in reaction_pathway_indices
-    ]
+    assert retrieved_reaction_pathway_keys == reaction_pathway_keys
     assert retrieved_choice_pathway == choice_pathway
 
 
@@ -349,23 +395,16 @@ def test_find_synthetic_pathway(
 def test_substructure_classifications(
     mol_smiles: str,
     expected_substructures: list[str],
-    all_substructures: SubstructureDict,
 ):
     mol = Chem.MolFromSmiles(mol_smiles)
-    assert set(get_substructure_classifications(mol, all_substructures)) == set(
-        expected_substructures
-    )
+    assert set(get_substructure_classifications(mol)) == set(expected_substructures)
 
 
-def test_all_reactions_are_configured_properly():
-    """Ensures that rdkit does not throw any warnings when parsing all the reactions."""
+def test_data_is_configured_properly():
+    """Ensures that rdkit does not throw any warnings when parsing all the reactions and the substructures."""
     rdBase.LogToPythonStderr()
     with patch("sys.stderr", new_callable=io.StringIO) as s:
-        all_reactions_file_path = (
-            pathlib.Path(__file__).resolve().parent.parent
-            / "website"
-            / ALL_REACTIONS_FILE_PATH
-        )
-        read_all_reactions_from_file(all_reactions_file_path)
+        read_all_reactions_from_file(ALL_REACTIONS_FILE_PATH)
+        read_all_substructures_from_file(ALL_SUBSTRUCTURES_FILE_PATH)
 
     assert not s.getvalue()

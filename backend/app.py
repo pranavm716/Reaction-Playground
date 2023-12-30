@@ -4,6 +4,7 @@ from typing import Annotated
 from fastapi import FastAPI, Request, Form, HTTPException
 from rdkit import Chem
 from rdkit.Chem.rdchem import Mol
+from starlette.middleware.cors import CORSMiddleware
 from starlette.responses import HTMLResponse, RedirectResponse
 from starlette.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
@@ -33,7 +34,17 @@ from backend.fastapi_rdkit_utils import (
 )
 from backend.reaction import Reaction, ReactionKey
 
+
 app = FastAPI()
+
+# Add middleware to interface with Vue
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:8080"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 # Mount static folder
@@ -265,7 +276,7 @@ def playground_mode_choose_product(
     app.state.current_mol = copy_mol(next_mol)
 
 
-@app.get("/reactions/", response_model=Iterable[Reaction])
+@app.get("/reactions", response_model=Iterable[Reaction])
 def all_reactions(request: Request):
     """Returns a list of all available reactions."""
     return ALL_REACTIONS.values()

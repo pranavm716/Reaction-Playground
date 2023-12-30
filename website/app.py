@@ -1,4 +1,3 @@
-import pathlib
 from typing import Iterable
 from typing import Annotated
 
@@ -21,6 +20,8 @@ from website.computations import (
 from website.config import (
     MAX_NUM_SOLVER_STEPS,
     MULTI_STEP_REACT_MODE,
+    STATIC_DIR,
+    TEMPLATES_DIR,
 )
 from website.datatypes import Mol2dTuple
 from website.fastapi_rdkit_utils import (
@@ -35,12 +36,10 @@ app = FastAPI()
 
 
 # Mount static folder
-static_dir = pathlib.Path(__file__).parent.resolve() / "static"
-app.mount("/static", StaticFiles(directory=static_dir), name="static")
+app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
 # Create jinja2 template engine
-templates_dir = pathlib.Path(__file__).parent.resolve() / "templates"
-templates = Jinja2Templates(directory=templates_dir)
+templates = Jinja2Templates(directory=TEMPLATES_DIR)
 
 
 @app.get("/", response_class=HTMLResponse)

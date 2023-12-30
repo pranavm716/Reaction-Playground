@@ -77,7 +77,7 @@ def test_generate_unique_products():
     [
         [
             "CCO",
-            ReactionKey.h2cr04_oxidation,
+            ReactionKey.h2cro4_oxidation,
             (("CC(=O)O",),),
         ],
         [
@@ -206,7 +206,7 @@ def test_get_reactant_position(
             r"C/C(C)=C\C=O",
             True,
             [
-                ReactionKey.h2cr04_oxidation,
+                ReactionKey.h2cro4_oxidation,
                 ReactionKey.nabh4_reduction,
                 ReactionKey.lialh4_reduction,
                 ReactionKey.ozonolysis,
@@ -218,7 +218,7 @@ def test_get_reactant_position(
             r"C/C(C)=C\C=O",
             False,
             [
-                ReactionKey.h2cr04_oxidation,
+                ReactionKey.h2cro4_oxidation,
                 ReactionKey.nabh4_reduction,
                 ReactionKey.lialh4_reduction,
                 ReactionKey.ozonolysis,

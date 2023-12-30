@@ -15,7 +15,7 @@ dmp_pcc_oxidation:
     - "[#6:1][CH:2]([#6:3])[OH:4]>>[#6:1][C:2](=[O:4])[#6:3]" # secondary alcohol -> ketone
   description: Oxidizes primary alcohols to aldehydes and secondary alcohols to ketones.
 
-h2cr04_oxidation:
+h2cro4_oxidation:
   name: H2CrO4 (chromic acid) oxidation of alcohols and aldehydes
   smarts_list:
     - "[CH3:1][OH:2]>>[C:1](=O)[OH:2]" # methanol -> formic acid

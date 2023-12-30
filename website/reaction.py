@@ -13,7 +13,7 @@ class ReactionKey(StrEnum):
     # Reactions involving a single reactant
     hydrolysis = auto()
     dmp_pcc_oxidation = auto()
-    h2cr04_oxidation = auto()
+    h2cro4_oxidation = auto()
     nabh4_reduction = auto()
     lialh4_reduction = auto()
     pbr3_bromination = auto()

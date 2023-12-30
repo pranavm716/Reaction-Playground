@@ -10,12 +10,13 @@ from starlette.templating import Jinja2Templates
 
 from program import run_solver_mode, get_missing_reactant_prompts
 from website.computations import (
-    find_possible_reactions,
+    find_possible_reaction_keys,
     generate_single_step_product,
     generate_multi_step_product,
     copy_mol,
     get_reactant_position_of_mol_in_reaction,
     ALL_REACTIONS,
+    get_reactions_from_keys,
 )
 from website.config import (
     MAX_NUM_SOLVER_STEPS,
@@ -30,7 +31,7 @@ from website.fastapi_rdkit_utils import (
     img_to_base64,
     mol_to_base64,
 )
-from website.reaction import Reaction
+from website.reaction import Reaction, ReactionKey
 
 app = FastAPI()
 
@@ -129,8 +130,8 @@ async def playground_mode(request: Request, mol_smiles: str):
     Starts the playground mode loop, where users can experiment with applying reactions freely to molecules.
     """
 
-    current_mol = Chem.MolFromSmiles(mol_smiles)
-    app.state.current_mol = current_mol  # noqa
+    current_mol: Mol = Chem.MolFromSmiles(mol_smiles)
+    app.state.current_mol = current_mol
 
     return templates.TemplateResponse("playground_mode.jinja", {"request": request})
 
@@ -139,10 +140,10 @@ async def playground_mode(request: Request, mol_smiles: str):
 async def playground_mode_choose_reaction(request: Request):
     """Displays the valid reactions for a molecule."""
 
-    current_mol = app.state.current_mol  # noqa
+    current_mol: Mol = app.state.current_mol
 
-    possible_reaction_keys = find_possible_reactions(current_mol, solver_mode=False)
-    app.state.possible_reactions = possible_reactions  # noqa
+    possible_reaction_keys = find_possible_reaction_keys(current_mol, solver_mode=False)
+    app.state.possible_reaction_keys = possible_reaction_keys
 
     return templates.TemplateResponse(
         "playground_mode_choose_reaction.jinja",
@@ -150,9 +151,7 @@ async def playground_mode_choose_reaction(request: Request):
             "request": request,
             "current_mol": mol_to_base64(current_mol),
             "current_mol_smiles": Chem.MolToSmiles(current_mol),
-            "possible_reactions": [
-                ALL_REACTIONS[key] for key in possible_reaction_keys
-            ],
+            "possible_reactions": get_reactions_from_keys(possible_reaction_keys),
         },
     )
 
@@ -163,29 +162,30 @@ async def playground_mode_display_products(
 ):
     """Displays the products that result from running the chosen reaction."""
 
-    current_mol = app.state.current_mol  # noqa
-    possible_reactions = app.state.possible_reactions  # noqa
+    current_mol: Mol = app.state.current_mol
+    possible_reaction_keys: list[ReactionKey] = app.state.possible_reaction_keys
 
-    if choice in {str(i) for i in range(len(possible_reactions))}:
-        chosen_reaction = possible_reactions[int(choice)]
-        app.state.chosen_reaction = chosen_reaction  # noqa
+    if choice in {str(i) for i in range(len(possible_reaction_keys))}:
+        chosen_reaction_key = possible_reaction_keys[int(choice)]
+        app.state.chosen_reaction_key = chosen_reaction_key
     else:
         raise HTTPException(
             status_code=404, detail=f"Invalid reaction choice {choice!r}."
         )
 
+    chosen_reaction = ALL_REACTIONS[chosen_reaction_key]
     if chosen_reaction.num_reactants > 1:
         # Handling the reactions that require additional reactants (need to prompt user)
-        prompts = get_missing_reactant_prompts(current_mol, chosen_reaction)
+        prompts = get_missing_reactant_prompts(current_mol, chosen_reaction_key)
         return templates.TemplateResponse(
             "playground_mode_add_reactants.jinja",
             {"request": request, "prompts": prompts},
         )
     elif not MULTI_STEP_REACT_MODE:
-        products = generate_single_step_product(current_mol, chosen_reaction)
+        products = generate_single_step_product(current_mol, chosen_reaction_key)
     else:
-        products = (generate_multi_step_product(current_mol, chosen_reaction),)
-    app.state.products = products  # noqa
+        products = (generate_multi_step_product(current_mol, chosen_reaction_key),)
+    app.state.products = products
 
     return templates.TemplateResponse(
         "playground_mode_display_products.jinja",
@@ -214,25 +214,25 @@ def playground_mode_process_added_reactants(
     """
 
     # TODO: single step products are still not supported in the UI
-    current_mol: Mol = app.state.current_mol  # noqa
-    chosen_reaction: Reaction = app.state.chosen_reaction  # noqa
+    current_mol: Mol = app.state.current_mol
+    chosen_reaction_key: ReactionKey = app.state.chosen_reaction_key
 
     reactants: list[Mol] = [
         Chem.MolFromSmiles(smiles) for smiles in extra_reactant_smiles
     ]
     reactant_position = get_reactant_position_of_mol_in_reaction(
-        current_mol, chosen_reaction
+        current_mol, chosen_reaction_key
     )
     reactants.insert(reactant_position, current_mol)
 
-    products = generate_single_step_product(tuple(reactants), chosen_reaction)
-    app.state.products = products  # noqa
+    products = generate_single_step_product(tuple(reactants), chosen_reaction_key)
+    app.state.products = products
 
     return templates.TemplateResponse(
         "playground_mode_display_products.jinja",
         {
             "request": request,
-            "chosen_reaction": app.state.chosen_reaction,  # noqa
+            "chosen_reaction": ALL_REACTIONS[chosen_reaction_key],
             "products": [
                 [mol_to_base64(product) for product in scenario]
                 for scenario in products
@@ -252,7 +252,7 @@ def playground_mode_choose_product(
     """Updates the app's state with the chosen product."""
 
     # Assume multi step react mode for now
-    products: Mol2dTuple = app.state.products  # noqa
+    products: Mol2dTuple = app.state.products
     if product_index not in {str(i) for i in range(len(products[0]))}:
         raise HTTPException(
             status_code=404, detail=f"Invalid product index {product_index!r}"

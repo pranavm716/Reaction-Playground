@@ -18,6 +18,7 @@ from website.reaction import (
     ReactionKey,
     ReactionDict,
     read_all_reactions_from_file,
+    Reaction,
 )
 
 ALL_REACTIONS: ReactionDict = read_all_reactions_from_file(ALL_REACTIONS_FILE_PATH)
@@ -112,10 +113,13 @@ def get_reactant_position_of_mol_in_reaction(
     )
 
 
-def find_possible_reactions(start_mol: Mol, *, solver_mode: bool) -> list[ReactionKey]:
+def find_possible_reaction_keys(
+    start_mol: Mol, *, solver_mode: bool
+) -> list[ReactionKey]:
     """
-    Returns the reactions that can be performed on the given molecule.
+    Returns the keys of the reactions that can be performed on the given molecule.
     """
+
     possible_reaction_keys = []
     for key, reaction in ALL_REACTIONS.items():
         if solver_mode and reaction.num_reactants > 1:
@@ -127,6 +131,10 @@ def find_possible_reactions(start_mol: Mol, *, solver_mode: bool) -> list[Reacti
                 break
 
     return possible_reaction_keys
+
+
+def get_reactions_from_keys(reaction_keys: list[ReactionKey]) -> list[Reaction]:
+    return [ALL_REACTIONS[key] for key in reaction_keys]
 
 
 def get_substructure_classifications(mol: Mol) -> list[str]:
@@ -179,16 +187,16 @@ def find_synthetic_pathway(
                 path_found = True
                 break
 
-            possible_reactions = find_possible_reactions(
+            possible_reaction_keys = find_possible_reaction_keys(
                 start_mol=cur, solver_mode=True
             )
             all_reactions_products: list[MolTuple] = [
-                generate_multi_step_product(cur, rxn) for rxn in possible_reactions
+                generate_multi_step_product(cur, key) for key in possible_reaction_keys
             ]
 
             # Loop through all compatible reactions
             for reaction_key, multi_step_product in zip(
-                possible_reactions, all_reactions_products
+                possible_reaction_keys, all_reactions_products
             ):
                 # Loop through all products of each compatible reaction
                 for product_index, mol in enumerate(multi_step_product):

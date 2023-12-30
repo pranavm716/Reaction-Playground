@@ -12,7 +12,7 @@ from website.computations import (
 )
 from website.datatypes import SolverModeImageData
 from website.fastapi_rdkit_utils import construct_mol_image
-from website.reaction import Reaction
+from website.reaction import ReactionKey
 
 
 def run_solver_mode(
@@ -59,12 +59,19 @@ def run_solver_mode(
     )
 
 
-def get_missing_reactant_prompts(current_mol: Mol, reaction: Reaction) -> list[str]:
+def get_missing_reactant_prompts(
+    current_mol: Mol, reaction_key: ReactionKey
+) -> list[str]:
     """
     This method will return the prompts for reactions that require additional reactants.
     """
 
-    reactant_position = get_reactant_position_of_mol_in_reaction(current_mol, reaction)
+    reactant_position = get_reactant_position_of_mol_in_reaction(
+        current_mol, reaction_key
+    )
+
+    reaction = ALL_REACTIONS[reaction_key]
     multiple_reactant_prompts = copy.copy(reaction.multiple_reactants_prompts)
     multiple_reactant_prompts.pop(reactant_position)
+
     return multiple_reactant_prompts

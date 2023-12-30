@@ -6,7 +6,7 @@ from rdkit import Chem, rdBase
 
 from website.computations import (
     copy_mol,
-    find_possible_reactions,
+    find_possible_reaction_keys,
     find_synthetic_pathway,
     generate_multi_step_product,
     generate_single_step_product,
@@ -238,14 +238,16 @@ def test_get_reactant_position(
         ],
     ],
 )
-def test_find_possible_reactions(
+def test_find_possible_reaction_keys(
     start_mol_smiles: str,
     solver_mode: bool,
     expected_possible_reactions_keys: list[ReactionKey],
 ):
     start_mol = Chem.MolFromSmiles(start_mol_smiles)
-    possible_reactions = find_possible_reactions(start_mol, solver_mode=solver_mode)
-    assert possible_reactions == expected_possible_reactions_keys
+    possible_reaction_keys = find_possible_reaction_keys(
+        start_mol, solver_mode=solver_mode
+    )
+    assert possible_reaction_keys == expected_possible_reactions_keys
 
 
 @pytest.mark.parametrize(

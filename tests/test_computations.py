@@ -6,7 +6,7 @@ from tests.utils import (
     smiles_2d_tuple_to_mols,
     smiles_2d_tuples_match,
 )
-from website.computations import (
+from backend.computations import (
     copy_mol,
     find_possible_reaction_keys,
     find_synthetic_pathway,
@@ -16,9 +16,9 @@ from website.computations import (
     get_reactant_position_of_mol_in_reaction,
     get_substructure_classifications,
 )
-from website.datatypes import SmilesTuple, Smiles2dTuple
-from website.mol_classification import MolClass
-from website.reaction import ReactionKey
+from backend.datatypes import SmilesTuple, Smiles2dTuple
+from backend.mol_classification import MolClass
+from backend.reaction import ReactionKey
 
 
 class TestComputationUtils:

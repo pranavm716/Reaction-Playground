@@ -1,6 +1,6 @@
 from rdkit import Chem
 
-from website.datatypes import Mol2dTuple, Smiles2dTuple
+from backend.datatypes import Mol2dTuple, Smiles2dTuple
 
 
 def mol_2d_tuple_to_smiles(mol_2d_tuple: Mol2dTuple) -> Smiles2dTuple:

@@ -9,7 +9,7 @@ from starlette.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
 
 from program import run_solver_mode, get_missing_reactant_prompts
-from website.computations import (
+from backend.computations import (
     find_possible_reaction_keys,
     generate_single_step_product,
     generate_multi_step_product,
@@ -18,20 +18,20 @@ from website.computations import (
     ALL_REACTIONS,
     get_reactions_from_keys,
 )
-from website.config import (
+from backend.config import (
     MAX_NUM_SOLVER_STEPS,
     MULTI_STEP_REACT_MODE,
     STATIC_DIR,
     TEMPLATES_DIR,
 )
-from website.datatypes import Mol2dTuple
-from website.fastapi_rdkit_utils import (
+from backend.datatypes import Mol2dTuple
+from backend.fastapi_rdkit_utils import (
     start_and_target_mols_are_valid,
     construct_query_url,
     img_to_base64,
     mol_to_base64,
 )
-from website.reaction import Reaction, ReactionKey
+from backend.reaction import Reaction, ReactionKey
 
 app = FastAPI()
 

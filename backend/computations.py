@@ -4,17 +4,17 @@ from typing import Deque, Generator
 from rdkit import Chem
 from rdkit.Chem.rdchem import Mol
 
-from website.config import (
+from backend.config import (
     MAX_NUM_SOLVER_STEPS,
     ALL_REACTIONS_FILE_PATH,
     ALL_SUBSTRUCTURES_FILE_PATH,
 )
-from website.datatypes import Mol2dTuple, MolTuple
-from website.mol_classification import (
+from backend.datatypes import Mol2dTuple, MolTuple
+from backend.mol_classification import (
     SubstructureDict,
     read_all_substructures_from_file,
 )
-from website.reaction import (
+from backend.reaction import (
     ReactionKey,
     ReactionDict,
     read_all_reactions_from_file,

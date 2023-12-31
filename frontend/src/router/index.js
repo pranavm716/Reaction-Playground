@@ -1,11 +1,29 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+import PlaygroundMode from '../views/PlaygroundMode.vue'
+import SolverMode from '../views/SolverMode.vue'
+import MolClassifier from '../views/MolClassifier.vue'
 
 const routes = [
   {
     path: '/',
     name: 'home',
     component: HomeView
+  },
+  {
+    path: '/playground-mode',
+    name: 'playgroundMode',
+    component: PlaygroundMode
+  },
+  {
+    path: '/solver-mode',
+    name: 'solverMode',
+    component: SolverMode
+  },
+  {
+    path: '/analyze-molecule',
+    name: 'molClassifier',
+    component: MolClassifier
   }
 ]
 

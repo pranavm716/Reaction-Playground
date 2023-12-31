@@ -1,5 +1,5 @@
 <template>
-  <h1>Home</h1>
+  <p>solver mode</p>
 </template>
 
 <script>

@@ -27,7 +27,8 @@ export default defineComponent(
       }
     },
     mounted () {
-      if (document.getElementById('my-jsme')) return // was already loaded
+      // TODO: Find out if the component can stay without the script tags getting re-added
+      // if (document.getElementById('my-jsme')) return // was already loaded
       const jsmeScript = document.createElement('script')
       jsmeScript.src = 'jsme/jsme.nocache.js'
       jsmeScript.type = 'text/javascript'
@@ -36,6 +37,7 @@ export default defineComponent(
       document.head.appendChild(jsmeScript)
 
       const jsmeOnLoad = document.createElement('script')
+      jsmeOnLoad.id = 'jsmeOnLoadScript'
       jsmeOnLoad.innerHTML = `
         function jsmeOnLoad() {
             jsmeApplet = new JSApplet.JSME("${this.jsmeContainerName}", "380px", "340px");

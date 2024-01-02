@@ -9,6 +9,17 @@ import base64
 from PIL.Image import Image as PILImage
 
 
+def smiles_to_base64(smiles: str) -> str:
+    mol = Chem.MolFromSmiles(smiles)
+    img = Draw.MolToImage(mol)
+
+    buffered = BytesIO()
+    img.save(buffered, format="PNG")
+    image_data = base64.b64encode(buffered.getvalue()).decode("utf-8")
+    return image_data
+
+
+# old
 def start_and_target_mols_are_valid(
     start_mol_smiles: str, target_mol_smiles: str | None = None
 ) -> bool:

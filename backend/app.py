@@ -31,9 +31,9 @@ from backend.fastapi_rdkit_utils import (
     construct_query_url,
     img_to_base64,
     mol_to_base64,
+    smiles_to_base64,
 )
-from backend.reaction import Reaction, ReactionKey
-
+from backend.reaction import Reaction, ReactionKey, ReactionDict
 
 app = FastAPI()
 
@@ -52,6 +52,26 @@ app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
 # Create jinja2 template engine
 templates = Jinja2Templates(directory=TEMPLATES_DIR)
+
+
+@app.get("/reactions", response_model=ReactionDict)
+def all_reactions() -> ReactionDict:
+    """Returns a list of all available reactions."""
+    return ALL_REACTIONS
+
+
+@app.get("/reactions/{reaction_key}", response_model=ReactionDict)
+def get_reaction(reaction_key: ReactionKey) -> ReactionDict:
+    """Gets an individual reaction by its reaction key."""
+    return {reaction_key: ALL_REACTIONS[reaction_key]}
+
+
+@app.get("/mol/get-image", response_model=str)
+def get_mol_images(mol_smiles: str) -> str:
+    return smiles_to_base64(mol_smiles)
+
+
+# old
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -274,15 +294,3 @@ def playground_mode_choose_product(
 
     next_mol = products[scenario_index][product_index]
     app.state.current_mol = copy_mol(next_mol)
-
-
-@app.get("/reactions", response_model=Iterable[Reaction])
-def all_reactions(request: Request):
-    """Returns a list of all available reactions."""
-    return ALL_REACTIONS.values()
-
-
-@app.get("/reactions/{reaction_key}", response_model=Reaction)
-def get_reaction(request: Request, reaction_key: ReactionKey):
-    """Gets an individual reaction by its reaction key."""
-    return ALL_REACTIONS[reaction_key]

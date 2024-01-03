@@ -10,6 +10,13 @@ from PIL.Image import Image as PILImage
 
 
 def smiles_to_base64(smiles: str) -> str:
+    if not smiles:
+        raise ValueError("SMILES cannot be empty.")
+    if "." in smiles:
+        raise ValueError(
+            f"SMILES must contain only one molecule. Received {smiles.count(".")} molecules."
+        )
+
     mol = Chem.MolFromSmiles(smiles)
     img = Draw.MolToImage(mol)
 

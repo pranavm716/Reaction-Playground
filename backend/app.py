@@ -68,7 +68,12 @@ def get_reaction(reaction_key: ReactionKey) -> ReactionDict:
 
 @app.get("/mol/get-image", response_model=str)
 def get_mol_images(mol_smiles: str) -> str:
-    return smiles_to_base64(mol_smiles)
+    try:
+        return smiles_to_base64(mol_smiles)
+    except (TypeError, ValueError):  # Something went wrong while parsing the SMILES
+        raise HTTPException(
+            status_code=400, detail=f"Invalid molecule SMILES provided: {mol_smiles!r}."
+        )
 
 
 # old

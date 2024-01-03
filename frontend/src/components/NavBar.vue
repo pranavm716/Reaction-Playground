@@ -1,5 +1,5 @@
 <template>
-  <v-app-bar color="#2980B9" class="nav-bar" :elevation="4">
+  <v-app-bar :color="$route.meta.navBarColor" class="nav-bar" :elevation="4" :style="{ transition: 'background-color 0.35s' }">
     <v-app-bar-nav-icon icon="mdi-react" @click="redirectHome"></v-app-bar-nav-icon>
     <v-app-bar-title class="nav-bar-title" @click="redirectHome">Reaction Playground</v-app-bar-title>
 
@@ -31,9 +31,9 @@ export default defineComponent({
   data () {
     return {
       navBarItems: [
-        { icon: 'mdi-graph-outline', text: 'Play', routeName: 'playgroundMode' },
-        { icon: 'mdi-puzzle-outline', text: 'Solve', routeName: 'solverMode' },
-        { icon: 'mdi-text-box-search-outline', text: 'Analyze', routeName: 'molClassifier' }
+        { icon: 'mdi-flask-outline', text: 'Playground', routeName: 'playgroundMode' },
+        { icon: 'mdi-puzzle-outline', text: 'Solver', routeName: 'solverMode' },
+        { icon: 'mdi-text-box-search-outline', text: 'Classifier', routeName: 'molClassifier' }
       ]
     }
   },

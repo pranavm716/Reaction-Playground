@@ -8,22 +8,26 @@ const routes = [
   {
     path: '/',
     name: 'home',
-    component: HomeView
+    component: HomeView,
+    meta: { navBarColor: 'light-blue-darken-4' }
   },
   {
     path: '/playground-mode',
     name: 'playgroundMode',
-    component: PlaygroundMode
+    component: PlaygroundMode,
+    meta: { navBarColor: 'light-blue-darken-3' }
   },
   {
     path: '/solver-mode',
     name: 'solverMode',
-    component: SolverMode
+    component: SolverMode,
+    meta: { navBarColor: 'red-darken-1' }
   },
   {
     path: '/analyze-molecule',
     name: 'molClassifier',
-    component: MolClassifier
+    component: MolClassifier,
+    meta: { navBarColor: 'teal' }
   }
 ]
 

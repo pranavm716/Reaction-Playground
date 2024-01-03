@@ -18,6 +18,7 @@ from backend.computations import (
     get_reactant_position_of_mol_in_reaction,
     ALL_REACTIONS,
     get_reactions_from_keys,
+    get_substructure_classifications,
 )
 from backend.config import (
     MAX_NUM_SOLVER_STEPS,
@@ -33,7 +34,7 @@ from backend.fastapi_rdkit_utils import (
     mol_to_base64,
     smiles_to_base64,
 )
-from backend.reaction import Reaction, ReactionKey, ReactionDict
+from backend.reaction import ReactionKey, ReactionDict
 
 app = FastAPI()
 
@@ -66,7 +67,7 @@ def get_reaction(reaction_key: ReactionKey) -> ReactionDict:
     return {reaction_key: ALL_REACTIONS[reaction_key]}
 
 
-@app.get("/mol/get-image", response_model=str)
+@app.get("/mol/image", response_model=str)
 def get_mol_images(mol_smiles: str) -> str:
     try:
         return smiles_to_base64(mol_smiles)
@@ -74,6 +75,11 @@ def get_mol_images(mol_smiles: str) -> str:
         raise HTTPException(
             status_code=400, detail=f"Invalid molecule SMILES provided: {mol_smiles!r}."
         )
+
+
+@app.get("/mol/classifications")
+def get_mol_classifications(mol_smiles: str) -> list[str]:
+    return get_substructure_classifications(Chem.MolFromSmiles(mol_smiles))
 
 
 # old

@@ -1,5 +1,7 @@
 <template>
-  <div :id="jsmeContainerName"></div>
+  <v-container align="center">
+    <div :id="jsmeContainerName"></div>
+  </v-container>
   <input :id="smilesContainerName" hidden="hidden" v-model="smiles">
 </template>
 
@@ -31,7 +33,9 @@ export default defineComponent(
       jsmeOnLoad.id = this.jsmeOnLoadScriptName
       jsmeOnLoad.innerHTML = `
         function jsmeOnLoad() {
-            jsmeApplet = new JSApplet.JSME("${this.jsmeContainerName}", "380px", "340px");
+            jsmeApplet = new JSApplet.JSME("${this.jsmeContainerName}", "800px", "500px");
+            jsmeApplet.setMolecularAreaScale(1.8);
+            jsmeApplet.setAtomMolecularAreaFontSize(11);
             jsmeApplet.setCallBack("AfterStructureModified", ${this.storeSmilesFunctionName});
         }
       `

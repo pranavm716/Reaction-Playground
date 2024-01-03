@@ -8,36 +8,27 @@ import { defineComponent } from 'vue'
 export default defineComponent(
   {
     name: 'ChemDrawTool',
-    props: ['identifier'],
     emits: ['smiles'],
     data () {
       return {
-        smiles: ''
-      }
-    },
-    computed: {
-      jsmeContainerName () {
-        return 'jsmeContainer-' + this.identifier
-      },
-      smilesContainerName () {
-        return 'smilesContainer-' + this.identifier
-      },
-      storeSmilesFunctionName () {
-        return 'storeSmiles_' + this.identifier
+        smiles: '',
+        jsmeContainerName: 'jsmeContainer',
+        smilesContainerName: 'smilesContainer',
+        storeSmilesFunctionName: 'storeSmiles',
+        jsmeScriptName: 'jsmeScript',
+        jsmeOnLoadScriptName: 'jsmeOnLoad'
       }
     },
     mounted () {
-      // TODO: Find out if the component can stay without the script tags getting re-added
-      // if (document.getElementById('my-jsme')) return // was already loaded
       const jsmeScript = document.createElement('script')
       jsmeScript.src = 'jsme/jsme.nocache.js'
       jsmeScript.type = 'text/javascript'
       jsmeScript.language = 'javascript'
-      jsmeScript.id = 'my-jsme'
+      jsmeScript.id = this.jsmeScriptName
       document.head.appendChild(jsmeScript)
 
       const jsmeOnLoad = document.createElement('script')
-      jsmeOnLoad.id = 'jsmeOnLoadScript'
+      jsmeOnLoad.id = this.jsmeOnLoadScriptName
       jsmeOnLoad.innerHTML = `
         function jsmeOnLoad() {
             jsmeApplet = new JSApplet.JSME("${this.jsmeContainerName}", "380px", "340px");
@@ -47,6 +38,7 @@ export default defineComponent(
       document.head.appendChild(jsmeOnLoad)
 
       const storeSmiles = document.createElement('script')
+      storeSmiles.id = this.storeSmilesFunctionName
       storeSmiles.innerHTML = `
         function ${this.storeSmilesFunctionName}(event) {
           smiles = event.src.smiles();
@@ -56,6 +48,12 @@ export default defineComponent(
         }
       `
       document.head.appendChild(storeSmiles)
+    },
+    unmounted () {
+      // Clean up jsme editor on route change
+      document.getElementById(this.jsmeScriptName).remove()
+      document.getElementById(this.jsmeOnLoadScriptName).remove()
+      document.getElementById(this.storeSmilesFunctionName).remove()
     },
     watch: {
       smiles (value) {

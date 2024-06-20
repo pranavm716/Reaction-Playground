@@ -23,3 +23,9 @@ pnpm-debug.log*
 *.sln
 *.sw?
 .npmrc
+
+.idea/
+.vscode/
+venv*/
+website/static/ChemDoodle/
+__pycache__/

@@ -1,9 +1,8 @@
 import { Route, Routes } from "react-router-dom";
-import ChemDraw from "./ChemDraw";
-import Navbar from "./NavBar";
-import Playground from "./Playground";
-import Solver from "./Solver";
-import Classifier from "./Classifier";
+import Navbar from "./components/NavBar";
+import Playground from "./pages/Playground";
+import Solver from "./pages/Solver";
+import Classifier from "./pages/Classifier";
 
 export default function App() {
   return (

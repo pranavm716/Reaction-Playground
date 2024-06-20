@@ -4,15 +4,19 @@ import Playground from "./pages/Playground";
 import Solver from "./pages/Solver";
 import Classifier from "./pages/Classifier";
 
-export default function App() {
+const App = () => {
   return (
     <>
       <Navbar />
-      <Routes>
-        <Route path="/" element={<Playground />} />
-        <Route path="/solver" element={<Solver />} />
-        <Route path="/classifier" element={<Classifier />} />
-      </Routes>
+      <div className="content">
+        <Routes>
+          <Route path="/" element={<Playground />} />
+          <Route path="/solver" element={<Solver />} />
+          <Route path="/classifier" element={<Classifier />} />
+        </Routes>
+      </div>
     </>
   );
 }
+
+export default App;

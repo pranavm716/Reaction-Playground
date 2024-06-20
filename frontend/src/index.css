@@ -30,6 +30,9 @@
   color: #f1356d;
   cursor: pointer;
 }
+.navbar a.active {
+  border-bottom: #f1356d 1.5px solid;
+}
 .content {
   max-width: 600px;
   margin: 40px auto;

@@ -7,7 +7,7 @@
   color: #333;
 }
 
-/* navbar */
+/* navbar and content */
 .navbar {
   padding: 20px;
   display: flex;
@@ -37,4 +37,41 @@
   max-width: 90%;
   margin: 20px auto;
   padding: 20px;
+}
+
+/* component and page specific styles */
+
+/* chem draw editor */
+.chem-draw-editor {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+/* playground */
+.two-panel-content {
+  padding-top: 10px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 5px;
+}
+
+.display-panel {
+  max-height: 100%;
+  overflow-y: auto;
+}
+
+.action-panel {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.run-reactions-button {
+  background: #f1356d;
+  color: #fff;
+  border: 0;
+  padding: 8px;
+  border-radius: 8px;
+  cursor: pointer;
 }

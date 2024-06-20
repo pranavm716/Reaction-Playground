@@ -1,11 +1,10 @@
 import { Jsme } from "@loschmidt/jsme-react";
 
-const ChemDraw = () => {
-    const logSmiles = (smiles) => {
-        console.log(smiles)
-    }
+const ChemDraw = ({setSmiles}) => {
     return (
-        <Jsme width={600} height={500} onChange={logSmiles}/>
+        <div className="chem-draw-editor">
+            <Jsme width={500} height={400} onChange={(smiles) => setSmiles(smiles)}/>
+        </div>
     )
 }
  

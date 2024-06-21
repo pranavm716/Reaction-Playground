@@ -14,7 +14,7 @@ def smiles_to_base64(smiles: str) -> str:
         raise ValueError("SMILES cannot be empty.")
     if "." in smiles:
         raise ValueError(
-            f"SMILES must contain only one molecule. Received {smiles.count(".")} molecules."
+            f"SMILES must contain only one molecule. Received {smiles.count(".") + 1} molecules."
         )
 
     mol = Chem.MolFromSmiles(smiles)

@@ -3,20 +3,31 @@ import ChemDraw from "../components/ChemDraw";
 import MolImage from "../components/MolImage";
 import axios from 'axios';
 import PlaygroundStepReactionPicker from "../components/PlaygroundStepReactionPicker";
+import PlaygroundStepProductPicker from "../components/PlaygroundStepProductPicker";
 
 const STEP_START_ENDPOINT = '/playground/step-start';
 const STEP_REACTION_ENDPOINT = '/playground/step-reaction';
 
 const Playground = () => {
     // before playground loop
-    const [smiles, setSmiles] = useState("");
+    const [preLoopSmiles, setPreLoopSmiles] = useState(""); // smiles before explicitly starting the playground loop
+
+    const handleLoopStart = () => {
+        setSmiles(preLoopSmiles); // useEffect for smiles will handle the loop from here
+    }
 
     // during playground loop
-    const [stepMetadata, setStepMetadata] = useState(null); // metadata for the current step: {mol img encoding, list of valid reactions}
+    const [smiles, setSmiles] = useState("");
+    const [stepMetadata, setStepMetadata] = useState(null); // metadata for the current step: {encoding -> mol img encoding, validReactions -> list of valid reactions}
     const [reactionKeyPicked, setReactionKeyPicked] = useState(null); // key of the reaction picked by the user
-    const [productsMetadata, setProductsMetadata] = useState(null); // metadata for the products of the current step: list of [{mol img encoding, smiles]}
+    const [productsMetadata, setProductsMetadata] = useState(null); // metadata for the products of the current step: list of [{encoding: mol img encoding, smiles -> smiles]}
 
     const handleStepStart = async () => {
+        if (!smiles) return;
+
+        // clean up previous state so UI is rendered properly
+        setProductsMetadata(null);
+
         await axios.get(STEP_START_ENDPOINT, { params: { smiles } })
             .then(res => {
                 const [encoding, validReactions] = res.data;
@@ -26,12 +37,13 @@ const Playground = () => {
                 console.log(error.response);
             })
     }
+    useEffect(() => { handleStepStart() }, [smiles]);
 
     const handleStepReaction = async () => {
         if (!reactionKeyPicked) return;
         await axios.get(STEP_REACTION_ENDPOINT, { params: { smiles, reaction_key: reactionKeyPicked } })
             .then(res => {
-                setProductsMetadata(res.data);
+                setProductsMetadata(res.data.map(product => ({ encoding: product[0], smiles: product[1] })));
             })
             .catch(error => {
                 console.log(error.response);
@@ -59,6 +71,7 @@ const Playground = () => {
                         productsMetadata ?
                             <div className="reaction-or-product-picker">
                                 {molImage}
+                                <PlaygroundStepProductPicker products={productsMetadata} setSmiles={setSmiles} />
                             </div>
                             :
                             stepMetadata ?
@@ -70,16 +83,16 @@ const Playground = () => {
                                     />
                                 </div>
                                 :
-                                <ChemDraw setSmiles={setSmiles} />
+                                <ChemDraw setSmiles={setPreLoopSmiles} />
                     }
                 </div>
                 <div className="history-panel">
                     {
                         stepMetadata ?
                             <p><b>History</b></p>
-                            : smiles ?
+                            : preLoopSmiles ?
                                 <div className="run-reactions-div">
-                                    <button onClick={handleStepStart}>
+                                    <button onClick={handleLoopStart}>
                                         Run Reactions
                                     </button>
                                 </div>

@@ -10,7 +10,7 @@ const STEP_REACTION_ENDPOINT = '/playground/step-reaction';
 
 const Playground = () => {
     // before playground loop
-    const [preLoopSmiles, setPreLoopSmiles] = useState("COC(C)=O"); // smiles before explicitly starting the playground loop
+    const [preLoopSmiles, setPreLoopSmiles] = useState(""); // smiles before explicitly starting the playground loop
 
     const handleLoopStart = () => {
         setSmiles(preLoopSmiles); // useEffect for smiles will handle the loop from here

@@ -48,7 +48,7 @@
   margin: 20px 0;
 }
 
-/* playground */
+/* playground - main page */
 .two-panel-content {
   padding-top: 10px;
   display: grid;
@@ -74,4 +74,11 @@
   padding: 8px;
   border-radius: 8px;
   cursor: pointer;
+}
+
+/* playground reaction picker */
+.reaction-picker {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

@@ -1,6 +1,8 @@
 import { useState } from "react";
 import ChemDraw from "../components/ChemDraw";
 import MolImage from "../components/MolImage";
+import axios from 'axios';
+import PlaygroundStepReactionPicker from "../components/PlaygroundStepReactionPicker";
 
 const Playground = () => {
     // before playground loop
@@ -9,8 +11,18 @@ const Playground = () => {
 
     // during playground loop
     const [molImage, setMolImage] = useState(""); // base-64 encoded str of the current molecule
+    const [reactions, setReactions] = useState([]); // list of valid reactions for the current molecule
 
-    const handleStartLoop = () => {
+    const handleStartLoop = async () => {
+        await axios.get('/playground/step', { params: { smiles } })
+        .then(res => {
+            const [encoding, validReactions] = res.data;
+            setMolImage(encoding);
+            setReactions(validReactions);
+        })
+        .catch(error => {
+            console.log(error.response);
+        })
         setLoopStarted(true);
     }
 
@@ -22,20 +34,20 @@ const Playground = () => {
             </p>
             <div className="two-panel-content">
                 <div className="display-panel">
-                    {loopStarted ? 
+                    {loopStarted ?
                         <MolImage smiles={smiles} encoding={molImage} />
-                        : 
+                        :
                         <ChemDraw setSmiles={setSmiles} />
                     }
                 </div>
                 <div className="action-panel">
-                    {smiles && !loopStarted ? 
+                    {smiles && !loopStarted ?
                         <button className="run-reactions-button" onClick={handleStartLoop}>
                             Run Reactions
-                        </button> 
+                        </button>
                         : !loopStarted ?
                             <p>Draw a molecule to get started!</p>
-                            : null
+                            : <PlaygroundStepReactionPicker reactions={reactions}/>
                     }
                 </div>
             </div>

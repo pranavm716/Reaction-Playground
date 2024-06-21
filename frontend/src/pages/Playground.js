@@ -5,8 +5,10 @@ import axios from 'axios';
 import PlaygroundStepReactionPicker from "../components/PlaygroundStepReactionPicker";
 import PlaygroundStepProductPicker from "../components/PlaygroundStepProductPicker";
 
-const STEP_START_ENDPOINT = '/playground/step-start';
-const STEP_REACTION_ENDPOINT = '/playground/step-reaction';
+const START_ENDPOINT = '/playground/start';
+const REACTION_SINGLE_REACTANT_ENDPOINT = '/playground/reaction/single-reactant';
+const REACTION_MULTIPLE_REACTANTS_ENDPOINT = '/playground/reaction/multiple-reactants';
+const MISSING_REACTANTS_PROMPTS_ENDPOINT = '/playground/missing-reactants';
 
 const Playground = () => {
     // before playground loop
@@ -21,6 +23,7 @@ const Playground = () => {
     const [stepMetadata, setStepMetadata] = useState(null); // metadata for the current step: {encoding -> mol img encoding, validReactions -> list of valid reactions}
     const [reactionPicked, setReactionPicked] = useState(null); // reaction object picked by the user
     const [productsMetadata, setProductsMetadata] = useState(null); // metadata for the products of the current step: list of [{encoding: mol img encoding, smiles -> smiles]}
+    const [missingReactantPrompts, setMissingReactantPrompts] = useState(null); // prompts for missing reactants: [list of string prompts]
 
     const handleStepStart = async () => {
         if (!smiles) return;
@@ -28,7 +31,7 @@ const Playground = () => {
         // clean up previous state so UI is rendered properly
         setProductsMetadata(null);
 
-        await axios.get(STEP_START_ENDPOINT, { params: { smiles } })
+        await axios.get(START_ENDPOINT, { params: { smiles } })
             .then(res => {
                 const [encoding, validReactions] = res.data;
                 setStepMetadata({ encoding, validReactions });
@@ -42,12 +45,28 @@ const Playground = () => {
 
     const handleStepReaction = async () => {
         if (!reactionPicked) return;
-        await axios.get(STEP_REACTION_ENDPOINT, { params: { smiles, reaction_key: reactionPicked.reaction_key } })
-            .then(res => {
-                setProductsMetadata(res.data.map(product => ({ encoding: product[0], smiles: product[1] })));
-            })
+
+        if (reactionPicked.multiple_reactants_prompts) {
+            // reaction has multiple reactants
+            await axios.get(MISSING_REACTANTS_PROMPTS_ENDPOINT, { params: { smiles, reaction_key: reactionPicked.reaction_key } })
+                .then(res => {
+                    setMissingReactantPrompts(res.data);
+                })
+        } else {
+            // reaction has only one reactant
+            await axios.get(REACTION_SINGLE_REACTANT_ENDPOINT, { params: { smiles, reaction_key: reactionPicked.reaction_key } })
+                .then(res => {
+                    setProductsMetadata(res.data.map(product => ({ encoding: product[0], smiles: product[1] })));
+                })
+        }
     }
     useEffect(() => { handleStepReaction() }, [reactionPicked]);
+
+    const handleMissingReactants = async () => {
+        if (!missingReactantPrompts) return;
+        console.log(missingReactantPrompts);
+    }
+    useEffect(() => { handleMissingReactants() }, [missingReactantPrompts]);
 
     let molImage = null;
     if (stepMetadata) {

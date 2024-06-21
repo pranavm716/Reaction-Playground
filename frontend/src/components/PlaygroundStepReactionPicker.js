@@ -1,4 +1,4 @@
-const PlaygroundStepReactionPicker = ({ reactions, setReactionKeyPicked }) => {
+const PlaygroundStepReactionPicker = ({ reactions, setReactionPicked }) => {
     return (
         <>
             {
@@ -7,7 +7,7 @@ const PlaygroundStepReactionPicker = ({ reactions, setReactionKeyPicked }) => {
                     <>
                         <p>Choose a reaction to run:</p>
                         {reactions.map((reaction, index) => (
-                            <button key={index} onClick={() => setReactionKeyPicked(reaction.reaction_key)}>
+                            <button key={index} onClick={() => setReactionPicked(reaction)}>
                                 {reaction.name}
                             </button>
                         ))}

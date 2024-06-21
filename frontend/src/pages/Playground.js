@@ -10,7 +10,7 @@ const STEP_REACTION_ENDPOINT = '/playground/step-reaction';
 
 const Playground = () => {
     // before playground loop
-    const [preLoopSmiles, setPreLoopSmiles] = useState(""); // smiles before explicitly starting the playground loop
+    const [preLoopSmiles, setPreLoopSmiles] = useState("COC(C)=O"); // smiles before explicitly starting the playground loop
 
     const handleLoopStart = () => {
         setSmiles(preLoopSmiles); // useEffect for smiles will handle the loop from here
@@ -19,7 +19,7 @@ const Playground = () => {
     // during playground loop
     const [smiles, setSmiles] = useState("");
     const [stepMetadata, setStepMetadata] = useState(null); // metadata for the current step: {encoding -> mol img encoding, validReactions -> list of valid reactions}
-    const [reactionKeyPicked, setReactionKeyPicked] = useState(null); // key of the reaction picked by the user
+    const [reactionPicked, setReactionPicked] = useState(null); // reaction object picked by the user
     const [productsMetadata, setProductsMetadata] = useState(null); // metadata for the products of the current step: list of [{encoding: mol img encoding, smiles -> smiles]}
 
     const handleStepStart = async () => {
@@ -40,8 +40,8 @@ const Playground = () => {
     useEffect(() => { handleStepStart() }, [smiles]);
 
     const handleStepReaction = async () => {
-        if (!reactionKeyPicked) return;
-        await axios.get(STEP_REACTION_ENDPOINT, { params: { smiles, reaction_key: reactionKeyPicked } })
+        if (!reactionPicked) return;
+        await axios.get(STEP_REACTION_ENDPOINT, { params: { smiles, reaction_key: reactionPicked.reaction_key } })
             .then(res => {
                 setProductsMetadata(res.data.map(product => ({ encoding: product[0], smiles: product[1] })));
             })
@@ -49,7 +49,7 @@ const Playground = () => {
                 console.log(error.response);
             })
     }
-    useEffect(() => { handleStepReaction() }, [reactionKeyPicked]);
+    useEffect(() => { handleStepReaction() }, [reactionPicked]);
 
     let molImage = null;
     if (stepMetadata) {
@@ -61,17 +61,23 @@ const Playground = () => {
 
     return (
         <>
-            <p>
-                Welcome to Playground Mode! Here, you can draw a molecule and
-                experiment with running common organic reactions on it.
-            </p>
+            {
+                !stepMetadata && <p>
+                    Welcome to Playground Mode! Here, you can draw a molecule and
+                    experiment with running common organic reactions on it.
+                </p>
+            }
             <div className="two-panel-content">
                 <div className="action-panel">
                     {
                         productsMetadata ?
                             <div className="reaction-or-product-picker">
                                 {molImage}
-                                <PlaygroundStepProductPicker products={productsMetadata} setSmiles={setSmiles} />
+                                <PlaygroundStepProductPicker 
+                                    products={productsMetadata}
+                                    setSmiles={setSmiles} 
+                                    reactionName={reactionPicked.name}
+                                />
                             </div>
                             :
                             stepMetadata ?
@@ -79,7 +85,7 @@ const Playground = () => {
                                     {molImage}
                                     <PlaygroundStepReactionPicker
                                         reactions={stepMetadata.validReactions}
-                                        setReactionKeyPicked={setReactionKeyPicked}
+                                        setReactionPicked={setReactionPicked}
                                     />
                                 </div>
                                 :

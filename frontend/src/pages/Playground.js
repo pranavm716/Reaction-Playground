@@ -39,6 +39,14 @@ const Playground = () => {
     }
     useEffect(() => { handleStepReaction() }, [reactionKeyPicked]);
 
+    let molImage = null;
+    if (stepMetadata) {
+        molImage = <>
+            <p><b>Current molecule</b></p>
+            <MolImage smiles={smiles} encoding={stepMetadata.encoding} />
+        </>
+    }
+
     return (
         <>
             <p>
@@ -49,14 +57,18 @@ const Playground = () => {
                 <div className="action-panel">
                     {
                         productsMetadata ?
-                            null
+                            <div className="reaction-or-product-picker">
+                                {molImage}
+                            </div>
                             :
                             stepMetadata ?
-                                <PlaygroundStepReactionPicker
-                                    MolImageProp={<MolImage smiles={smiles} encoding={stepMetadata.encoding} />}
-                                    reactions={stepMetadata.validReactions}
-                                    setReactionKeyPicked={setReactionKeyPicked}
-                                />
+                                <div className="reaction-or-product-picker">
+                                    {molImage}
+                                    <PlaygroundStepReactionPicker
+                                        reactions={stepMetadata.validReactions}
+                                        setReactionKeyPicked={setReactionKeyPicked}
+                                    />
+                                </div>
                                 :
                                 <ChemDraw setSmiles={setSmiles} />
                     }

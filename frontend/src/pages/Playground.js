@@ -34,7 +34,8 @@ const Playground = () => {
                 setStepMetadata({ encoding, validReactions });
             })
             .catch(error => {
-                console.log(error.response);
+                alert(error.response.data.detail);
+                setSmiles("");
             })
     }
     useEffect(() => { handleStepStart() }, [smiles]);
@@ -44,9 +45,6 @@ const Playground = () => {
         await axios.get(STEP_REACTION_ENDPOINT, { params: { smiles, reaction_key: reactionPicked.reaction_key } })
             .then(res => {
                 setProductsMetadata(res.data.map(product => ({ encoding: product[0], smiles: product[1] })));
-            })
-            .catch(error => {
-                console.log(error.response);
             })
     }
     useEffect(() => { handleStepReaction() }, [reactionPicked]);
@@ -73,9 +71,9 @@ const Playground = () => {
                         productsMetadata ?
                             <div className="reaction-or-product-picker">
                                 {molImage}
-                                <PlaygroundStepProductPicker 
+                                <PlaygroundStepProductPicker
                                     products={productsMetadata}
-                                    setSmiles={setSmiles} 
+                                    setSmiles={setSmiles}
                                     reactionName={reactionPicked.name}
                                 />
                             </div>

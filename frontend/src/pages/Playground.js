@@ -10,19 +10,18 @@ const Playground = () => {
     const [loopStarted, setLoopStarted] = useState(false);
 
     // during playground loop
-    const [molImage, setMolImage] = useState(""); // base-64 encoded str of the current molecule
-    const [reactions, setReactions] = useState([]); // list of valid reactions for the current molecule
+    const [stepMetadata, setStepMetadata] = useState(null); // metadata for the current step (mol img encoding + valid reactions)
+
 
     const handleStartLoop = async () => {
         await axios.get('/playground/step', { params: { smiles } })
-        .then(res => {
-            const [encoding, validReactions] = res.data;
-            setMolImage(encoding);
-            setReactions(validReactions);
-        })
-        .catch(error => {
-            console.log(error.response);
-        })
+            .then(res => {
+                const [encoding, validReactions] = res.data;
+                setStepMetadata({ encoding, validReactions });
+            })
+            .catch(error => {
+                console.log(error.response);
+            })
         setLoopStarted(true);
     }
 
@@ -35,7 +34,7 @@ const Playground = () => {
             <div className="two-panel-content">
                 <div className="display-panel">
                     {loopStarted ?
-                        <MolImage smiles={smiles} encoding={molImage} />
+                        <MolImage smiles={smiles} encoding={stepMetadata.encoding} />
                         :
                         <ChemDraw setSmiles={setSmiles} />
                     }
@@ -47,7 +46,7 @@ const Playground = () => {
                         </button>
                         : !loopStarted ?
                             <p>Draw a molecule to get started!</p>
-                            : <PlaygroundStepReactionPicker reactions={reactions}/>
+                            : <PlaygroundStepReactionPicker reactions={stepMetadata.validReactions} />
                     }
                 </div>
             </div>

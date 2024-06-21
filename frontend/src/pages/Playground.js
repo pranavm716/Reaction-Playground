@@ -10,7 +10,6 @@ const STEP_REACTION_ENDPOINT = '/playground/step-reaction';
 const Playground = () => {
     // before playground loop
     const [smiles, setSmiles] = useState("");
-    const [loopStarted, setLoopStarted] = useState(false);
 
     // during playground loop
     const [stepMetadata, setStepMetadata] = useState(null); // metadata for the current step: {mol img encoding, list of valid reactions}
@@ -26,15 +25,13 @@ const Playground = () => {
             .catch(error => {
                 console.log(error.response);
             })
-        setLoopStarted(true);
     }
 
     const handleStepReaction = async () => {
         if (!reactionKeyPicked) return;
         await axios.get(STEP_REACTION_ENDPOINT, { params: { smiles, reaction_key: reactionKeyPicked } })
             .then(res => {
-                // const [encoding, validReactions] = res.data;
-                console.log(res.data);
+                setProductsMetadata(res.data);
             })
             .catch(error => {
                 console.log(error.response);
@@ -49,22 +46,35 @@ const Playground = () => {
                 experiment with running common organic reactions on it.
             </p>
             <div className="two-panel-content">
-                <div className="display-panel">
-                    {loopStarted ?
-                        <MolImage smiles={smiles} encoding={stepMetadata.encoding} />
-                        :
-                        <ChemDraw setSmiles={setSmiles} />
+                <div className="action-panel">
+                    {
+                        productsMetadata ?
+                            null
+                            :
+                            stepMetadata ?
+                                <PlaygroundStepReactionPicker
+                                    MolImageProp={<MolImage smiles={smiles} encoding={stepMetadata.encoding} />}
+                                    reactions={stepMetadata.validReactions}
+                                    setReactionKeyPicked={setReactionKeyPicked}
+                                />
+                                :
+                                <ChemDraw setSmiles={setSmiles} />
                     }
                 </div>
-                <div className="action-panel">
-                    {smiles && !loopStarted ?
-                        <button className="run-reactions-button" onClick={handleStepStart}>
-                            Run Reactions
-                        </button>
-                        : !loopStarted ?
-                            <p>Draw a molecule to get started!</p>
-                            : <PlaygroundStepReactionPicker reactions={stepMetadata.validReactions}
-                                setReactionKeyPicked={setReactionKeyPicked} />
+                <div className="history-panel">
+                    {
+                        stepMetadata ?
+                            <p><b>History</b></p>
+                            : smiles ?
+                                <div className="run-reactions-div">
+                                    <button onClick={handleStepStart}>
+                                        Run Reactions
+                                    </button>
+                                </div>
+                                :
+                                <div className="run-reactions-div">
+                                    <p>Draw a molecule to get started!</p>
+                                </div>
                     }
                 </div>
             </div>

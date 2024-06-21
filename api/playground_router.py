@@ -25,11 +25,11 @@ def get_mol_image_and_valid_reactions(smiles: str) -> tuple[str, list[Reaction]]
 
     # Validation
     if not smiles:
-        raise HTTPException(status_code=400, detail="SMILES cannot be empty.")
+        raise HTTPException(status_code=400, detail="Drawing cannot be empty.")
     if "." in smiles:
         raise HTTPException(
             status_code=400,
-            detail=f"SMILES must contain only one molecule. Received {smiles.count(".") + 1} molecules.",
+            detail=f"Drawing must contain only one molecule. Received {smiles.count(".") + 1} molecules.",
         )
 
     mol = Chem.MolFromSmiles(smiles)

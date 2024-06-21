@@ -11,7 +11,7 @@ from backend.computations import (
     ALL_REACTIONS,
 )
 from backend.datatypes import SolverModeImageData
-from backend.fastapi_rdkit_utils import construct_mol_image
+from backend.fastapi_rdkit_utils import _construct_mol_image
 from backend.reaction import ReactionKey
 
 
@@ -23,8 +23,8 @@ def run_solver_mode(
     including images of the molecules at each step.
     """
 
-    start_mol_img = construct_mol_image(start_mol)
-    target_mol_img = construct_mol_image(target_mol)
+    start_mol_img = _construct_mol_image(start_mol)
+    target_mol_img = _construct_mol_image(target_mol)
 
     # Includes the target molecule as the last entry, does not include the starting molecule
     solver_images: SolverModeImageData = {}
@@ -43,7 +43,7 @@ def run_solver_mode(
         reaction_names.append(ALL_REACTIONS[reaction_key].name)
         products = generate_multi_step_product(current_mol, reaction_key)
 
-        product_images = [construct_mol_image(product) for product in products]
+        product_images = [_construct_mol_image(product) for product in products]
         solver_images[step_number] = product_images
 
         current_mol = products[choice]

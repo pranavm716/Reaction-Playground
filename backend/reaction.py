@@ -69,6 +69,7 @@ class Reaction(BaseModel):
         ],
     )
     description: str
+    reaction_key: ReactionKey
 
     @model_validator(mode="before")
     def transform_smarts_list(cls, values):
@@ -105,6 +106,6 @@ def read_all_reactions_from_file(path: pathlib.Path) -> ReactionDict:
     all_reactions: ReactionDict = {}
     for key, reaction_data in data.items():
         key = ReactionKey(key)
-        all_reactions[key] = Reaction(**reaction_data)
+        all_reactions[key] = Reaction(**reaction_data, reaction_key=key)
 
     return all_reactions

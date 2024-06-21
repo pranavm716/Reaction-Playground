@@ -125,8 +125,8 @@ grignard_reaction:
     - "[#6-:1].[#6:2][C:3]#N>>[#6-0:1][C:3](=O)[#6:2]" # carbon nucleophile + nitrile -> ketone
     - "[#6-:1].O=[C:2]=O>>[#6-0:1][C:2](=O)[OH]" # carbon nucleophile + carbon dioxide -> carboxylic acid
   multiple_reactants_prompts:
-    - "Enter the SMILES of the carbon nucleophile: "
-    - "Enter the SMILES of carbon dioxide (O=C=O) or an aldehyde, ketone, or nitrile: "
+    - "Draw a carbon nucleophile"
+    - "Draw an aldehyde, ketone, nitrile, or carbon dioxide"
   description: Converts a carbon nucleophile + (formaldehyde/aldehydes/ketones into primary/secondary/tertiary alcohols), respectively; or a carbon nucleophile + (nitriles/CO2 into ketones/carboxylic acids), respectively.
 
 amide_synthesis_from_acid_chloride:
@@ -136,8 +136,8 @@ amide_synthesis_from_acid_chloride:
     - "[#6:1][CX3:2](=[O:3])Cl.[#6:4][NX3;H2;!$(NC=O):5]>>[#6:1][CX3:2](=[O:3])[NX3H:5]([#6:4])" # acid chloride + primary amine -> secondary amide
     - "[#6:1][CX3:2](=[O:3])Cl.[#6:4][NX3;H1;!$(NC=O):5][#6:6]>>[#6:1][CX3:2](=[O:3])[NX3:5]([#6:4])[#6:6]" # acid chloride + secondary amine -> tertiary amide
   multiple_reactants_prompts:
-    - "Enter the SMILES of the acid chloride: "
-    - "Enter the SMILES of ammonia (N) or a primary/ secondary amine: "
+    - "Draw an acid chloride"
+    - "Draw ammonia or a primary/ secondary amine"
   description: Converts an acid chloride + (ammonia/ primary/secondary amine into a primary/secondary/tertiary amide), respectively.
 
 ester_synthesis_from_acid_chloride:
@@ -145,8 +145,8 @@ ester_synthesis_from_acid_chloride:
   smarts_list:
     - "[#6:1][CX3:2](=[O:3])Cl.[CX4H,CX4H2,CX4H3,CX4H0,c:4][OX2H]>>[#6:1][CX3:2](=[O:3])O[#6:4]" # acid chloride + alcohol -> ester
   multiple_reactants_prompts:
-    - "Enter the SMILES of the acid chloride: "
-    - "Enter the SMILES of the alcohol: "
+    - "Draw an acid chloride"
+    - "Draw an alcohol"
   description: Converts an acid chloride + an alcohol into an ester.
 
 fischer_esterification:
@@ -154,8 +154,8 @@ fischer_esterification:
   smarts_list:
     - "[#6:1][C:2](=[O:3])[OH:4].[CX4H,CX4H2,CX4H3,c:5][OX2H]>>[#6:1][C:2](=[O:3])[O:4][#6:5]" # carboxylic acid + alcohol (not tertiary) -> ester
   multiple_reactants_prompts:
-    - "Enter the SMILES of the carboxylic acid: "
-    - "Enter the SMILES of the alcohol (not tertiary): "
+    - "Draw a carboxylic acid"
+    - "Draw an alcohol (not tertiary)"
   description: Esterifies a carboxylic acid by reacting it with an alcohol.
 
 williamson_ether_synthesis:
@@ -165,6 +165,6 @@ williamson_ether_synthesis:
     - "[#6:1][CH2:2][Br].[CX4H,CX4H2,CX4H3,CX4H0,c:3][O-:4]>>[#6:3][O-0:4][C:2][#6:1]" # primary alkyl bromide + alkoxide/phenoxide -> ether
     - "[#6:1][CH:2]([#6:3])[Br].[CX4H,CX4H2,CX4H3,CX4H0,c:4][O-:5]>>[#6:4][O-0:5][C:2]([#6:3])[#6:1]" # secondary alkyl bromide + alkoxide/phenoxide -> ether
   multiple_reactants_prompts:
-    - "Enter the SMILES of the alkyl bromide (primary or secondary): "
-    - "Enter the SMILES of the alkoxide or phenoxide: "
+    - "Draw an alkyl bromide (primary or secondary)"
+    - "Draw an alkoxide or phenoxide"
   description: "Converts a primary/ secondary alkyl bromide + an alkoxide/ phenoxide into an ether."

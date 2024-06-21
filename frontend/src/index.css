@@ -54,10 +54,18 @@
   margin: 20px 0;
 }
 
-/* mol image */
-/* .mol-image {
-  margin-bottom: 10px;
-} */
+/* mol image related */
+.clickable-mol-image:hover {
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+}
+
+.mol-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}
 
 /* playground - main page */
 .two-panel-content {
@@ -124,4 +132,7 @@
   background: #f1356d;
   color: #fff;
   border-color: #f1356d;
+}
+.multi-product-text {
+  padding-top: 8px;
 }

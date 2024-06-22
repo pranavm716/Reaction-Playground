@@ -1,12 +1,7 @@
 import React, { useEffect } from "react";
 import MolImage from "./MolImage";
-
-const plusIcon = <svg style={{
-    padding: "0 10px",
-}} xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000">
-    <path d="M450-450H220v-60h230v-230h60v230h230v60H510v230h-60v-230Z" />
-</svg>
-
+import PlusIcon from "./PlusIcon";
+import ArrowWithReactionName from "./ArrowWithReactionName";
 
 const PlaygroundStepProductPicker = ({ products, setSmiles, reactionName }) => {
     useEffect(() => {
@@ -18,23 +13,14 @@ const PlaygroundStepProductPicker = ({ products, setSmiles, reactionName }) => {
 
     return (
         <>
-            {/* down arrow + reaction name */}
-            <div style={{
-                position: 'relative',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-            }}>
-                <img height={130} src={process.env.PUBLIC_URL + "down-arrow.png"}></img>
-                <span style={{ width: 200, position: 'absolute', left: 60 }}>{reactionName}</span>
-            </div>
+            <ArrowWithReactionName reactionName={reactionName} />
 
             {/* list of clickable products */}
             <div className="mol-row">
                 {products.length > 1 && products.map((product, index) => (
                     <React.Fragment key={product.smiles}>
                         <MolImage smiles={product.smiles} encoding={product.encoding} setSmiles={setSmiles} />
-                        {index < products.length - 1 && plusIcon}
+                        {index < products.length - 1 && <PlusIcon />}
                     </React.Fragment>
                 ))}
             </div>

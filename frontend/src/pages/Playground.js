@@ -4,11 +4,12 @@ import MolImage from "../components/MolImage";
 import axios from 'axios';
 import PlaygroundStepReactionPicker from "../components/PlaygroundStepReactionPicker";
 import PlaygroundStepProductPicker from "../components/PlaygroundStepProductPicker";
+import PlaygroundStepExtraReactantPicker from "../components/PlaygroundStepExtraReactantPicker";
 
 const START_ENDPOINT = '/playground/start';
 const REACTION_SINGLE_REACTANT_ENDPOINT = '/playground/reaction/single-reactant';
-const REACTION_MULTIPLE_REACTANTS_ENDPOINT = '/playground/reaction/multiple-reactants';
 const MISSING_REACTANTS_PROMPTS_ENDPOINT = '/playground/missing-reactants';
+const REACTION_MULTIPLE_REACTANTS_ENDPOINT = '/playground/reaction/multiple-reactants';
 
 const Playground = () => {
     // before playground loop
@@ -20,10 +21,14 @@ const Playground = () => {
 
     // during playground loop
     const [smiles, setSmiles] = useState("");
-    const [stepMetadata, setStepMetadata] = useState(null); // metadata for the current step: {encoding -> mol img encoding, validReactions -> list of valid reactions}
+
+    const [stepMetadata, setStepMetadata] = useState(null); // metadata for the current step: {encoding -> mol img encoding, validReactions -> [list of valid reactions]}
     const [reactionPicked, setReactionPicked] = useState(null); // reaction object picked by the user
-    const [productsMetadata, setProductsMetadata] = useState(null); // metadata for the products of the current step: list of [{encoding: mol img encoding, smiles -> smiles]}
+
+    const [productsMetadata, setProductsMetadata] = useState(null); // metadata for the products of the current step: list of [{encoding: mol img encoding, smiles: smiles]}
+
     const [missingReactantPrompts, setMissingReactantPrompts] = useState(null); // prompts for missing reactants: [list of string prompts]
+    const [missingReactantSmilesPicked, setMissingReactantSmilesPicked] = useState(null); // smiles of the missing reactant picked by the user: [list of smiles]
 
     const handleStepStart = async () => {
         if (!smiles) return;
@@ -62,18 +67,22 @@ const Playground = () => {
     }
     useEffect(() => { handleStepReaction() }, [reactionPicked]);
 
-    const handleMissingReactants = async () => {
-        if (!missingReactantPrompts) return;
-        console.log(missingReactantPrompts);
+    const handleStepReactionMultipleReactants = async () => {
+        if (!missingReactantSmilesPicked) return;
+        await axios.get(REACTION_MULTIPLE_REACTANTS_ENDPOINT, {
+            params:
+                { smiles, extra_reactant_smiles: missingReactantSmilesPicked, reaction_key: reactionPicked.reaction_key }
+        })
+            .then(res => {
+                // TODO: handle products, could have multiple scenarios
+            })
+
     }
-    useEffect(() => { handleMissingReactants() }, [missingReactantPrompts]);
+    useEffect(() => { handleStepReactionMultipleReactants() }, [missingReactantSmilesPicked]);
 
     let molImage = null;
     if (stepMetadata) {
-        molImage = <>
-            <p><b>Current molecule</b></p>
-            <MolImage smiles={smiles} encoding={stepMetadata.encoding} />
-        </>
+        molImage = <MolImage smiles={smiles} encoding={stepMetadata.encoding} />
     }
 
     return (
@@ -87,26 +96,35 @@ const Playground = () => {
             <div className="two-panel-content">
                 <div className="action-panel">
                     {
-                        productsMetadata ?
+                        stepMetadata ?
                             <div className="reaction-or-product-picker">
-                                {molImage}
-                                <PlaygroundStepProductPicker
-                                    products={productsMetadata}
-                                    setSmiles={setSmiles}
-                                    reactionName={reactionPicked.name}
-                                />
+                                <p><b>Current molecule</b></p>
+                                {
+                                    missingReactantPrompts ?
+                                        <PlaygroundStepExtraReactantPicker
+                                            molImage={molImage}
+                                            missingReactantPrompts={missingReactantPrompts}
+                                            setMissingReactantSmilesPicked={setMissingReactantSmilesPicked}
+                                            reactionName={reactionPicked.name}
+                                        />
+                                        : molImage
+                                }
+                                {
+                                    productsMetadata ?
+                                        <PlaygroundStepProductPicker
+                                            products={productsMetadata}
+                                            setSmiles={setSmiles}
+                                            reactionName={reactionPicked.name}
+                                        />
+                                        : !missingReactantPrompts ?
+                                            <PlaygroundStepReactionPicker
+                                                reactions={stepMetadata.validReactions}
+                                                setReactionPicked={setReactionPicked}
+                                            /> : null
+                                }
                             </div>
                             :
-                            stepMetadata ?
-                                <div className="reaction-or-product-picker">
-                                    {molImage}
-                                    <PlaygroundStepReactionPicker
-                                        reactions={stepMetadata.validReactions}
-                                        setReactionPicked={setReactionPicked}
-                                    />
-                                </div>
-                                :
-                                <ChemDraw setSmiles={setPreLoopSmiles} />
+                            <ChemDraw setSmiles={setPreLoopSmiles} />
                     }
                 </div>
                 <div className="history-panel">

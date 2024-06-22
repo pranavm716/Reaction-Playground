@@ -2,7 +2,22 @@ import React, { useEffect } from "react";
 import MolImage from "./MolImage";
 import {ArrowWithReactionName, plusIcon} from "./SmallUIComponents";
 
-const PlaygroundStepProductPicker = ({ products, setSmiles, reactionName }) => {
+const PlaygroundStepProductPicker = ({ products, setSmiles, reactionName, molImage, missingReactantSmilesPicked, missingReactantEncodings }) => {
+    let reactantMolRow;
+    if (missingReactantSmilesPicked) {
+        reactantMolRow = <div className="mol-row">
+            {molImage}
+            {missingReactantSmilesPicked.map((smiles, index) => (
+                <React.Fragment key={smiles}>
+                    {plusIcon}
+                    <MolImage smiles={smiles} encoding={missingReactantEncodings[index]} />
+                </React.Fragment>
+            ))}
+        </div>
+    } else {
+        reactantMolRow = molImage;
+    }
+
     useEffect(() => {
         // If there is only one product, there is no choice the user has to make
         if (products.length === 1) {
@@ -12,6 +27,7 @@ const PlaygroundStepProductPicker = ({ products, setSmiles, reactionName }) => {
 
     return (
         <>
+            {reactantMolRow}
             <ArrowWithReactionName reactionName={reactionName} />
 
             {/* list of clickable products */}

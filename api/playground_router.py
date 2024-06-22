@@ -95,11 +95,25 @@ def get_products_multiple_reactants(
     smiles: str = Body(...),
     extra_reactant_smiles: list[str] = Body(...),
     reaction_key: ReactionKey = Body(...),
-):
+) -> tuple[list[str], tuple[tuple[str, str], ...]]:
+    """
+    Takes the SMILES of a molecule as well as a list of extra reactant SMILES strings and a reaction key representing
+    a reaction with multiple reactants. Returns a 2-tuple containing:
+    - a list of base64 encodings of the extra reactants' images
+    - an arbitrary length products tuple containing 2-tuples of:
+        - the base64 encoding of the product's image
+        - the SMILES of the product
+    
+    Pre: the molecule given by the smiles parameter is a valid reactant for the given reaction key.
+    Pre: the length of the extra reactant SMILES list + 1 (the smiles molecule) is equal to the number of reactants required by the reaction.
+    """
+
     mol = Chem.MolFromSmiles(smiles)
     reactants: list[Mol] = [
         Chem.MolFromSmiles(smiles) for smiles in extra_reactant_smiles
     ]
+
+    extra_reactant_encodings = [mol_to_base64(r) for r in reactants]
 
     reactant_position = get_reactant_position_of_mol_in_reaction(mol, reaction_key)
     reactants.insert(reactant_position, mol)
@@ -115,4 +129,6 @@ def get_products_multiple_reactants(
     # I can't figure out how to implement/ best represent multi step product for multiple reactants
     products = functools.reduce(lambda x, y: x + y, products)
 
-    return tuple((mol_to_base64(p), Chem.MolToSmiles(p)) for p in products)
+    return extra_reactant_encodings, tuple(
+        (mol_to_base64(p), Chem.MolToSmiles(p)) for p in products
+    )

@@ -29,12 +29,15 @@ const Playground = () => {
 
     const [missingReactantPrompts, setMissingReactantPrompts] = useState(null); // prompts for missing reactants: [list of string prompts]
     const [missingReactantSmilesPicked, setMissingReactantSmilesPicked] = useState(null); // smiles of the missing reactant picked by the user: [list of smiles]
+    const [missingReactantEncodings, setMissingReactantEncodings] = useState(null); // encodings of the missing reactants picked by the user: [list of encodings]
 
     const handleStepStart = async () => {
         if (!smiles) return;
 
         // clean up previous state so UI is rendered properly
         setProductsMetadata(null);
+        setMissingReactantSmilesPicked(null);
+        setMissingReactantEncodings(null);
 
         await axios.get(START_ENDPOINT, { params: { smiles } })
             .then(res => {
@@ -70,9 +73,6 @@ const Playground = () => {
     const handleStepReactionMultipleReactants = async () => {
         if (!missingReactantSmilesPicked) return;
 
-        // clean up previous state so UI is rendered properly
-        setMissingReactantPrompts(null);
-
         await axios.post(REACTION_MULTIPLE_REACTANTS_ENDPOINT,
             {
                 smiles: smiles,
@@ -81,7 +81,16 @@ const Playground = () => {
             }
         )
             .then(res => {
-                setProductsMetadata(res.data.map(product => ({ encoding: product[0], smiles: product[1] })));
+                // clean up previous state so UI is rendered properly
+                setMissingReactantPrompts(null);
+
+                const [extraReactantEncodings, products] = res.data;
+                setMissingReactantEncodings(extraReactantEncodings);
+                setProductsMetadata(products.map(product => ({ encoding: product[0], smiles: product[1] })));
+            })
+            .catch(error => {
+                // provided reactants were invalid for this reaction
+                alert(error.response.data.detail);
             })
     }
     useEffect(() => { handleStepReactionMultipleReactants() }, [missingReactantSmilesPicked]);
@@ -106,14 +115,13 @@ const Playground = () => {
                             <div className="reaction-or-product-picker">
                                 <p><b>Current molecule</b></p>
                                 {
-                                    missingReactantPrompts ?
-                                        <PlaygroundStepExtraReactantPicker
-                                            molImage={molImage}
-                                            missingReactantPrompts={missingReactantPrompts}
-                                            setMissingReactantSmilesPicked={setMissingReactantSmilesPicked}
-                                            reactionName={reactionPicked.name}
-                                        />
-                                        : molImage
+                                    missingReactantPrompts &&
+                                    <PlaygroundStepExtraReactantPicker
+                                        molImage={molImage}
+                                        missingReactantPrompts={missingReactantPrompts}
+                                        setMissingReactantSmilesPicked={setMissingReactantSmilesPicked}
+                                        reactionName={reactionPicked.name}
+                                    />
                                 }
                                 {
                                     productsMetadata ?
@@ -121,11 +129,15 @@ const Playground = () => {
                                             products={productsMetadata}
                                             setSmiles={setSmiles}
                                             reactionName={reactionPicked.name}
+                                            molImage={molImage}
+                                            missingReactantSmilesPicked={missingReactantSmilesPicked}
+                                            missingReactantEncodings={missingReactantEncodings}
                                         />
                                         : !missingReactantPrompts ?
                                             <PlaygroundStepReactionPicker
                                                 reactions={stepMetadata.validReactions}
                                                 setReactionPicked={setReactionPicked}
+                                                molImage={molImage}
                                             /> : null
                                 }
                             </div>

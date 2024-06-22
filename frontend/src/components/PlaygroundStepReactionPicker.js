@@ -1,20 +1,18 @@
-const PlaygroundStepReactionPicker = ({ reactions, setReactionPicked }) => {
+const PlaygroundStepReactionPicker = ({ reactions, setReactionPicked, molImage }) => {
     return (
         <>
-            {
-                reactions.length ?
-                (
-                    <>
-                        <p>Choose a reaction to run:</p>
-                        {reactions.map((reaction, index) => (
-                            <button className="reaction-button" key={index} onClick={() => setReactionPicked(reaction)}>
-                                {reaction.name}
-                            </button>
-                        ))}
-                    </>
-                )
+            {molImage}
+            {reactions.length ?
+                <>
+                    <p>Choose a reaction to run:</p>
+                    {reactions.map((reaction, index) => (
+                        <button className="reaction-button" key={index} onClick={() => setReactionPicked(reaction)}>
+                            {reaction.name}
+                        </button>
+                    ))}
+                </>
                 :
-                <p>There are no compatible reactions.</p>    
+                <p>There are no compatible reactions.</p>
             }
         </>
     );

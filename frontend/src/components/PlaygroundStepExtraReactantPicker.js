@@ -47,7 +47,6 @@ const PlaygroundStepExtraReactantPicker = ({ molImage, missingReactantPrompts, s
     const handleUpdateMissingSmiles = (index) => {
         closeModal();
         missingReactantSmiles[index] = smiles;
-        console.log(missingReactantSmiles);
         
         // If all missing reactants have been provided, 
         // then update the state and let the parent's useEffect handle it from here

@@ -69,7 +69,9 @@ const Playground = () => {
 
     const handleStepReactionMultipleReactants = async () => {
         if (!missingReactantSmilesPicked) return;
-        console.log(REACTION_MULTIPLE_REACTANTS_ENDPOINT, smiles, missingReactantSmilesPicked, reactionPicked.reaction_key)
+
+        // clean up previous state so UI is rendered properly
+        setMissingReactantPrompts(null);
 
         await axios.post(REACTION_MULTIPLE_REACTANTS_ENDPOINT,
             {
@@ -79,9 +81,8 @@ const Playground = () => {
             }
         )
             .then(res => {
-                // TODO: handle products, could have multiple scenarios
+                setProductsMetadata(res.data.map(product => ({ encoding: product[0], smiles: product[1] })));
             })
-
     }
     useEffect(() => { handleStepReactionMultipleReactants() }, [missingReactantSmilesPicked]);
 

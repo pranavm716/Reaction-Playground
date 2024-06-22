@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import MolImage from "./MolImage";
-import PlusIcon from "./PlusIcon";
-import ArrowWithReactionName from "./ArrowWithReactionName";
+import {ArrowWithReactionName, plusIcon} from "./SmallUIComponents";
 
 const PlaygroundStepProductPicker = ({ products, setSmiles, reactionName }) => {
     useEffect(() => {
@@ -20,7 +19,7 @@ const PlaygroundStepProductPicker = ({ products, setSmiles, reactionName }) => {
                 {products.length > 1 && products.map((product, index) => (
                     <React.Fragment key={product.smiles}>
                         <MolImage smiles={product.smiles} encoding={product.encoding} setSmiles={setSmiles} />
-                        {index < products.length - 1 && <PlusIcon />}
+                        {index < products.length - 1 && {plusIcon}}
                     </React.Fragment>
                 ))}
             </div>

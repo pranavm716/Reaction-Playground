@@ -7,7 +7,7 @@ const PlaygroundStepReactionPicker = ({ reactions, setReactionPicked }) => {
                     <>
                         <p>Choose a reaction to run:</p>
                         {reactions.map((reaction, index) => (
-                            <button key={index} onClick={() => setReactionPicked(reaction)}>
+                            <button className="reaction-button" key={index} onClick={() => setReactionPicked(reaction)}>
                                 {reaction.name}
                             </button>
                         ))}

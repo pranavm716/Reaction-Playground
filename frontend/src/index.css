@@ -64,6 +64,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
 
 }
 
@@ -77,7 +79,6 @@
 
 .action-panel {
   max-height: 100%;
-  overflow-y: auto;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -113,6 +114,18 @@
   background-color: #f1356da9;
 }
 
+/* playground extra reactant picker */
+
+.extra-reactant-button {
+  background: #fff;
+  color: #333;
+  border: 1px solid #333;
+  padding: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  margin: 8px 0;
+}
+
 /* playground reaction/ product picker */
 .reaction-or-product-picker {
   display: flex;
@@ -121,7 +134,7 @@
   align-items: center;
 }
 
-.reaction-or-product-picker button {
+.reaction-button {
   background: #fff;
   color: #333;
   border: 1px solid #333;
@@ -132,7 +145,7 @@
   margin: 8px 0;
 }
 
-.reaction-or-product-picker button:hover {
+.extra-reactant-button:hover, .reaction-button:hover {
   background: #f1356d;
   color: #fff;
   border-color: #f1356d;

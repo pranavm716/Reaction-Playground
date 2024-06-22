@@ -5,6 +5,9 @@ import { cautionIcon, closeIcon, plusIcon, ArrowWithReactionName } from "./Small
 
 const PlaygroundStepExtraReactantPicker = ({ molImage, missingReactantPrompts, setMissingReactantSmilesPicked, reactionName }) => {
     const [modalIsOpen, setModalIsOpen] = useState(false);
+    const [smiles, setSmiles] = useState(''); // Smiles of the current missing reactant picked
+
+    // Modal styles and state management
     const customStyles = {
         content: {
             top: '50%',
@@ -23,8 +26,13 @@ const PlaygroundStepExtraReactantPicker = ({ molImage, missingReactantPrompts, s
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
+        },
+        footer: {
+            display: 'flex',
+            justifyContent: 'center',
         }
     };
+
     const openModal = () => {
         setModalIsOpen(true);
     }
@@ -33,15 +41,29 @@ const PlaygroundStepExtraReactantPicker = ({ molImage, missingReactantPrompts, s
         setModalIsOpen(false);
     }
 
+    // Array and state management for the smiles of the missing reactants picked
+    let missingReactantSmiles = new Array(missingReactantPrompts.length).fill(null);
+    
+    const handleUpdateMissingSmiles = (index) => {
+        closeModal();
+        missingReactantSmiles[index] = smiles;
+        console.log(missingReactantSmiles);
+        
+        // If all missing reactants have been provided, 
+        // then update the state and let the parent's useEffect handle it from here
+        if (missingReactantSmiles.every(smile => smile !== null)) {
+            setMissingReactantSmilesPicked(missingReactantSmiles);
+        }
+    }
+
     return (
         <>
             <div className="mol-row">
                 {molImage}
-                {missingReactantPrompts.map(prompt => (
+                {missingReactantPrompts.map((prompt, index) => (
                     <React.Fragment key={prompt}>
                         {plusIcon}
 
-                        {/* TODO: Output smiles */}
                         <button className="extra-reactant-button" onClick={openModal}>
                             {prompt}
                         </button>
@@ -57,7 +79,16 @@ const PlaygroundStepExtraReactantPicker = ({ molImage, missingReactantPrompts, s
                                     {React.cloneElement(closeIcon, { onClick: closeModal })}
                                 </div>
                             </div>
-                            <ChemDraw setSmiles={setMissingReactantSmilesPicked} />
+
+                            <ChemDraw setSmiles={setSmiles} />
+
+                            <div style={customStyles.footer}>
+                                <button onClick={() => {
+                                    handleUpdateMissingSmiles(index);
+                                }} className="primary-colored-button">
+                                    Save
+                                </button>
+                            </div>
                         </Modal>
                     </React.Fragment>
                 ))}

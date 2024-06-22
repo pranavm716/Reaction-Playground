@@ -69,10 +69,15 @@ const Playground = () => {
 
     const handleStepReactionMultipleReactants = async () => {
         if (!missingReactantSmilesPicked) return;
-        await axios.get(REACTION_MULTIPLE_REACTANTS_ENDPOINT, {
-            params:
-                { smiles, extra_reactant_smiles: missingReactantSmilesPicked, reaction_key: reactionPicked.reaction_key }
-        })
+        console.log(REACTION_MULTIPLE_REACTANTS_ENDPOINT, smiles, missingReactantSmilesPicked, reactionPicked.reaction_key)
+
+        await axios.post(REACTION_MULTIPLE_REACTANTS_ENDPOINT,
+            {
+                smiles: smiles,
+                extra_reactant_smiles: missingReactantSmilesPicked,
+                reaction_key: reactionPicked.reaction_key
+            }
+        )
             .then(res => {
                 // TODO: handle products, could have multiple scenarios
             })
@@ -133,7 +138,7 @@ const Playground = () => {
                             <p><b>History</b></p>
                             : preLoopSmiles ?
                                 <div className="run-reactions-div">
-                                    <button onClick={handleLoopStart}>
+                                    <button className="primary-colored-button" onClick={handleLoopStart}>
                                         Run Reactions
                                     </button>
                                 </div>

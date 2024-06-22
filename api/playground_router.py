@@ -1,5 +1,5 @@
 import copy
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Query, Body
 
 from backend.computations import (
     ALL_REACTIONS,
@@ -19,7 +19,9 @@ router = APIRouter(prefix="/playground", tags=["playground"])
 
 
 @router.get("/start")
-def get_mol_image_and_valid_reactions(smiles: str) -> tuple[str, list[Reaction]]:
+def get_mol_image_and_valid_reactions(
+    smiles: str = Query(...),
+) -> tuple[str, list[Reaction]]:
     """
     Takes a SMILES string and returns a 2-tuple containing:
     - the base64 encoding of the molecule's image
@@ -47,7 +49,10 @@ def get_mol_image_and_valid_reactions(smiles: str) -> tuple[str, list[Reaction]]
 
 
 @router.get("/missing-reactants")
-def get_missing_reactant_prompts(smiles: str, reaction_key: ReactionKey) -> list[str]:
+def get_missing_reactant_prompts(
+    smiles: str = Query(...),
+    reaction_key: ReactionKey = Query(...),
+) -> list[str]:
     """
     Returns the prompts for the given reaction that requires additional reactants.
 
@@ -71,7 +76,8 @@ def get_missing_reactant_prompts(smiles: str, reaction_key: ReactionKey) -> list
 
 @router.get("/reaction/single-reactant")
 def get_products_single_reactant(
-    smiles: str, reaction_key: ReactionKey
+    smiles: str = Query(...),
+    reaction_key: ReactionKey = Query(...),
 ) -> tuple[tuple[str, str], ...]:
     """
     Takes a SMILES string and a reaction key and returns an arbitrary length products tuple containing 2-tuples of:
@@ -83,9 +89,11 @@ def get_products_single_reactant(
     return tuple((mol_to_base64(p), Chem.MolToSmiles(p)) for p in products)
 
 
-@router.get("/reaction/multiple-reactants")
+@router.post("/reaction/multiple-reactants")
 def get_products_multiple_reactants(
-    smiles: str, extra_reactant_smiles: list[str], reaction_key: ReactionKey
+    smiles: str = Body(...),
+    extra_reactant_smiles: list[str] = Body(...),
+    reaction_key: ReactionKey = Body(...),
 ):
     mol = Chem.MolFromSmiles(smiles)
     reactants: list[Mol] = [

@@ -101,7 +101,7 @@
   flex-grow: 1;
 }
 
-.run-reactions-div button {
+.primary-colored-button {
   background: #f1356d;
   color: #fff;
   border: 0;
@@ -110,7 +110,7 @@
   cursor: pointer;
 }
 
-.run-reactions-div button:hover {
+.primary-colored-button:hover {
   background-color: #f1356da9;
 }
 

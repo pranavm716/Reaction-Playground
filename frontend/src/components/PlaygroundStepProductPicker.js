@@ -19,7 +19,7 @@ const PlaygroundStepProductPicker = ({ products, setSmiles, reactionName }) => {
                 {products.length > 1 && products.map((product, index) => (
                     <React.Fragment key={product.smiles}>
                         <MolImage smiles={product.smiles} encoding={product.encoding} setSmiles={setSmiles} />
-                        {index < products.length - 1 && {plusIcon}}
+                        {index < products.length - 1 && plusIcon}
                     </React.Fragment>
                 ))}
             </div>

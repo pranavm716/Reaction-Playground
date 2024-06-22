@@ -1,4 +1,5 @@
 import copy
+import functools
 from fastapi import APIRouter, HTTPException, Query, Body
 
 from backend.computations import (
@@ -110,5 +111,8 @@ def get_products_multiple_reactants(
             detail="Invalid reactant molecules provided for this reaction.",
         )
 
-    # TODO: Add smiles and image info
-    return products
+    # NOTE: I (for now) merge a m x n 2d tuple of single step products into a 1 x m*n 1d tuple of products
+    # I can't figure out how to implement/ best represent multi step product for multiple reactants
+    products = functools.reduce(lambda x, y: x + y, products)
+
+    return tuple((mol_to_base64(p), Chem.MolToSmiles(p)) for p in products)

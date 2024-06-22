@@ -115,7 +115,6 @@
 }
 
 /* playground extra reactant picker */
-
 .extra-reactant-button {
   background: #fff;
   color: #333;
@@ -145,11 +144,13 @@
   margin: 8px 0;
 }
 
-.extra-reactant-button:hover, .reaction-button:hover {
+.extra-reactant-button:hover,
+.reaction-button:hover {
   background: #f1356d;
   color: #fff;
   border-color: #f1356d;
 }
+
 .multi-product-text {
   padding-top: 8px;
 }

@@ -12,15 +12,16 @@ const noneSelectedText = <div>
 
 const PreExecution = ({
     startingSmiles,
-    targetSmiles,
     setStartingSmiles,
+    targetSmiles,
     setTargetSmiles,
+    startingEncoding,
+    setStartingEncoding,
+    targetEncoding,
+    setTargetEncoding,
     handleRunSolver,
 }) => {
     const [preLoopSmiles, setPreLoopSmiles] = useState('');
-
-    const [startingEncoding, setStartingEncoding] = useState(null);
-    const [targetEncoding, setTargetEncoding] = useState(null);
 
     const handleSetSolverMolecule = async (isStartingMolecule) => {
         let setSmilesFn;

@@ -5,6 +5,7 @@ import Solver from "./pages/solver/Solver";
 import Classifier from "./pages/classifier/Classifier";
 import { useEffect } from "react";
 
+// TODO: Add help and about pages and color for classifier page
 const primaryColorCSSTag = "--primary-color";
 
 const useUpdatePrimaryColor = () => {

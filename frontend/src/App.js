@@ -1,8 +1,8 @@
 import { Route, Routes, useLocation } from "react-router-dom";
 import Navbar from "./components/NavBar";
-import Playground from "./pages/Playground";
-import Solver from "./pages/Solver";
-import Classifier from "./pages/Classifier";
+import Playground from "./pages/playground/Playground";
+import Solver from "./pages/solver/Solver";
+import Classifier from "./pages/classifier/Classifier";
 import { useEffect } from "react";
 
 const primaryColorCSSTag = "--primary-color";

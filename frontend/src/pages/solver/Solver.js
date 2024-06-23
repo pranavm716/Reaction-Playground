@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import ChemDraw from "../components/ChemDraw";
-import { cautionIcon, doubleArrowIcon } from "../components/SmallUIComponents";
+import ChemDraw from "../../components/ChemDraw";
+import { cautionIcon, doubleArrowIcon } from "../../components/SmallUIComponents";
 
 const noneSelectedText = <div>
     {cautionIcon}

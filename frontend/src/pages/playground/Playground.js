@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import ChemDraw from "../components/ChemDraw";
-import MolImage from "../components/MolImage";
+import ChemDraw from "../../components/ChemDraw";
+import MolImage from "../../components/MolImage";
 import axios from 'axios';
-import PlaygroundStepReactionPicker from "../components/PlaygroundStepReactionPicker";
-import PlaygroundStepProductPicker from "../components/PlaygroundStepProductPicker";
-import PlaygroundStepExtraReactantPicker from "../components/PlaygroundStepExtraReactantPicker";
+import ReactionPicker from "./ReactionPicker";
+import ProductPicker from "./ProductPicker";
+import ExtraReactantPicker from "./ExtraReactantPicker";
 
 const START_ENDPOINT = '/playground/start';
 const REACTION_SINGLE_REACTANT_ENDPOINT = '/playground/reaction/single-reactant';
@@ -116,7 +116,7 @@ const Playground = () => {
                                 <p><b>Current molecule</b></p>
                                 {
                                     missingReactantPrompts &&
-                                    <PlaygroundStepExtraReactantPicker
+                                    <ExtraReactantPicker
                                         molImage={molImage}
                                         missingReactantPrompts={missingReactantPrompts}
                                         setMissingReactantSmilesPicked={setMissingReactantSmilesPicked}
@@ -125,7 +125,7 @@ const Playground = () => {
                                 }
                                 {
                                     productsMetadata ?
-                                        <PlaygroundStepProductPicker
+                                        <ProductPicker
                                             products={productsMetadata}
                                             setSmiles={setSmiles}
                                             reactionName={reactionPicked.name}
@@ -134,7 +134,7 @@ const Playground = () => {
                                             missingReactantEncodings={missingReactantEncodings}
                                         />
                                         : !missingReactantPrompts ?
-                                            <PlaygroundStepReactionPicker
+                                            <ReactionPicker
                                                 reactions={stepMetadata.validReactions}
                                                 setReactionPicked={setReactionPicked}
                                                 molImage={molImage}

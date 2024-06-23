@@ -1,9 +1,9 @@
-import ChemDraw from "./ChemDraw";
+import ChemDraw from "../../components/ChemDraw";
 import React, { useState } from "react";
 import Modal from 'react-modal';
-import { cautionIcon, closeIcon, plusIcon, ArrowWithReactionName } from "./SmallUIComponents";
+import { cautionIcon, closeIcon, plusIcon, ArrowWithReactionName } from "../../components/SmallUIComponents";
 
-const PlaygroundStepExtraReactantPicker = ({ molImage, missingReactantPrompts, setMissingReactantSmilesPicked, reactionName }) => {
+const ExtraReactantPicker = ({ molImage, missingReactantPrompts, setMissingReactantSmilesPicked, reactionName }) => {
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [smiles, setSmiles] = useState(''); // Smiles of the current missing reactant picked
 
@@ -102,4 +102,4 @@ const PlaygroundStepExtraReactantPicker = ({ molImage, missingReactantPrompts, s
     );
 }
 
-export default PlaygroundStepExtraReactantPicker;
+export default ExtraReactantPicker;

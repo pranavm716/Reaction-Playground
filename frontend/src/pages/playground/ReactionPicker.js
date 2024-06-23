@@ -1,4 +1,4 @@
-const PlaygroundStepReactionPicker = ({ reactions, setReactionPicked, molImage }) => {
+const ReactionPicker = ({ reactions, setReactionPicked, molImage }) => {
     return (
         <>
             {molImage}
@@ -18,4 +18,4 @@ const PlaygroundStepReactionPicker = ({ reactions, setReactionPicked, molImage }
     );
 }
 
-export default PlaygroundStepReactionPicker;
+export default ReactionPicker;

@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
-import MolImage from "./MolImage";
-import {ArrowWithReactionName, plusIcon} from "./SmallUIComponents";
+import MolImage from "../../components/MolImage";
+import {ArrowWithReactionName, plusIcon} from "../../components/SmallUIComponents";
 
-const PlaygroundStepProductPicker = ({ products, setSmiles, reactionName, molImage, missingReactantSmilesPicked, missingReactantEncodings }) => {
+const ProductPicker = ({ products, setSmiles, reactionName, molImage, missingReactantSmilesPicked, missingReactantEncodings }) => {
     let reactantMolRow;
     if (missingReactantSmilesPicked) {
         reactantMolRow = <div className="mol-row">
@@ -46,4 +46,4 @@ const PlaygroundStepProductPicker = ({ products, setSmiles, reactionName, molIma
     );
 }
 
-export default PlaygroundStepProductPicker;
+export default ProductPicker;

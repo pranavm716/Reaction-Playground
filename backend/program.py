@@ -1,5 +1,3 @@
-import copy
-
 from PIL.Image import Image as PILImage
 from rdkit.Chem.rdchem import Mol
 
@@ -7,12 +5,10 @@ from backend.computations import (
     copy_mol,
     find_synthetic_pathway,
     generate_multi_step_product,
-    get_reactant_position_of_mol_in_reaction,
     ALL_REACTIONS,
 )
 from backend.datatypes import SolverModeImageData
-from backend.fastapi_rdkit_utils import _construct_mol_image
-from backend.reaction import ReactionKey
+from api.utils import _construct_mol_image
 
 
 def run_solver_mode(
@@ -57,6 +53,3 @@ def run_solver_mode(
         target_mol_img,
         solver_images,
     )
-
-
-

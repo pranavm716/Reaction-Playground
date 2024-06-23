@@ -10,7 +10,7 @@ from backend.computations import (
     get_reactant_position_of_mol_in_reaction,
     get_reactions_from_keys,
 )
-from backend.fastapi_rdkit_utils import mol_to_base64
+from api.utils import get_mol_and_image_encoding, mol_to_base64
 from backend.reaction import Reaction, ReactionKey
 from rdkit import Chem
 from rdkit.Chem.rdchem import Mol
@@ -31,17 +31,10 @@ def get_mol_image_and_valid_reactions(
     The SMILES string must contain only one valid molecule. An exception is raised otherwise.
     """
 
-    # Validation
-    if not smiles:
-        raise HTTPException(status_code=400, detail="Drawing cannot be empty.")
-    if "." in smiles:
-        raise HTTPException(
-            status_code=400,
-            detail=f"Drawing must contain only one molecule. Received {smiles.count(".") + 1} molecules.",
-        )
-
-    mol = Chem.MolFromSmiles(smiles)
-    encoding = mol_to_base64(mol)
+    try:
+        mol, encoding = get_mol_and_image_encoding(smiles)
+    except (ValueError, TypeError) as exc:
+        raise HTTPException(status_code=400, detail=str(exc))
 
     reaction_keys = find_possible_reaction_keys(mol, solver_mode=False)
     reactions = get_reactions_from_keys(reaction_keys)

@@ -3,6 +3,22 @@ from rdkit.Chem.rdchem import Mol
 from io import BytesIO
 import base64
 from PIL.Image import Image as PILImage
+from rdkit import Chem
+
+
+def get_mol_and_image_encoding(smiles: str) -> tuple[Mol, str]:
+    # Validation
+    if not smiles:
+        raise ValueError("Drawing cannot be empty.")
+    if "." in smiles:
+        raise ValueError(
+            f"Drawing must contain only one molecule. Received {smiles.count(".") + 1} molecules.",
+        )
+
+    mol = Chem.MolFromSmiles(smiles)
+    Chem.SanitizeMol(mol)
+    encoding = mol_to_base64(mol)
+    return mol, encoding
 
 
 def mol_to_base64(mol: Mol) -> str:
@@ -18,20 +34,3 @@ def _img_to_base64(img: PILImage) -> str:
 
 def _construct_mol_image(mol: Mol) -> PILImage:
     return Draw.MolToImage(mol)
-
-
-# old
-# def start_and_target_mols_are_valid(
-#     start_mol_smiles: str, target_mol_smiles: str | None = None
-# ) -> bool:
-#     try:
-#         start_mol = Chem.MolFromSmiles(start_mol_smiles)
-#         Chem.SanitizeMol(start_mol)
-
-#         if target_mol_smiles:
-#             target_mol = Chem.MolFromSmiles(target_mol_smiles)
-#             Chem.SanitizeMol(target_mol)
-#     except (TypeError, ValueError):
-#         return False
-#     else:
-#         return True

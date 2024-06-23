@@ -9,6 +9,7 @@ from backend.computations import (
 from backend.config import REACT_JS_REQUEST_ORIGIN
 from backend.reaction import ReactionKey, ReactionDict
 from api.playground_router import router as playground_router
+from api.solver_router import router as solver_router
 
 app = FastAPI()
 
@@ -40,3 +41,4 @@ def get_mol_classifications(mol_smiles: str) -> list[str]:
 
 
 app.include_router(playground_router)
+app.include_router(solver_router)

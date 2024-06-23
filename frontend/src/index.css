@@ -174,21 +174,21 @@
 
 .grid-container {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr; /* Three columns with the middle one auto-sized */
-  grid-template-rows: 1fr 1fr 1fr; /* Three rows */
-  gap: 10px; /* Adjust gap between grid items */
-  align-items: center; /* Center items vertically */
-  justify-items: center; /* Center items horizontally */
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+  gap: 10px;
+  align-items: center;
+  justify-items: center;
 }
 
 .grid-starting-text, .grid-target-text {
-  justify-self: center; /* Align text to the start of the grid cell */
+  justify-self: center;
 }
 
 .grid-starting-button, .grid-target-button {
-  justify-self: center; /* Stretch buttons to fill the cell */
+  justify-self: center;
 }
 
 .grid-double-arrow-placeholder, .grid-button-placeholder {
-  visibility: hidden; /* Hide placeholders but keep their space */
+  visibility: hidden;
 }

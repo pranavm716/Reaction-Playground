@@ -33,9 +33,9 @@ const PreExecution = ({
             setEncodingFn = setTargetEncoding;
         }
 
-        setSmilesFn(preLoopSmiles);
         await axios.get(GET_MOL_IMAGE_ENDPOINT, { params: { smiles: preLoopSmiles } })
-            .then(res => {
+        .then(res => {
+                setSmilesFn(preLoopSmiles);
                 setEncodingFn(res.data);
             })
             .catch(error => {
@@ -103,7 +103,7 @@ const PreExecution = ({
                     </div>
                 </div>
             </div>
-            <p>Draw 2 molecules to get started!</p>
+            <p>Draw a starting and a target molecule to get started!</p>
         </>
     );
 }

@@ -192,3 +192,14 @@
 .grid-double-arrow-placeholder, .grid-button-placeholder {
   visibility: hidden;
 }
+
+.solver-initial-display {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.solver-results-display {
+  margin-top: 25px;
+}

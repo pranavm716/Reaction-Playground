@@ -22,7 +22,6 @@ const Solver = () => {
                 params: {
                     start_smiles: startingSmiles,
                     target_smiles: targetSmiles,
-
                 }
             }
         )
@@ -38,7 +37,7 @@ const Solver = () => {
             targetSmiles={targetSmiles}
             targetEncoding={targetEncoding}
             solverResults={solverResults}
-        />
+        />;
     } else {
         return <PreExecution
             startingSmiles={startingSmiles}

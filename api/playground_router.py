@@ -15,7 +15,7 @@ from backend.reaction import Reaction, ReactionKey
 from rdkit import Chem
 from rdkit.Chem.rdchem import Mol
 
-
+# TODO: Refactor response models using pydantic BaseModel
 router = APIRouter(prefix="/playground", tags=["playground"])
 
 
@@ -96,7 +96,7 @@ def get_products_multiple_reactants(
     - an arbitrary length products tuple containing 2-tuples of:
         - the base64 encoding of the product's image
         - the SMILES of the product
-    
+
     Pre: the molecule given by the smiles parameter is a valid reactant for the given reaction key.
     Pre: the length of the extra reactant SMILES list + 1 (the smiles molecule) is equal to the number of reactants required by the reaction.
     """

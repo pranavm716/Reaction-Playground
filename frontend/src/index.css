@@ -158,21 +158,37 @@
 }
 
 /* solver mode */
-.solver-chem-draw {
-  padding: 0 100px;
-}
-
-.draw-solver {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  justify-content: center;
-  align-items: center;
-  margin: 15px 0;
-}
-
-.solver-set-mol {
+.pre-solver-info {
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
+  margin: 20px 0;
+}
+
+.pre-solver-double-arrow-div {
+  display: flex;
   flex-direction: column;
+  justify-content: center;
+  margin: 0 25px;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr; /* Three columns with the middle one auto-sized */
+  grid-template-rows: 1fr 1fr 1fr; /* Three rows */
+  gap: 10px; /* Adjust gap between grid items */
+  align-items: center; /* Center items vertically */
+  justify-items: center; /* Center items horizontally */
+}
+
+.grid-starting-text, .grid-target-text {
+  justify-self: center; /* Align text to the start of the grid cell */
+}
+
+.grid-starting-button, .grid-target-button {
+  justify-self: center; /* Stretch buttons to fill the cell */
+}
+
+.grid-double-arrow-placeholder, .grid-button-placeholder {
+  visibility: hidden; /* Hide placeholders but keep their space */
 }

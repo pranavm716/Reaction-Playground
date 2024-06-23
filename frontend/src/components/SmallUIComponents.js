@@ -20,6 +20,12 @@ export const plusIcon = <svg style={{
     <path d="M450-450H220v-60h230v-230h60v230h230v60H510v230h-60v-230Z" />
 </svg>;
 
+export const doubleArrowIcon = <svg style={{
+    paddingTop: '10px',
+}} xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000">
+    <path d="M383-480 200-664l56-56 240 240-240 240-56-56 183-184Zm264 0L464-664l56-56 240 240-240 240-56-56 183-184Z" />
+</svg>
+
 export const ArrowWithReactionName = ({ reactionName }) => {
     return (
         <div style={{

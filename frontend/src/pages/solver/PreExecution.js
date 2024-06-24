@@ -81,6 +81,7 @@ const PreExecution = ({
                     </div>
 
                     {/* third row */}
+                    {/* TODO: add clear buttons for starting and target molecules */}
                     <div className="grid-starting-button">
                         {preLoopSmiles && !startingSmiles &&
                             <button onClick={() => handleSetSolverMolecule(true)} className="primary-colored-button">

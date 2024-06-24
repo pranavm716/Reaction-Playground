@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import ChemDraw from "../../components/ChemDraw";
 import MolImage from "../../components/MolImage";
 import axios from 'axios';
@@ -22,6 +22,10 @@ const Playground = () => {
 
     // during playground loop
     const [smiles, setSmiles] = useState("");
+    const smilesRef = useRef(smiles); // so that the callback functions don't have to depend on smiles
+    useEffect(() => {
+        smilesRef.current = smiles;
+    }, [smiles])
 
     const [stepMetadata, setStepMetadata] = useState(null); // metadata for the current step: {encoding -> mol img encoding, validReactions -> [list of valid reactions]}
     const [reactionPicked, setReactionPicked] = useState(null); // reaction object picked by the user
@@ -32,7 +36,7 @@ const Playground = () => {
     const [missingReactantSmilesPicked, setMissingReactantSmilesPicked] = useState(null); // smiles of the missing reactant picked by the user: [list of smiles]
     const [missingReactantEncodings, setMissingReactantEncodings] = useState(null); // encodings of the missing reactants picked by the user: [list of encodings]
 
-    const handleStepStart = async () => {
+    const handleStepStart = useCallback(async () => {
         if (!smiles) return;
 
         // clean up previous state so UI is rendered properly
@@ -49,34 +53,34 @@ const Playground = () => {
                 alert(error.response.data.detail);
                 setSmiles("");
             })
-    }
-    useEffect(() => { handleStepStart() }, [smiles]);
+    }, [smiles])
+    useEffect(() => { handleStepStart() }, [handleStepStart]);
 
-    const handleStepReaction = async () => {
+    const handleStepReaction = useCallback(async () => {
         if (!reactionPicked) return;
 
         if (reactionPicked.multiple_reactants_prompts) {
             // reaction has multiple reactants
-            await axios.get(MISSING_REACTANTS_PROMPTS_ENDPOINT, { params: { smiles, reaction_key: reactionPicked.reaction_key } })
+            await axios.get(MISSING_REACTANTS_PROMPTS_ENDPOINT, { params: { smiles: smilesRef.current, reaction_key: reactionPicked.reaction_key } })
                 .then(res => {
                     setMissingReactantPrompts(res.data);
                 })
         } else {
             // reaction has only one reactant
-            await axios.get(REACTION_SINGLE_REACTANT_ENDPOINT, { params: { smiles, reaction_key: reactionPicked.reaction_key } })
+            await axios.get(REACTION_SINGLE_REACTANT_ENDPOINT, { params: { smiles: smilesRef.current, reaction_key: reactionPicked.reaction_key } })
                 .then(res => {
                     setProductsMetadata(res.data);
                 })
         }
-    }
-    useEffect(() => { handleStepReaction() }, [reactionPicked]);
+    }, [reactionPicked, smilesRef])
+    useEffect(() => { handleStepReaction() }, [handleStepReaction]);
 
-    const handleStepReactionMultipleReactants = async () => {
+    const handleStepReactionMultipleReactants = useCallback(async () => {
         if (!missingReactantSmilesPicked) return;
 
         await axios.post(REACTION_MULTIPLE_REACTANTS_ENDPOINT,
             {
-                smiles: smiles,
+                smiles: smilesRef.current,
                 extra_reactant_smiles: missingReactantSmilesPicked,
                 reaction_key: reactionPicked.reaction_key
             }
@@ -93,8 +97,8 @@ const Playground = () => {
                 // provided reactants were invalid for this reaction
                 alert(error.response.data.detail);
             })
-    }
-    useEffect(() => { handleStepReactionMultipleReactants() }, [missingReactantSmilesPicked]);
+    }, [missingReactantSmilesPicked, smilesRef, reactionPicked])
+    useEffect(() => { handleStepReactionMultipleReactants() }, [handleStepReactionMultipleReactants]);
 
     let molImage = null;
     if (stepMetadata) {

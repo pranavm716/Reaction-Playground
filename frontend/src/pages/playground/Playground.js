@@ -11,6 +11,7 @@ const REACTION_SINGLE_REACTANT_ENDPOINT = '/playground/reaction/single-reactant'
 const MISSING_REACTANTS_PROMPTS_ENDPOINT = '/playground/missing-reactants';
 const REACTION_MULTIPLE_REACTANTS_ENDPOINT = '/playground/reaction/multiple-reactants';
 
+// TODO: Add back button when there are no reactions and also when choosing extra reactants
 const Playground = () => {
     // before playground loop
     const [preLoopSmiles, setPreLoopSmiles] = useState(""); // smiles before explicitly starting the playground loop

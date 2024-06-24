@@ -5,22 +5,15 @@ import Solver from "./pages/solver/Solver";
 import Classifier from "./pages/classifier/Classifier";
 import { useEffect } from "react";
 
-// TODO: Add help and about pages and color for classifier page
-const primaryColorCSSTag = "--primary-color";
+// TODO: Add help and about pages
+const colorsMap = { "/": "#f1356d", "/solver": "#429987", "/classifier": "#1976D2" }
 
 const useUpdatePrimaryColor = () => {
   const location = useLocation();
 
   useEffect(() => {
-    const rootStyle = document.documentElement.style;
-    switch (location.pathname) {
-      case "/":
-        rootStyle.setProperty(primaryColorCSSTag, "#f1356d");
-        break;
-      case "/solver":
-        rootStyle.setProperty(primaryColorCSSTag, "#429987");
-        break;
-    }
+    const primaryColor = colorsMap[location.pathname];
+    document.documentElement.style.setProperty("--primary-color", primaryColor);
   }, [location]);
 }
 
@@ -29,7 +22,7 @@ const App = () => {
 
   return (
     <>
-      <Navbar />
+      <Navbar colorsMap={colorsMap} />
       <div className="content">
         <Routes>
           <Route path="/" element={<Playground />} />

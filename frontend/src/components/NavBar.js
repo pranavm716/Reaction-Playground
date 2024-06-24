@@ -1,13 +1,28 @@
 import { NavLink } from "react-router-dom";
+import { useState } from "react";
 
-const Navbar = () => {
+const links = { "/": "Playground", "/solver": "Solver", "/classifier": "Classifier" }
+
+const Navbar = ({ colorsMap }) => {
+    const [hoverLink, setHoverLink] = useState(null);
+
     return (
         <nav className="navbar">
             <h1>Reaction Playground</h1>
             <div className="links">
-                <NavLink to="/" >Playground</NavLink>
-                <NavLink to="/solver">Solver</NavLink>
-                <NavLink to="/classifier">Classifier</NavLink>
+                {Object.keys(links).map((link) => {
+                    return (
+                        <NavLink
+                            to={link}
+                            key={link}
+                            onMouseEnter={() => setHoverLink(link)}
+                            onMouseLeave={() => setHoverLink(null)}
+                            style={{ color: hoverLink === link ? colorsMap[link] : "#333" }}
+                        >
+                            {links[link]}
+                        </NavLink>
+                    );
+                })}
             </div>
         </nav>
     );

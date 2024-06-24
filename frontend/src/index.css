@@ -36,8 +36,8 @@
 }
 
 .navbar a:hover {
-  color: var(--primary-color);
   cursor: pointer;
+  /* The hover color is updated dynamically in NavBar.js */
 }
 
 .navbar a.active {

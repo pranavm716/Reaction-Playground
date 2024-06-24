@@ -4,7 +4,6 @@ import { CautionText, doubleArrowIcon } from "../../components/SmallUIComponents
 import axios from 'axios';
 import MolImage from "../../components/MolImage";
 
-// TODO: make sure starting and target molecules cannot be the same
 const GET_MOL_IMAGE_ENDPOINT = '/solver/get-mol-image';
 const noneSelectedText = <CautionText text="Not set"/>
 
@@ -19,22 +18,30 @@ const PreExecution = ({
     setTargetEncoding,
     handleRunSolver,
 }) => {
-    const [preLoopSmiles, setPreLoopSmiles] = useState('');
+    const [preSolverSmiles, setPreSolverSmiles] = useState('');
 
     const handleSetSolverMolecule = async (isStartingMolecule) => {
         let setSmilesFn;
         let setEncodingFn;
+        let matchesOtherMolecule = false;
         if (isStartingMolecule) {
             setSmilesFn = setStartingSmiles;
             setEncodingFn = setStartingEncoding;
+            matchesOtherMolecule = preSolverSmiles === targetSmiles;
         } else {
             setSmilesFn = setTargetSmiles;
             setEncodingFn = setTargetEncoding;
+            matchesOtherMolecule = preSolverSmiles === startingSmiles;
         }
 
-        await axios.get(GET_MOL_IMAGE_ENDPOINT, { params: { smiles: preLoopSmiles } })
+        if (matchesOtherMolecule) {
+            alert("Starting and target molecules cannot be the same!");
+            return;
+        }
+
+        await axios.get(GET_MOL_IMAGE_ENDPOINT, { params: { smiles: preSolverSmiles } })
         .then(res => {
-                setSmilesFn(preLoopSmiles);
+                setSmilesFn(preSolverSmiles);
                 setEncodingFn(res.data);
             })
             .catch(error => {
@@ -51,7 +58,7 @@ const PreExecution = ({
             </p>
             <div className="two-panel-content">
                 <div>
-                    <ChemDraw setSmiles={setPreLoopSmiles} />
+                    <ChemDraw setSmiles={setPreSolverSmiles} />
                 </div>
                 <div className="grid-container">
                     {/* first row */}
@@ -81,7 +88,7 @@ const PreExecution = ({
                     {/* third row */}
                     {/* TODO: add clear buttons for starting and target molecules */}
                     <div className="grid-starting-button">
-                        {preLoopSmiles && !startingSmiles &&
+                        {preSolverSmiles && !startingSmiles &&
                             <button onClick={() => handleSetSolverMolecule(true)} className="primary-colored-button">
                                 Set as starting molecule
                             </button>
@@ -95,7 +102,7 @@ const PreExecution = ({
                     }
                     <div className="grid-button-placeholder"></div>
                     <div className="grid-target-button">
-                        {preLoopSmiles && !targetSmiles &&
+                        {preSolverSmiles && !targetSmiles &&
                             <button onClick={() => handleSetSolverMolecule(false)} className="primary-colored-button">
                                 Set as target molecule
                             </button>

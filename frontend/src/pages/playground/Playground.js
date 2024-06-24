@@ -11,7 +11,7 @@ const REACTION_SINGLE_REACTANT_ENDPOINT = '/playground/reaction/single-reactant'
 const MISSING_REACTANTS_PROMPTS_ENDPOINT = '/playground/missing-reactants';
 const REACTION_MULTIPLE_REACTANTS_ENDPOINT = '/playground/reaction/multiple-reactants';
 
-// TODO: Add back button when there are no reactions and also when choosing extra reactants
+// TODO: Add back button when there are no reactions (go back in history)
 const Playground = () => {
     // before playground loop
     const [preLoopSmiles, setPreLoopSmiles] = useState(""); // smiles before explicitly starting the playground loop
@@ -60,7 +60,7 @@ const Playground = () => {
         if (!reactionPicked) return;
 
         if (reactionPicked.multiple_reactants_prompts) {
-            // reaction has multiple reactants
+            // reaction has multiple reactants, need to prompt user for missing reactants
             await axios.get(MISSING_REACTANTS_PROMPTS_ENDPOINT, { params: { smiles: smilesRef.current, reaction_key: reactionPicked.reaction_key } })
                 .then(res => {
                     setMissingReactantPrompts(res.data);
@@ -100,6 +100,12 @@ const Playground = () => {
     }, [missingReactantSmilesPicked, smilesRef, reactionPicked])
     useEffect(() => { handleStepReactionMultipleReactants() }, [handleStepReactionMultipleReactants]);
 
+    const cancelMultipleReactants = () => {
+        // If the user picks a reaction that requires multiple reactants but then decides to go back to the reaction picker
+        setReactionPicked(null);
+        setMissingReactantPrompts(null);
+    }
+
     let molImage = null;
     if (stepMetadata) {
         molImage = <MolImage smiles={smiles} encoding={stepMetadata.encoding} />
@@ -126,6 +132,7 @@ const Playground = () => {
                                         missingReactantPrompts={missingReactantPrompts}
                                         setMissingReactantSmilesPicked={setMissingReactantSmilesPicked}
                                         reactionName={reactionPicked.name}
+                                        cancelMultipleReactants={cancelMultipleReactants}
                                     />
                                 }
                                 {

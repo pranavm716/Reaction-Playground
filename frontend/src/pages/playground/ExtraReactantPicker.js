@@ -3,7 +3,15 @@ import React, { useState } from "react";
 import Modal from 'react-modal';
 import { CautionText, closeIcon, plusIcon, ArrowWithReactionInfo } from "../../components/SmallUIComponents";
 
-const ExtraReactantPicker = ({ molImage, missingReactantPrompts, setMissingReactantSmilesPicked, reactionName }) => {
+const ExtraReactantPicker = (
+    {
+        molImage,
+        missingReactantPrompts,
+        setMissingReactantSmilesPicked,
+        reactionName,
+        cancelMultipleReactants,
+    }
+) => {
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [smiles, setSmiles] = useState(''); // Smiles of the current missing reactant picked
 
@@ -95,6 +103,7 @@ const ExtraReactantPicker = ({ molImage, missingReactantPrompts, setMissingReact
 
             <ArrowWithReactionInfo reactionName={reactionName} />
             <CautionText text="This reaction requires additional reactants." />
+            <button onClick={cancelMultipleReactants} style={{ marginTop: '20px' }} className="primary-colored-button">Back to reactions</button>
         </>
     );
 }

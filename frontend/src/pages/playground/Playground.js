@@ -64,7 +64,7 @@ const Playground = () => {
             // reaction has only one reactant
             await axios.get(REACTION_SINGLE_REACTANT_ENDPOINT, { params: { smiles, reaction_key: reactionPicked.reaction_key } })
                 .then(res => {
-                    setProductsMetadata(res.data.map(product => ({ encoding: product[0], smiles: product[1] })));
+                    setProductsMetadata(res.data);
                 })
         }
     }
@@ -86,7 +86,7 @@ const Playground = () => {
 
                 const [extraReactantEncodings, products] = res.data;
                 setMissingReactantEncodings(extraReactantEncodings);
-                setProductsMetadata(products.map(product => ({ encoding: product[0], smiles: product[1] })));
+                setProductsMetadata(products);
             })
             .catch(error => {
                 // provided reactants were invalid for this reaction

@@ -1,9 +1,12 @@
+from typing import Iterable
 from rdkit.Chem import Draw
 from rdkit.Chem.rdchem import Mol
 from io import BytesIO
 import base64
 from PIL.Image import Image as PILImage
 from rdkit import Chem
+
+from api.response import MolImageMetadata
 
 
 def get_mol_and_image_encoding(smiles: str) -> tuple[Mol, str]:
@@ -23,6 +26,13 @@ def get_mol_and_image_encoding(smiles: str) -> tuple[Mol, str]:
 
 def mol_to_base64(mol: Mol) -> str:
     return _img_to_base64(_construct_mol_image(mol))
+
+
+def generate_mol_image_metadata(mols: Iterable[Mol]) -> list[MolImageMetadata]:
+    return [
+        MolImageMetadata(smiles=Chem.MolToSmiles(m), encoding=mol_to_base64(m))
+        for m in mols
+    ]
 
 
 def _img_to_base64(img: PILImage) -> str:

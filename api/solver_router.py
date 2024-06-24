@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Query
 
+from api.response import MolImageMetadata, SolverModeImageData, SolverModeResponse
 from api.utils import get_mol_and_image_encoding, mol_to_base64
-from pydantic import BaseModel
 
 from backend.computations import (
     ALL_REACTIONS,
@@ -28,19 +28,6 @@ def get_image_encoding(
         raise HTTPException(status_code=400, detail=str(exc))
 
     return encoding
-
-
-# Mapping of the step number to a list of image encodings of the products generated
-# by running the corresponding reaction for that step
-SolverModeImageData = dict[int, list[str]]
-
-
-class SolverModeResponse(BaseModel):
-    path_found: bool
-    num_steps: int
-    reaction_names: list[str]
-    choice_pathway: list[int]
-    solver_image_encodings: SolverModeImageData
 
 
 @router.get("/run")
@@ -72,7 +59,13 @@ def run_solver_mode(start_smiles: str, target_smiles: str) -> SolverModeResponse
         reaction_names.append(ALL_REACTIONS[reaction_key].name)
         products = generate_multi_step_product(current_mol, reaction_key)
 
-        product_images = [mol_to_base64(product) for product in products]
+        product_images: list[MolImageMetadata] = [
+            MolImageMetadata(
+                smiles=Chem.MolToSmiles(product),
+                encoding=mol_to_base64(product),
+            )
+            for product in products
+        ]
         solver_image_encodings[step_number] = product_images
 
         current_mol = products[choice]
@@ -82,5 +75,5 @@ def run_solver_mode(start_smiles: str, target_smiles: str) -> SolverModeResponse
         num_steps=num_steps,
         reaction_names=reaction_names,
         choice_pathway=choice_pathway,
-        solver_image_encodings=solver_image_encodings,
+        solver_image_metadata=solver_image_encodings,
     )

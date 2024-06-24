@@ -1,15 +1,12 @@
 from fastapi import FastAPI
-from rdkit import Chem
 from starlette.middleware.cors import CORSMiddleware
 
-from backend.computations import (
-    ALL_REACTIONS,
-    get_substructure_classifications,
-)
+from backend.computations import ALL_REACTIONS
 from backend.config import REACT_JS_REQUEST_ORIGIN
 from backend.reaction import ReactionKey, ReactionDict
 from api.playground_router import router as playground_router
 from api.solver_router import router as solver_router
+from api.classifier_router import router as classifier_router
 
 app = FastAPI()
 
@@ -35,10 +32,6 @@ def get_reaction(reaction_key: ReactionKey) -> ReactionDict:
     return {reaction_key: ALL_REACTIONS[reaction_key]}
 
 
-@app.get("/mol/classifications")
-def get_mol_classifications(mol_smiles: str) -> list[str]:
-    return get_substructure_classifications(Chem.MolFromSmiles(mol_smiles))
-
-
 app.include_router(playground_router)
 app.include_router(solver_router)
+app.include_router(classifier_router)

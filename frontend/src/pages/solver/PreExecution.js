@@ -1,15 +1,12 @@
 import React, { useState } from "react";
 import ChemDraw from "../../components/ChemDraw";
-import { cautionIcon, doubleArrowIcon } from "../../components/SmallUIComponents";
+import { CautionText, doubleArrowIcon } from "../../components/SmallUIComponents";
 import axios from 'axios';
 import MolImage from "../../components/MolImage";
 
 // TODO: make sure starting and target molecules cannot be the same
 const GET_MOL_IMAGE_ENDPOINT = '/solver/get-mol-image';
-const noneSelectedText = <div>
-    {cautionIcon}
-    Not set
-</div>;
+const noneSelectedText = <CautionText text="Not set"/>
 
 const PreExecution = ({
     startingSmiles,

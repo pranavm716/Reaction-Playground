@@ -1,7 +1,7 @@
 import ChemDraw from "../../components/ChemDraw";
 import React, { useState } from "react";
 import Modal from 'react-modal';
-import { cautionIcon, closeIcon, plusIcon, ArrowWithReactionInfo } from "../../components/SmallUIComponents";
+import { CautionText, closeIcon, plusIcon, ArrowWithReactionInfo } from "../../components/SmallUIComponents";
 
 const ExtraReactantPicker = ({ molImage, missingReactantPrompts, setMissingReactantSmilesPicked, reactionName }) => {
     const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -94,10 +94,7 @@ const ExtraReactantPicker = ({ molImage, missingReactantPrompts, setMissingReact
             </div>
 
             <ArrowWithReactionInfo reactionName={reactionName} />
-            <div>
-                {cautionIcon}
-                This reaction requires additional reactants.
-            </div>
+            <CautionText text="This reaction requires additional reactants." />
         </>
     );
 }

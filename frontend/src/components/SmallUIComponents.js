@@ -42,7 +42,7 @@ export const ArrowWithReactionInfo = ({ reactionName, stepNumber }) => {
                     <b>Step {stepNumber}</b>
                 </span>
             }
-            <img height={130} src={process.env.PUBLIC_URL + "down-arrow.png"}></img>
+            <img height={130} src={process.env.PUBLIC_URL + "down-arrow.png"} alt="downward_arrow"></img>
             <span style={{ position: 'absolute', left: '50%', marginLeft: '50px', width: '200px' }}>
                 {reactionName}
             </span>

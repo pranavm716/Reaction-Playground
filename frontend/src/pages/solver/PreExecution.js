@@ -4,6 +4,7 @@ import { cautionIcon, doubleArrowIcon } from "../../components/SmallUIComponents
 import axios from 'axios';
 import MolImage from "../../components/MolImage";
 
+// TODO: make sure starting and target molecules cannot be the same
 const GET_MOL_IMAGE_ENDPOINT = '/solver/get-mol-image';
 const noneSelectedText = <div>
     {cautionIcon}

@@ -25,20 +25,25 @@ const SolverResults = ({
                     {doubleArrowIcon}
                     {targetMol}
                 </div>
-                {
-                    solverResults.path_found ?
-                        <p>
-                            <b style={{ color: 'green' }}>
-                                {solverResults.num_steps} step synthetic pathway found!
-                            </b>
-                        </p>
-                        :
-                        <p>
-                            {/* TODO: make the max num solver steps and multi step react mode as frontend configs  */}
-                            No synthetic pathway found in 15 steps. It is also possible that no synthetic
-                            pathway exists at all.
-                        </p>
-                }
+                <div style={{ marginTop: '20px' }}>
+                    {
+                        solverResults.path_found ?
+                            <p>
+                                <b style={{ color: 'green' }}>
+                                    {solverResults.num_steps} step synthetic pathway found!
+                                </b>
+                            </p>
+                            :
+                            <p>
+                                {/* TODO: make the max num solver steps and multi step react mode as frontend configs  */}
+                                <span style={{marginRight: '4px'}}>
+                                    <b style={{color: 'red'}}>No synthetic pathway found in 15 steps.</b>
+                                </span>
+                                It is also possible that no synthetic
+                                pathway exists at all.
+                            </p>
+                    }
+                </div>
             </div>
             {
                 solverResults.path_found &&

@@ -21,20 +21,24 @@ const Playground = () => {
     }
 
     // during playground loop
+    // before a reaction is picked
     const [smiles, setSmiles] = useState("");
     const smilesRef = useRef(smiles); // so that the callback functions don't have to depend on smiles
     useEffect(() => {
         smilesRef.current = smiles;
     }, [smiles])
 
+    // after a reaction is picked
     const [stepMetadata, setStepMetadata] = useState(null); // metadata for the current step: {encoding -> mol img encoding, validReactions -> [list of valid reactions]}
     const [reactionPicked, setReactionPicked] = useState(null); // reaction object picked by the user
-
-    const [productsMetadata, setProductsMetadata] = useState(null); // metadata for the products of the current step: list of [{encoding: mol img encoding, smiles: smiles]}
-
+    
+    // if the picked reaction requires multiple reactants
     const [missingReactantPrompts, setMissingReactantPrompts] = useState(null); // prompts for missing reactants: [list of string prompts]
     const [missingReactantSmilesPicked, setMissingReactantSmilesPicked] = useState(null); // smiles of the missing reactant picked by the user: [list of smiles]
     const [missingReactantEncodings, setMissingReactantEncodings] = useState(null); // encodings of the missing reactants picked by the user: [list of encodings]
+    
+    // after the products are generated
+    const [productsMetadata, setProductsMetadata] = useState(null); // metadata for the products of the current step: list of [{encoding: mol img encoding, smiles: smiles]}
 
     const handleStepStart = useCallback(async () => {
         if (!smiles) return;

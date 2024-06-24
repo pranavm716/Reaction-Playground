@@ -222,7 +222,7 @@ def find_synthetic_pathway(
     target_smiles = Chem.MolToSmiles(target_mol)
 
     while parent[target_smiles] is not None:
-        choice = choices[(parent[target_smiles], target_smiles)]
+        choice = choices[(parent[target_smiles], target_smiles)]  # type: ignore
         reaction, product_index = choice
         reaction_pathway.append(reaction)
         choice_pathway.append(product_index)

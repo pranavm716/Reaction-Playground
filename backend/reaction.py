@@ -1,7 +1,7 @@
 import pathlib
 from enum import StrEnum, auto
 from functools import cached_property
-from typing import Iterator
+from typing import Generator, Any
 
 import rdkit.Chem.rdChemReactions as rd
 import yaml
@@ -72,7 +72,7 @@ class Reaction(BaseModel):
     reaction_key: ReactionKey
 
     @model_validator(mode="before")
-    def transform_smarts_list(cls, values):
+    def transform_smarts_list(cls, values: dict[str, Any]) -> dict[str, Any]:
         subreactions: list[rd.ChemicalReaction] = []
         for smarts in values["smarts_list"]:
             subreaction = AllChem.ReactionFromSmarts(smarts)
@@ -86,7 +86,7 @@ class Reaction(BaseModel):
         # All the subreactions have the same number of reactants, so we can just use the first one
         return self.subreactions[0].GetNumReactantTemplates()  # noqa
 
-    def __iter__(self) -> Iterator[rd.ChemicalReaction]:
+    def __iter__(self) -> Generator[rd.ChemicalReaction, None, None]:
         """
         Makes it more convenient to iterate over the subreactions by yielding the underlying rd.ChemicalReaction objects
         """

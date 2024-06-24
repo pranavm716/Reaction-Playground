@@ -1,7 +1,7 @@
 import ChemDraw from "../../components/ChemDraw";
 import React, { useState } from "react";
 import Modal from 'react-modal';
-import { CautionText, closeIcon, plusIcon, ArrowWithReactionInfo } from "../../components/SmallUIComponents";
+import { CautionText, closeIcon, plusIcon, ArrowWithReactionInfo, BackButton } from "../../components/SmallUIComponents";
 
 const ExtraReactantPicker = (
     {
@@ -103,7 +103,7 @@ const ExtraReactantPicker = (
 
             <ArrowWithReactionInfo reactionName={reactionName} />
             <CautionText text="This reaction requires additional reactants." />
-            <button onClick={cancelMultipleReactants} style={{ marginTop: '20px' }} className="primary-colored-button">Back to reactions</button>
+            <BackButton onClick={cancelMultipleReactants} text="Back to reactions" />
         </>
     );
 }

@@ -1,7 +1,7 @@
 import ChemDraw from "../../components/ChemDraw";
 import React, { useState } from "react";
 import Modal from 'react-modal';
-import { cautionIcon, closeIcon, plusIcon, ArrowWithReactionName } from "../../components/SmallUIComponents";
+import { cautionIcon, closeIcon, plusIcon, ArrowWithReactionInfo } from "../../components/SmallUIComponents";
 
 const ExtraReactantPicker = ({ molImage, missingReactantPrompts, setMissingReactantSmilesPicked, reactionName }) => {
     const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -43,11 +43,11 @@ const ExtraReactantPicker = ({ molImage, missingReactantPrompts, setMissingReact
 
     // Array and state management for the smiles of the missing reactants picked
     let missingReactantSmiles = new Array(missingReactantPrompts.length).fill(null);
-    
+
     const handleUpdateMissingSmiles = (index) => {
         closeModal();
         missingReactantSmiles[index] = smiles;
-        
+
         // If all missing reactants have been provided, 
         // then update the state and let the parent's useEffect handle it from here
         if (missingReactantSmiles.every(smile => smile !== null)) {
@@ -93,7 +93,7 @@ const ExtraReactantPicker = ({ molImage, missingReactantPrompts, setMissingReact
                 ))}
             </div>
 
-            <ArrowWithReactionName reactionName={reactionName} />
+            <ArrowWithReactionInfo reactionName={reactionName} />
             <div>
                 {cautionIcon}
                 This reaction requires additional reactants.

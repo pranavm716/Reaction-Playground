@@ -8,7 +8,8 @@
 }
 
 :root {
-  --primary-color: #f1356d; /* Gets dynamically updated depending on route */
+  --primary-color: #f1356d;
+  /* Gets dynamically updated depending on route */
 }
 
 /* navbar and content */
@@ -67,7 +68,7 @@
 .chem-draw-editor {
   display: flex;
   justify-content: center;
-  margin: 20px 0;
+  margin: 25px 0;
 }
 
 .clickable-mol-image:hover {
@@ -181,15 +182,18 @@
   justify-items: center;
 }
 
-.grid-starting-text, .grid-target-text {
+.grid-starting-text,
+.grid-target-text {
   justify-self: center;
 }
 
-.grid-starting-button, .grid-target-button {
+.grid-starting-button,
+.grid-target-button {
   justify-self: center;
 }
 
-.grid-double-arrow-placeholder, .grid-button-placeholder {
+.grid-double-arrow-placeholder,
+.grid-button-placeholder {
   visibility: hidden;
 }
 
@@ -197,9 +201,18 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 15px;
 }
 
-
 .solver-results-display {
-  margin-top: 25px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.solver-mol-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
 }

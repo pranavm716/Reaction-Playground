@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import MolImage from "../../components/MolImage";
-import {ArrowWithReactionName, plusIcon} from "../../components/SmallUIComponents";
+import { ArrowWithReactionInfo, plusIcon } from "../../components/SmallUIComponents";
 
 const ProductPicker = ({ products, setSmiles, reactionName, molImage, missingReactantSmilesPicked, missingReactantEncodings }) => {
     let reactantMolRow;
@@ -28,20 +28,23 @@ const ProductPicker = ({ products, setSmiles, reactionName, molImage, missingRea
     return (
         <>
             {reactantMolRow}
-            <ArrowWithReactionName reactionName={reactionName} />
+            <ArrowWithReactionInfo reactionName={reactionName} />
 
             {/* list of clickable products */}
-            <div className="mol-row">
-                {products.length > 1 && products.map((product, index) => (
-                    <React.Fragment key={product.smiles}>
-                        <MolImage smiles={product.smiles} encoding={product.encoding} setSmiles={setSmiles} />
-                        {index < products.length - 1 && plusIcon}
-                    </React.Fragment>
-                ))}
-            </div>
-            <p className="multi-product-text">
-                This produces {products.length} products. Click on the one you want to analyze next.
-            </p>
+            {products.length > 1 &&
+                <>
+                    <div className="mol-row">
+                        {products.map((product, index) => (
+                            <React.Fragment key={product.smiles}>
+                                <MolImage smiles={product.smiles} encoding={product.encoding} setSmiles={setSmiles} />
+                                {index < products.length - 1 && plusIcon}
+                            </React.Fragment>
+                        ))}
+                    </div>
+                    <p className="multi-product-text">
+                        This produces {products.length} products. Click on the one you want to analyze next.
+                    </p>
+                </>}
         </>
     );
 }

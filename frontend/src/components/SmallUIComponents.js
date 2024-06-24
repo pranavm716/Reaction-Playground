@@ -27,16 +27,25 @@ export const doubleArrowIcon = <svg style={{
     <path d="M383-480 200-664l56-56 240 240-240 240-56-56 183-184Zm264 0L464-664l56-56 240 240-240 240-56-56 183-184Z" />
 </svg>
 
-export const ArrowWithReactionName = ({ reactionName }) => {
+export const ArrowWithReactionInfo = ({ reactionName, stepNumber }) => {
     return (
         <div style={{
             position: 'relative',
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
+            margin: '20px',
         }}>
+            {
+                stepNumber &&
+                <span style={{ position: 'absolute', right: '50%', marginRight: '50px', whiteSpace: 'nowrap' }}>
+                    <b>Step {stepNumber}</b>
+                </span>
+            }
             <img height={130} src={process.env.PUBLIC_URL + "down-arrow.png"}></img>
-            <span style={{ width: 200, position: 'absolute', left: 60 }}>{reactionName}</span>
+            <span style={{ position: 'absolute', left: '50%', marginLeft: '50px', width: '200px' }}>
+                {reactionName}
+            </span>
         </div>
     );
 };

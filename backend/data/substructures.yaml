@@ -38,14 +38,14 @@ tertiary_amide:
 nitrile:
   - "[#6][C]#N"
 
-# Alkyl bromides (TODO: generalize to halides)
-primary_alkyl_bromide:
-  - "[CH3][Br]" # methyl bromide
-  - "[#6][CH2][Br]"
-secondary_alkyl_bromide:
-  - "[#6][CH]([#6])[Br]"
-tertiary_alkyl_bromide:
-  - "[#6][CH0]([#6])([#6])[Br]"
+# Alkyl bromides
+primary_alkyl_halide:
+  - "[CH3][F,Cl,Br,I]" # methyl halide
+  - "[#6][CH2][F,Cl,Br,I]"
+secondary_alkyl_halide:
+  - "[#6][CH]([#6])[F,Cl,Br,I]"
+tertiary_alkyl_halide:
+  - "[#6][CH0]([#6])([#6])[F,Cl,Br,I]"
 
 # Alkenes and alkynes
 internal_alkene:

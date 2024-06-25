@@ -327,10 +327,10 @@ class TestSubstructureClassifications:
                 [MolClass.carboxylic_acid, MolClass.terminal_alkyne],
             ],
             [
-                "CC(C)(O)CCC(Br)C=O",
+                "CC(C)(O)CCC(I)C=O",
                 [
                     MolClass.aldehyde,
-                    MolClass.secondary_alkyl_bromide,
+                    MolClass.secondary_alkyl_halide,
                     MolClass.tertiary_alcohol,
                 ],
             ],
@@ -354,7 +354,7 @@ class TestSubstructureClassifications:
             [
                 "NC(=O)CC(O)C(CBr)=C",
                 [
-                    MolClass.primary_alkyl_bromide,
+                    MolClass.primary_alkyl_halide,
                     MolClass.secondary_alcohol,
                     MolClass.primary_amide,
                     MolClass.terminal_alkene,
@@ -373,7 +373,7 @@ class TestSubstructureClassifications:
             ["C=O", [MolClass.aldehyde]],
             ["CO", [MolClass.primary_alcohol]],
             ["C(=O)O", [MolClass.carboxylic_acid]],
-            ["CBr", [MolClass.primary_alkyl_bromide]],
+            ["CF", [MolClass.primary_alkyl_halide]],
             ["C=C", [MolClass.terminal_alkene]],
             ["C#C", [MolClass.terminal_alkyne]],
         ],

@@ -33,10 +33,10 @@ class MolClass(StrEnum):
 
     nitrile = auto()
 
-    # Alkyl bromides
-    primary_alkyl_bromide = auto()
-    secondary_alkyl_bromide = auto()
-    tertiary_alkyl_bromide = auto()
+    # Alkyl halides
+    primary_alkyl_halide = auto()
+    secondary_alkyl_halide = auto()
+    tertiary_alkyl_halide = auto()
 
     # Alkenes and alkynes
     internal_alkene = auto()

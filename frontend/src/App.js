@@ -3,6 +3,8 @@ import Navbar from "./components/NavBar";
 import Playground from "./pages/playground/Playground";
 import Solver from "./pages/solver/Solver";
 import Classifier from "./pages/classifier/Classifier";
+import Help from "./pages/help/Help";
+import About from "./pages/about/About";
 import { useEffect } from "react";
 
 // TODO: Add help and about pages
@@ -28,6 +30,8 @@ const App = () => {
           <Route path="/" element={<Playground />} />
           <Route path="/solver" element={<Solver />} />
           <Route path="/classifier" element={<Classifier />} />
+          <Route path="/help" element={<Help />} />
+          <Route path="/about" element={<About />} />
         </Routes>
       </div>
     </>

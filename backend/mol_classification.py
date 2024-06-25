@@ -39,7 +39,9 @@ class MolClass(StrEnum):
     tertiary_alkyl_bromide = auto()
 
     # Alkenes and alkynes
-    alkene = auto()
+    internal_alkene = auto()
+    terminal_alkene = auto()
+
     internal_alkyne = auto()
     terminal_alkyne = auto()
 

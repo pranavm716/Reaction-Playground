@@ -335,8 +335,8 @@ class TestSubstructureClassifications:
                 ],
             ],
             [
-                "C/C=C/OCCCC(=O)NC",
-                [MolClass.alkene, MolClass.ether, MolClass.secondary_amide],
+                "CCCOCC=CC(=O)NC",
+                [MolClass.internal_alkene, MolClass.ether, MolClass.secondary_amide],
             ],
             ["CCN(C)CC=O", [MolClass.tertiary_amine, MolClass.aldehyde]],
             [
@@ -352,11 +352,12 @@ class TestSubstructureClassifications:
                 ],
             ],
             [
-                "NC(=O)CC(O)CCBr",
+                "NC(=O)CC(O)C(CBr)=C",
                 [
                     MolClass.primary_alkyl_bromide,
                     MolClass.secondary_alcohol,
                     MolClass.primary_amide,
+                    MolClass.terminal_alkene,
                 ],
             ],
             [
@@ -373,6 +374,8 @@ class TestSubstructureClassifications:
             ["CO", [MolClass.primary_alcohol]],
             ["C(=O)O", [MolClass.carboxylic_acid]],
             ["CBr", [MolClass.primary_alkyl_bromide]],
+            ["C=C", [MolClass.terminal_alkene]],
+            ["C#C", [MolClass.terminal_alkyne]],
         ],
     )
     def test_substructure_classifications(

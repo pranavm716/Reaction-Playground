@@ -25,7 +25,7 @@ def get_image_encoding(
     try:
         _, encoding = get_mol_and_image_encoding(smiles)
     except (ValueError, TypeError) as exc:
-        raise HTTPException(status_code=400, detail=str(exc))
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
 
     return encoding
 

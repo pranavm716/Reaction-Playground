@@ -39,7 +39,7 @@ def get_mol_image_and_valid_reactions(
     try:
         mol, encoding = get_mol_and_image_encoding(smiles)
     except (ValueError, TypeError) as exc:
-        raise HTTPException(status_code=400, detail=str(exc))
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
 
     reaction_keys = find_possible_reaction_keys(mol, solver_mode=False)
     reactions = get_reactions_from_keys(reaction_keys)

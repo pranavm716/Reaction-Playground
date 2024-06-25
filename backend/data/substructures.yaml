@@ -52,9 +52,11 @@ internal_alkene:
   - "[#6][CH]=[CH][#6]" # disubstituted 
   - "[#6][CH0]([#6])=[CH][#6]" # trisubstituted
   - "[#6][CH0]([#6])=[CH0]([#6])[#6]" # tetrasubstituted
+  - "[CH1,CH0]=C=C" # cumulenes
 terminal_alkene:
   - "[CH2]=[CH2]" # ethylene
   - "[#6][C]=[CH2]"
+  - "C=C=[CH2]" # cumulenes
 
 internal_alkyne:
   - "[#6][CH0]#[CH0][#6]"

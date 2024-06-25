@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 
 from api.utils import get_mol_and_image_encoding
 
@@ -8,6 +8,9 @@ router = APIRouter(prefix="/classifier", tags=["classifier"])
 
 
 @router.get("/")
-def get_mol_classifications(mol_smiles: str) -> list[str]:
-    mol, _ = get_mol_and_image_encoding(mol_smiles)
+def get_mol_classifications(smiles: str) -> list[str]:
+    try:
+        mol, _ = get_mol_and_image_encoding(smiles)
+    except (ValueError, TypeError) as exc:
+        raise HTTPException(status_code=400, detail=str(exc))
     return get_substructure_classifications(mol)

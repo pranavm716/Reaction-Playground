@@ -51,10 +51,10 @@ class MolClass(StrEnum):
     carbon_nucleophile = auto()
 
     def __new__(cls, *values):
-        # Replace underscores with spaces for a more user-friendly representation
+        # Replace underscores with spaces and capitalize for a more user-friendly representation
         value = str(*values)
-        value_with_spaces = value.replace("_", " ")
-        member = str.__new__(cls, value_with_spaces)
+        user_repr = value.replace("_", " ").capitalize()
+        member = str.__new__(cls, user_repr)
         member._value_ = value
         return member
 

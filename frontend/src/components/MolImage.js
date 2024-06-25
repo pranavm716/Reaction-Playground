@@ -1,5 +1,6 @@
 import { MenuItem, SubMenu, ControlledMenu } from '@szhsin/react-menu';
 import '@szhsin/react-menu/dist/index.css';
+import '@szhsin/react-menu/dist/transitions/slide.css';
 import { useState } from 'react';
 
 const openExternalIcon = <svg style={{
@@ -24,6 +25,7 @@ const useContextMenu = (smiles) => {
         anchorPoint={anchorPoint}
         state={isOpen ? 'open' : 'closed'}
         onClose={() => setIsOpen(false)}
+        transition
     >
         <MenuItem onClick={() => navigator.clipboard.writeText(smiles)}>
             Copy SMILES

@@ -216,3 +216,26 @@
   justify-content: center;
   gap: 10px;
 }
+
+/* classifier */
+.substructure-container {
+  display: flex;
+  flex-direction: column;
+  margin: 25px 0;
+}
+
+.substructures-display {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 25px;
+  gap: 15px;
+}
+
+.substructure-chip {
+  background: var(--primary-color);
+  color: #fff;
+  border: 0;
+  padding: 8px 12px;
+  border-radius: 15px;
+}

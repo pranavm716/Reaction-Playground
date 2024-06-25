@@ -38,7 +38,7 @@ tertiary_amide:
 nitrile:
   - "[#6][C]#N"
 
-# Alkyl bromides
+# Alkyl bromides (TODO: generalize to halides)
 primary_alkyl_bromide:
   - "[CH3][Br]" # methyl bromide
   - "[#6][CH2][Br]"

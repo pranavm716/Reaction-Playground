@@ -6,6 +6,7 @@ const ReactionPicker = ({ reactions, setReactionPicked, molImage }) => {
                 <>
                     <p>Choose a reaction to run:</p>
                     {reactions.map((reaction, index) => (
+                        // TODO: add reaction descriptions
                         <button className="reaction-button" key={index} onClick={() => setReactionPicked(reaction)}>
                             {reaction.name}
                         </button>

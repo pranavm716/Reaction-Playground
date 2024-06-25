@@ -55,15 +55,15 @@ const useContextMenu = (smiles) => {
 
 };
 
-const MolImage = ({ smiles, encoding, setSmiles, isHighlighted }) => {
+const MolImage = ({ smiles, encoding, onClick, isHighlighted }) => {
     // Supports both clickable and non clickable mol images
-    const className = setSmiles ? "clickable-mol-image" : "mol-image";
+    const className = onClick ? "clickable-mol-image" : "mol-image";
     const { contextMenu, setIsOpen, setAnchorPoint } = useContextMenu(smiles);
 
     return (
         <>
             <img
-                onClick={setSmiles ? () => setSmiles(smiles) : undefined}
+                onClick={onClick || undefined}
                 className={className}
                 width={200}
                 height={200}

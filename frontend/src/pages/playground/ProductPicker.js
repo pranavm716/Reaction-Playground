@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import MolImage from "../../components/MolImage";
 import { ArrowWithReactionInfo, plusIcon } from "../../components/SmallUIComponents";
 

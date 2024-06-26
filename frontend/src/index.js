@@ -13,9 +13,9 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 Modal.setAppElement("#root");
 
 root.render(
-  <>
+  <React.StrictMode>
     <BrowserRouter>
       <App />
     </BrowserRouter>
-  </>
+  </React.StrictMode>
 );

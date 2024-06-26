@@ -1,10 +1,11 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import ChemDraw from "../../components/ChemDraw";
 import MolImage from "../../components/MolImage";
 import axios from 'axios';
 import ReactionPicker from "./ReactionPicker";
 import ProductPicker from "./ProductPicker";
 import ExtraReactantPicker from "./ExtraReactantPicker";
+import { useSearchParams } from 'react-router-dom';
 
 const START_ENDPOINT = '/playground/start';
 const REACTION_SINGLE_REACTANT_ENDPOINT = '/playground/reaction/single-reactant';
@@ -16,10 +17,18 @@ const REACTION_MULTIPLE_REACTANTS_ENDPOINT = '/playground/reaction/multiple-reac
 const Playground = () => {
     // before playground loop
     const [preLoopSmiles, setPreLoopSmiles] = useState(""); // smiles before explicitly starting the playground loop
+    const [searchParams, setSearchParams] = useSearchParams({ smiles: '' });
 
-    // during playground loop
     // before a reaction is picked
-    const smilesRef = useRef(''); // keeps track of the smiles for this loop
+    const smiles = searchParams.get('smiles'); // keeps track of the smiles for this loop
+
+    // start loop immediately if there are smiles from URL on initial page load
+    useEffect(() => {
+        if (smiles) {
+            handleStepStart(smiles);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const handleLoopStart = () => {
         handleStepStart(preLoopSmiles);
@@ -38,22 +47,19 @@ const Playground = () => {
     const [productsMetadata, setProductsMetadata] = useState(null); // metadata for the products of the current step: list of [{encoding: mol img encoding, smiles: smiles]}
 
     const handleStepStart = async (curSmiles) => {
-        smilesRef.current = curSmiles;
-        if (!curSmiles) return;
-
         // clean up previous state so UI is rendered properly
         setProductsMetadata(null);
         setMissingReactantSmilesPicked(null);
         setMissingReactantEncodings(null);
 
-        await axios.get(START_ENDPOINT, { params: { smiles: smilesRef.current } })
+        await axios.get(START_ENDPOINT, { params: { smiles: curSmiles } })
             .then(res => {
                 const [encoding, validReactions] = res.data;
                 setStepMetadata({ encoding, validReactions });
+                setSearchParams({ smiles: curSmiles });
             })
             .catch(error => {
                 alert(error.response.data.detail);
-                smilesRef.current = '';
             })
     }
 
@@ -62,18 +68,19 @@ const Playground = () => {
 
         if (reactionPicked.multiple_reactants_prompts) {
             // reaction has multiple reactants, need to prompt user for missing reactants
-            await axios.get(MISSING_REACTANTS_PROMPTS_ENDPOINT, { params: { smiles: smilesRef.current, reaction_key: reactionPicked.reaction_key } })
+            await axios.get(MISSING_REACTANTS_PROMPTS_ENDPOINT, { params: { smiles, reaction_key: reactionPicked.reaction_key } })
                 .then(res => {
                     setMissingReactantPrompts(res.data);
                 })
         } else {
             // reaction has only one reactant
-            await axios.get(REACTION_SINGLE_REACTANT_ENDPOINT, { params: { smiles: smilesRef.current, reaction_key: reactionPicked.reaction_key } })
+            await axios.get(REACTION_SINGLE_REACTANT_ENDPOINT, { params: { smiles, reaction_key: reactionPicked.reaction_key } })
                 .then(res => {
                     setProductsMetadata(res.data);
                 })
         }
-    }, [reactionPicked, smilesRef])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [reactionPicked])
     useEffect(() => { handleStepReaction() }, [handleStepReaction]);
 
     const handleStepReactionMultipleReactants = useCallback(async () => {
@@ -81,7 +88,7 @@ const Playground = () => {
 
         await axios.post(REACTION_MULTIPLE_REACTANTS_ENDPOINT,
             {
-                smiles: smilesRef.current,
+                smiles,
                 extra_reactant_smiles: missingReactantSmilesPicked,
                 reaction_key: reactionPicked.reaction_key
             }
@@ -98,7 +105,8 @@ const Playground = () => {
                 // provided reactants were invalid for this reaction
                 alert(error.response.data.detail);
             })
-    }, [missingReactantSmilesPicked, smilesRef, reactionPicked])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [missingReactantSmilesPicked])
     useEffect(() => { handleStepReactionMultipleReactants() }, [handleStepReactionMultipleReactants]);
 
     const cancelMultipleReactants = () => {
@@ -109,7 +117,7 @@ const Playground = () => {
 
     let molImage = null;
     if (stepMetadata) {
-        molImage = <MolImage smiles={smilesRef.current} encoding={stepMetadata.encoding} />
+        molImage = <MolImage smiles={smiles} encoding={stepMetadata.encoding} />
     }
 
     return (

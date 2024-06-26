@@ -34,7 +34,7 @@ const useSubstructures = (smiles) => {
 };
 
 const Classifier = () => {
-    const [searchParams, setSearchParams] = useSearchParams({smiles: ''});
+    const [searchParams, setSearchParams] = useSearchParams({ smiles: '' });
     const smiles = searchParams.get('smiles');
     const { substructures, error } = useSubstructures(smiles);
 
@@ -43,10 +43,12 @@ const Classifier = () => {
     }
 
     const [chemDraw, setChemDraw] = useState(<ChemDraw setSmiles={updateSearchParams} />);
+    // fill ChemDraw with smiles from URL on initial page load, if any
     useEffect(() => {
         if (smiles) {
             setChemDraw(<ChemDraw smiles={smiles} setSmiles={updateSearchParams} />);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (

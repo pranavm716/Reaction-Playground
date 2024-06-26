@@ -75,5 +75,7 @@ def run_solver_mode(start_smiles: str, target_smiles: str) -> SolverModeResponse
         num_steps=num_steps,
         reaction_names=reaction_names,
         choice_pathway=choice_pathway,
+        starting_encoding=mol_to_base64(start_mol),
+        target_encoding=mol_to_base64(target_mol),
         solver_image_metadata=solver_image_encodings,
     )

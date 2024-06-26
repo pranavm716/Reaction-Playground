@@ -19,7 +19,15 @@ def get_mol_and_image_encoding(smiles: str) -> tuple[Mol, str]:
         )
 
     mol = Chem.MolFromSmiles(smiles)
-    Chem.SanitizeMol(mol)
+    
+    try:
+        Chem.SanitizeMol(mol)
+    except Exception as exc:
+        if "rdkit.Chem.rdmolops.SanitizeMol(NoneType)" in str(exc):
+            raise ValueError("Invalid SMILES string.") from exc
+        else:
+            raise
+
     encoding = mol_to_base64(mol)
     return mol, encoding
 

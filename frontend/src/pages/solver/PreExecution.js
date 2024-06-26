@@ -1,37 +1,48 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ChemDraw from "../../components/ChemDraw";
 import { CautionText, doubleArrowIcon } from "../../components/SmallUIComponents";
 import axios from 'axios';
 import MolImage from "../../components/MolImage";
 
 const GET_MOL_IMAGE_ENDPOINT = '/solver/get-mol-image';
-const noneSelectedText = <CautionText text="Not set"/>
+const noneSelectedText = <CautionText text="Not set" />
 
 const PreExecution = ({
     startingSmiles,
     setStartingSmiles,
     targetSmiles,
     setTargetSmiles,
-    startingEncoding,
-    setStartingEncoding,
-    targetEncoding,
-    setTargetEncoding,
     handleRunSolver,
 }) => {
     const [preSolverSmiles, setPreSolverSmiles] = useState('');
+    const [startingEncoding, setStartingEncoding] = useState(null);
+    const [targetEncoding, setTargetEncoding] = useState(null);
+
+    useEffect(() => {
+        if (startingSmiles) {
+            handleSetSolverMolecule(true);
+        }
+        if (targetSmiles) {
+            handleSetSolverMolecule(false);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const handleSetSolverMolecule = async (isStartingMolecule) => {
+        let smiles;
         let setSmilesFn;
         let setEncodingFn;
         let matchesOtherMolecule = false;
         if (isStartingMolecule) {
+            smiles = startingSmiles;
             setSmilesFn = setStartingSmiles;
             setEncodingFn = setStartingEncoding;
-            matchesOtherMolecule = preSolverSmiles === targetSmiles;
+            matchesOtherMolecule = !startingSmiles && preSolverSmiles === targetSmiles;
         } else {
+            smiles = targetSmiles;
             setSmilesFn = setTargetSmiles;
             setEncodingFn = setTargetEncoding;
-            matchesOtherMolecule = preSolverSmiles === startingSmiles;
+            matchesOtherMolecule = !targetSmiles && preSolverSmiles === startingSmiles;
         }
 
         if (matchesOtherMolecule) {
@@ -39,9 +50,11 @@ const PreExecution = ({
             return;
         }
 
-        await axios.get(GET_MOL_IMAGE_ENDPOINT, { params: { smiles: preSolverSmiles } })
-        .then(res => {
-                setSmilesFn(preSolverSmiles);
+        await axios.get(GET_MOL_IMAGE_ENDPOINT, { params: { smiles: smiles || preSolverSmiles } })
+            .then(res => {
+                if (!smiles) {
+                    setSmilesFn(preSolverSmiles);
+                }
                 setEncodingFn(res.data);
             })
             .catch(error => {

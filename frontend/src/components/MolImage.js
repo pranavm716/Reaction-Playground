@@ -3,11 +3,18 @@ import '@szhsin/react-menu/dist/index.css';
 import '@szhsin/react-menu/dist/transitions/slide.css';
 import { useState } from 'react';
 import { openExternalIcon, copyIcon } from './SmallUIComponents';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const useReroute = (url, searchParams) => {
     const navigate = useNavigate();
-    return () => navigate(`${url}?${new URLSearchParams(searchParams).toString()}`);
+    const location = useLocation();
+
+    return () => {
+        navigate(`${url}?${new URLSearchParams(searchParams).toString()}`);
+        if (location.pathname === url) {
+            window.location.reload();
+        }
+    }
 };
 
 const useContextMenu = (smiles) => {
@@ -80,8 +87,6 @@ const MolImage = ({ smiles, encoding, onClick, isHighlighted }) => {
             {contextMenu}
         </>
     );
-
-    // TODO: Make routes use url params and route context menu items to routes
 }
 
 export default MolImage;

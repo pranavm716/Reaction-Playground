@@ -16,4 +16,6 @@ class SolverModeResponse(BaseModel):
     num_steps: int
     reaction_names: list[str]
     choice_pathway: list[int]
+    starting_encoding: str
+    target_encoding: str
     solver_image_metadata: SolverModeImageData

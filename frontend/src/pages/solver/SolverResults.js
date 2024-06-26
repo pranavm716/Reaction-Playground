@@ -2,16 +2,16 @@ import React from "react";
 import MolImage from "../../components/MolImage";
 import { ArrowWithReactionInfo, BackButton, doubleArrowIcon } from "../../components/SmallUIComponents";
 import { plusIcon } from "../../components/SmallUIComponents";
+import { useNavigate } from 'react-router-dom';
 
 const SolverResults = ({
     startingSmiles,
-    startingEncoding,
     targetSmiles,
-    targetEncoding,
     solverResults,
 }) => {
-    const startMol = <MolImage smiles={startingSmiles} encoding={startingEncoding} />;
-    const targetMol = <MolImage smiles={targetSmiles} encoding={targetEncoding} />;
+    const startMol = <MolImage smiles={startingSmiles} encoding={solverResults.starting_encoding} />;
+    const targetMol = <MolImage smiles={targetSmiles} encoding={solverResults.target_encoding} />;
+    const navigate = useNavigate();
 
     return (
         <>
@@ -89,7 +89,13 @@ const SolverResults = ({
                     <p>This is your target molecule.</p>
                 </div>
             }
-            <BackButton onClick={() => window.location.reload()} text="Back to solver" />
+            <BackButton
+                onClick={() => {
+                    navigate('/solver');
+                    window.location.reload();
+                }}
+                text="Back to solver"
+            />
         </>
     );
 }

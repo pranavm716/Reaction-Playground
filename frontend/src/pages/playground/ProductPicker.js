@@ -24,7 +24,7 @@ const ProductPicker = ({ products, handleStepStart, reactionName, molImage, miss
 
     // If there is only one product, there is no choice the user has to make
     if (products.length === 1) {
-        handleStepStart(products[0].smiles);
+        pickProduct(0);
         return;
     }
 

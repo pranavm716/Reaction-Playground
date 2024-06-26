@@ -1,9 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import ChemDraw from '../../components/ChemDraw';
 import axios from 'axios';
 import { CautionText } from '../../components/SmallUIComponents';
 
-const CLASSIFIER_ENDPOINT = '/classifier';
+const CLASSIFIER_ENDPOINT = '/classifier/';
 
 const useSubstructures = (smiles) => {
     const [substructures, setSubstructures] = useState([]); // [list of str]
@@ -33,8 +34,20 @@ const useSubstructures = (smiles) => {
 };
 
 const Classifier = () => {
-    const [smiles, setSmiles] = useState('');
+    const [searchParams, setSearchParams] = useSearchParams({smiles: ''});
+    const smiles = searchParams.get('smiles');
     const { substructures, error } = useSubstructures(smiles);
+
+    const updateSearchParams = (smiles) => {
+        setSearchParams({ smiles });
+    }
+
+    const [chemDraw, setChemDraw] = useState(<ChemDraw setSmiles={updateSearchParams} />);
+    useEffect(() => {
+        if (smiles) {
+            setChemDraw(<ChemDraw smiles={smiles} setSmiles={updateSearchParams} />);
+        }
+    }, []);
 
     return (
         <>
@@ -43,10 +56,12 @@ const Classifier = () => {
             </p>
             <div className="two-panel-content">
                 <div>
-                    <ChemDraw setSmiles={setSmiles} />
+                    {chemDraw}
                 </div>
                 <div className='substructure-container'>
-                    <p style={{ display: 'flex', justifyContent: 'center' }}><b>Substructures</b></p>
+                    <p style={{ display: 'flex', justifyContent: 'center' }}>
+                        <b>Substructures</b>
+                    </p>
                     <div className='substructures-display'>
                         {
                             error ?

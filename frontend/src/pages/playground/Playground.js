@@ -19,7 +19,7 @@ const Playground = () => {
 
     // during playground loop
     // before a reaction is picked
-    const smilesRef = useRef(''); // so that the 
+    const smilesRef = useRef(''); // keeps track of the smiles for this loop
 
     const handleLoopStart = () => {
         handleStepStart(preLoopSmiles);

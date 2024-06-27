@@ -8,7 +8,11 @@ import About from "./pages/about/About";
 import { useEffect } from "react";
 
 // TODO: Add help and about pages
-const colorsMap = { "/": "#f1356d", "/solver": "#429987", "/classifier": "#1976D2" }
+const colorsMap = {
+  "/": "#f1356d",
+  "/solver": "#429987",
+  "/classifier": "#1976D2",
+};
 
 const useUpdatePrimaryColor = () => {
   const location = useLocation();
@@ -17,7 +21,7 @@ const useUpdatePrimaryColor = () => {
     const primaryColor = colorsMap[location.pathname];
     document.documentElement.style.setProperty("--primary-color", primaryColor);
   }, [location]);
-}
+};
 
 const App = () => {
   useUpdatePrimaryColor();
@@ -36,6 +40,6 @@ const App = () => {
       </div>
     </>
   );
-}
+};
 
 export default App;

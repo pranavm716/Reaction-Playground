@@ -1,9 +1,5 @@
 const Help = () => {
-    return (
-        <>
-            Help
-        </>
-    );
-}
- 
+  return <>Help</>;
+};
+
 export default Help;

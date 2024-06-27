@@ -124,7 +124,7 @@ def get_products_multiple_reactants(
         )
 
     # NOTE: I (for now) merge a m x n 2d tuple of single step products into a 1 x m*n 1d tuple of products
-    # TODO: figure out how to implement/ best represent multi step product for multiple reactants
+    # I can't figure out how to implement/ best represent multi step product for multiple reactants
     flattened_products: MolTuple = functools.reduce(lambda x, y: x + y, products)
 
     return extra_reactant_encodings, generate_mol_image_metadata(flattened_products)

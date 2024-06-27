@@ -1,4 +1,4 @@
-import { NavLink, useNavigate, useLocation } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useState } from "react";
 
 const links = { "/": "Playground", "/solver": "Solver", "/classifier": "Classifier" }
@@ -6,14 +6,10 @@ const links = { "/": "Playground", "/solver": "Solver", "/classifier": "Classifi
 const Navbar = ({ colorsMap }) => {
     const [hoverLink, setHoverLink] = useState(null);
     const navigate = useNavigate();
-    const location = useLocation();
 
     const handleNav = (link, event) => {
         event.preventDefault();
         navigate(link);
-        if (location.pathname === link) {
-            window.location.reload();
-        }
     };
 
     return (

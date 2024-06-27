@@ -1,67 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import ChemDraw from "../../components/ChemDraw";
 import { CautionText, doubleArrowIcon } from "../../components/SmallUIComponents";
-import axios from 'axios';
 import MolImage from "../../components/MolImage";
 
-const GET_MOL_IMAGE_ENDPOINT = '/solver/get-mol-image';
 const noneSelectedText = <CautionText text="Not set" />
 
 const PreExecution = ({
     startingSmiles,
-    setStartingSmiles,
+    startingEncoding,
     targetSmiles,
-    setTargetSmiles,
+    targetEncoding,
+    handleSetSolverMolecule,
     handleRunSolver,
 }) => {
     const [preSolverSmiles, setPreSolverSmiles] = useState('');
-    const [startingEncoding, setStartingEncoding] = useState(null);
-    const [targetEncoding, setTargetEncoding] = useState(null);
-
-    useEffect(() => {
-        if (startingSmiles) {
-            handleSetSolverMolecule(true);
-        }
-        if (targetSmiles) {
-            handleSetSolverMolecule(false);
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
-    const handleSetSolverMolecule = async (isStartingMolecule) => {
-        let smiles;
-        let setSmilesFn;
-        let setEncodingFn;
-        let matchesOtherMolecule = false;
-        if (isStartingMolecule) {
-            smiles = startingSmiles;
-            setSmilesFn = setStartingSmiles;
-            setEncodingFn = setStartingEncoding;
-            matchesOtherMolecule = !startingSmiles && preSolverSmiles === targetSmiles;
-        } else {
-            smiles = targetSmiles;
-            setSmilesFn = setTargetSmiles;
-            setEncodingFn = setTargetEncoding;
-            matchesOtherMolecule = !targetSmiles && preSolverSmiles === startingSmiles;
-        }
-
-        if (matchesOtherMolecule) {
-            alert("Starting and target molecules cannot be the same!");
-            return;
-        }
-
-        await axios.get(GET_MOL_IMAGE_ENDPOINT, { params: { smiles: smiles || preSolverSmiles } })
-            .then(res => {
-                if (!smiles) {
-                    setSmilesFn(preSolverSmiles);
-                }
-                setEncodingFn(res.data);
-            })
-            .catch(error => {
-                alert(error.response.data.detail);
-                setSmilesFn("");
-            })
-    }
 
     return (
         <>
@@ -102,7 +54,10 @@ const PreExecution = ({
                     {/* TODO: add clear buttons for starting and target molecules */}
                     <div className="grid-starting-button">
                         {preSolverSmiles && !startingSmiles &&
-                            <button onClick={() => handleSetSolverMolecule(true)} className="primary-colored-button">
+                            <button
+                                onClick={() => handleSetSolverMolecule(true, preSolverSmiles)}
+                                className="primary-colored-button"
+                            >
                                 Set as starting molecule
                             </button>
                         }
@@ -116,7 +71,10 @@ const PreExecution = ({
                     <div className="grid-button-placeholder"></div>
                     <div className="grid-target-button">
                         {preSolverSmiles && !targetSmiles &&
-                            <button onClick={() => handleSetSolverMolecule(false)} className="primary-colored-button">
+                            <button
+                                onClick={() => handleSetSolverMolecule(false, preSolverSmiles)}
+                                className="primary-colored-button"
+                            >
                                 Set as target molecule
                             </button>
                         }

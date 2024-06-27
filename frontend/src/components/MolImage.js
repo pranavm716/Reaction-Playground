@@ -3,17 +3,13 @@ import '@szhsin/react-menu/dist/index.css';
 import '@szhsin/react-menu/dist/transitions/slide.css';
 import { useState } from 'react';
 import { openExternalIcon, copyIcon } from './SmallUIComponents';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const useReroute = (url, searchParams) => {
     const navigate = useNavigate();
-    const location = useLocation();
 
     return () => {
         navigate(`${url}?${new URLSearchParams(searchParams).toString()}`);
-        if (location.pathname === url) {
-            window.location.reload();
-        }
     }
 };
 

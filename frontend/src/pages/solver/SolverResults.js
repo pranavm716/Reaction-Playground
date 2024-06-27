@@ -92,7 +92,6 @@ const SolverResults = ({
             <BackButton
                 onClick={() => {
                     navigate('/solver');
-                    window.location.reload();
                 }}
                 text="Back to solver"
             />

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import ChemDraw from '../../components/ChemDraw';
 import axios from 'axios';
@@ -10,24 +10,26 @@ const useSubstructures = (smiles) => {
     const [substructures, setSubstructures] = useState([]); // [list of str]
     const [error, setError] = useState(null);
 
-    const retrieveSubstructures = useCallback(async () => {
-        if (!smiles) {
-            setSubstructures([]);
-            setError(null);
-            return;
-        }
-        await axios.get(CLASSIFIER_ENDPOINT, { params: { smiles } })
-            .then(res => {
-                setError(null);
-                setSubstructures(res.data);
-            })
-            .catch(error => {
-                setError(error.response.data.detail);
+    useEffect(() => {
+        const retrieveSubstructures = async () => {
+            if (!smiles) {
                 setSubstructures([]);
-            })
-    }, [smiles])
+                setError(null);
+                return;
+            }
+            await axios.get(CLASSIFIER_ENDPOINT, { params: { smiles } })
+                .then(res => {
+                    setError(null);
+                    setSubstructures(res.data);
+                })
+                .catch(error => {
+                    setError(error.response.data.detail);
+                    setSubstructures([]);
+                })
+        }
 
-    useEffect(() => { retrieveSubstructures() }, [retrieveSubstructures]);
+        retrieveSubstructures();
+    }, [smiles]);
 
     return { substructures, error };
 
@@ -38,15 +40,18 @@ const Classifier = () => {
     const smiles = searchParams.get('smiles');
     const { substructures, error } = useSubstructures(smiles);
 
-    const updateSearchParams = (smiles) => {
-        setSearchParams({ smiles });
-    }
+    const [chemDraw, setChemDraw] = useState(null);
 
-    const [chemDraw, setChemDraw] = useState(<ChemDraw setSmiles={updateSearchParams} />);
     // fill ChemDraw with smiles from URL on initial page load, if any
     useEffect(() => {
+        const updateSearchParams = (smiles) => {
+            setSearchParams({ smiles });
+        }
+
         if (smiles) {
             setChemDraw(<ChemDraw smiles={smiles} setSmiles={updateSearchParams} />);
+        } else {
+            setChemDraw(<ChemDraw setSmiles={updateSearchParams} />);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);

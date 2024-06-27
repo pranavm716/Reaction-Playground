@@ -36,8 +36,8 @@ const useSubstructures = (smiles) => {
 };
 
 const Classifier = () => {
-    const [searchParams, setSearchParams] = useSearchParams({ smiles: '' });
-    const smiles = searchParams.get('smiles');
+    const [searchParams, setSearchParams] = useSearchParams();
+    const smiles = searchParams.get('smiles') || '';
     const { substructures, error } = useSubstructures(smiles);
 
     const [chemDraw, setChemDraw] = useState(null);
@@ -53,6 +53,9 @@ const Classifier = () => {
         } else {
             setChemDraw(<ChemDraw setSmiles={updateSearchParams} />);
         }
+
+        // This is needed due to a quirk in the JSME editor - we cannot set initial smiles and update the smiles from the same source (URL),
+        // so the dependencies array has to be empty
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 

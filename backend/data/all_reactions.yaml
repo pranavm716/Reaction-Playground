@@ -57,6 +57,7 @@ ozonolysis:
   name: Ozonolysis
   smarts_list:
     - "[C:2]=[C:3]>>[C:2](=O).[C:3](=O)" # alkene -> carbonyl + carbonyl
+    - "[CH:1]#[CH:2]>>O=[C:1][C:2]=O" # acetylene -> glyoxal
     - "[#6:1][CH0:2]#[CH0:3][#6:4]>>[#6:1][C:2](=O)[OX2H].[#6:4][C:3](=O)[OX2H]" # internal alkyne -> carboxylic acid + carboxylic acid
     - "[#6:1][CH0:2]#[CH:3]>>[#6:1][C:2](=O)[OX2H].O=[C:3]=O" # terminal alkyne -> carboxylic acid + carbon dioxide
   description: Cleaves alkenes/alkynes into carbonyls.

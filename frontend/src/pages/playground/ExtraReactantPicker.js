@@ -9,6 +9,7 @@ import {
   BackButton,
 } from "../../components/SmallUIComponents";
 
+// TODO: Extract modal into a custom hook into a separate file (include other custom hooks too)
 const ExtraReactantPicker = ({
   molImage,
   missingReactantPrompts,

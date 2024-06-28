@@ -1,5 +1,9 @@
 import React from "react";
 import { Tooltip } from "react-tooltip";
+import { Menu, MenuButton, MenuItem, SubMenu } from "@szhsin/react-menu";
+import { useReroute } from "../hooks";
+import "@szhsin/react-menu/dist/index.css";
+import "@szhsin/react-menu/dist/transitions/slide.css";
 
 export const closeIcon = (
   <svg
@@ -189,5 +193,59 @@ export const ClearSelectionButton = ({ onClick }) => {
       {closeIcon}
       Clear selection
     </button>
+  );
+};
+
+export const MolImageMenuItems = ({ smiles, onClassifier }) => {
+  // reroutes
+  const navigateToPlayground = useReroute("/", { smiles: smiles });
+  const navigateToSolverAsStarting = useReroute("/solver", {
+    startingSmiles: smiles,
+  });
+  const navigateToSolverAsTarget = useReroute("/solver", {
+    targetSmiles: smiles,
+  });
+  const navigateToClassifier = useReroute("/classifier", { smiles: smiles });
+
+  return (
+    <>
+      <MenuItem onClick={() => navigator.clipboard.writeText(smiles)}>
+        Copy SMILES
+        {copyIcon}
+      </MenuItem>
+      <MenuItem onClick={navigateToPlayground}>
+        Open in Playground
+        {openExternalIcon}
+      </MenuItem>
+      <SubMenu label="Open in Solver">
+        <MenuItem onClick={navigateToSolverAsStarting}>
+          As starting molecule
+          {openExternalIcon}
+        </MenuItem>
+        <MenuItem onClick={navigateToSolverAsTarget}>
+          As target molecule
+          {openExternalIcon}
+        </MenuItem>
+      </SubMenu>
+      {!onClassifier && (
+        <MenuItem onClick={navigateToClassifier}>
+          Open in Classifier
+          {openExternalIcon}
+        </MenuItem>
+      )}
+    </>
+  );
+};
+
+export const MolImageMenu = ({ smiles }) => {
+  return (
+    <Menu
+      menuButton={
+        <MenuButton className="primary-colored-button">Options</MenuButton>
+      }
+      transition
+    >
+      <MolImageMenuItems smiles={smiles} onClassifier={true} />
+    </Menu>
   );
 };

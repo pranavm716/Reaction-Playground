@@ -9,7 +9,6 @@ export const closeIcon = (
     height="20px"
     viewBox="0 -960 960 960"
     width="20px"
-    fill="#000000"
   >
     <path d="m252.62-217.23-35.39-35.39L444.62-480 217.23-707.38l35.39-35.39L480-515.38l227.38-227.39 35.39 35.39L515.38-480l227.39 227.38-35.39 35.39L480-444.62 252.62-217.23Z" />
   </svg>
@@ -173,14 +172,7 @@ export const BackButton = ({ text, onClick }) => {
 export const ClearSelectionButton = ({ onClick }) => {
   return (
     <button onClick={onClick} className="clear-selection-button">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        height="22px"
-        viewBox="0 -960 960 960"
-        width="24px"
-      >
-        <path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z" />
-      </svg>
+      {closeIcon}
       Clear selection
     </button>
   );

@@ -35,7 +35,9 @@ const PreExecution = ({
           <p className="grid-starting-text">
             <b>Starting molecule</b>
           </p>
+
           <div className="grid-double-arrow-placeholder"></div>
+
           <p className="grid-target-text">
             <b>Target molecule</b>
           </p>
@@ -48,7 +50,9 @@ const PreExecution = ({
               noneSelectedText
             )}
           </div>
+
           <div className="grid-double-arrow">{doubleArrowIcon}</div>
+
           <div className="grid-target-molecule">
             {targetEncoding ? (
               <MolImage smiles={targetSmiles} encoding={targetEncoding} />
@@ -58,7 +62,6 @@ const PreExecution = ({
           </div>
 
           {/* third row */}
-          {/* TODO: add clear buttons for starting and target molecules */}
           <div className="grid-starting-button">
             {startingEncoding ? (
               <ClearSelectionButton onClick={() => setStartingSmiles("")} />
@@ -74,6 +77,7 @@ const PreExecution = ({
               )
             )}
           </div>
+
           {startingSmiles && targetSmiles ? (
             <button
               onClick={handleRunSolver}
@@ -85,7 +89,7 @@ const PreExecution = ({
           ) : (
             <div className="grid-double-arrow-placeholder"></div>
           )}
-          {/* <div className="grid-button-placeholder"></div> */}
+
           <div className="grid-target-button">
             {targetEncoding ? (
               <ClearSelectionButton onClick={() => setTargetSmiles("")} />

@@ -47,7 +47,7 @@ class MolClass(StrEnum):
 
     # Other
     ether = auto()
-    acid_chloride = auto()
+    acid_halide = auto()
     carbon_nucleophile = auto()
 
     def __new__(cls, *values):

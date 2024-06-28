@@ -49,7 +49,7 @@ tertiary_alkyl_halide:
 
 # Alkenes and alkynes
 internal_alkene:
-  - "[#6][CH]=[CH][#6]" # disubstituted 
+  - "[#6][CH]=[CH][#6]" # disubstituted
   - "[#6][CH0]([#6])=[CH][#6]" # trisubstituted
   - "[#6][CH0]([#6])=[CH0]([#6])[#6]" # tetrasubstituted
   - "[CH1,CH0]=C=C" # cumulenes
@@ -67,7 +67,7 @@ terminal_alkyne:
 # Other
 ether:
   - "[#6][OD2!$(OC=O)][#6]"
-acid_chloride:
-  - "[#6][CX3](=O)Cl"
+acid_halide:
+  - "[#6][CX3](=O)[F,Cl,Br,I]"
 carbon_nucleophile:
   - "[#6-]"

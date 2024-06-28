@@ -344,9 +344,9 @@ class TestSubstructureClassifications:
                 [MolClass.tertiary_amide, MolClass.ester],
             ],
             [
-                "[C-]CC#CC(=O)Cl",
+                "[C-]CC#CC(=O)I",
                 [
-                    MolClass.acid_chloride,
+                    MolClass.acid_halide,
                     MolClass.internal_alkyne,
                     MolClass.carbon_nucleophile,
                 ],

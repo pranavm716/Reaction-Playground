@@ -91,7 +91,7 @@ export const CautionText = ({ text }) => {
         height="24px"
         viewBox="0 -960 960 960"
         width="24px"
-        fill="#f00"
+        fill="#B00020"
       >
         <path d="M109.23-160 480-800l370.77 640H109.23ZM178-200h604L480-720 178-200Zm302-55.38q10.46 0 17.54-7.08 7.08-7.08 7.08-17.54 0-10.46-7.08-17.54-7.08-7.08-17.54-7.08-10.46 0-17.54 7.08-7.08 7.08-7.08 17.54 0 10.46 7.08 17.54 7.08 7.08 17.54 7.08Zm-20-89.24h40v-200h-40v200ZM480-460Z" />
       </svg>
@@ -145,7 +145,7 @@ export const ArrowWithReactionInfo = ({ reactionName, stepNumber }) => {
 export const BackButton = ({ text, onClick }) => {
   return (
     <button
-      onClick={onClick ? onClick : undefined}
+      onClick={onClick}
       style={{
         height: "34px",
         marginTop: "20px",
@@ -166,6 +166,22 @@ export const BackButton = ({ text, onClick }) => {
         <path d="m294.92-450 227.85 227.85L480-180 180-480l300-300 42.77 42.15L294.92-510H780v60H294.92Z" />
       </svg>
       {text}
+    </button>
+  );
+};
+
+export const ClearSelectionButton = ({ onClick }) => {
+  return (
+    <button onClick={onClick} className="clear-selection-button">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        height="22px"
+        viewBox="0 -960 960 960"
+        width="24px"
+      >
+        <path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z" />
+      </svg>
+      Clear selection
     </button>
   );
 };

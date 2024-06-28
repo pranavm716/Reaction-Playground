@@ -9,9 +9,12 @@ const RUN_SOLVER_ENDPOINT = "/solver/run";
 
 const Solver = () => {
   // before execution
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams({
+    startingSmiles: "",
+    targetSmiles: "",
+  });
 
-  const startingSmiles = searchParams.get("startingSmiles") || "";
+  const startingSmiles = searchParams.get("startingSmiles");
   const setStartingSmiles = useCallback(
     (smiles) => {
       setSearchParams((prev) => {
@@ -23,7 +26,7 @@ const Solver = () => {
   );
   const [startingEncoding, setStartingEncoding] = useState(null);
 
-  const targetSmiles = searchParams.get("targetSmiles") || "";
+  const targetSmiles = searchParams.get("targetSmiles");
   const setTargetSmiles = useCallback(
     (smiles) => {
       setSearchParams((prev) => {
@@ -79,7 +82,7 @@ const Solver = () => {
 
     setSolverResults(null);
 
-    if (startingSmiles === targetSmiles && startingSmiles !== "") {
+    if (startingSmiles && startingSmiles === targetSmiles) {
       alert("Starting and target molecules cannot be the same!");
       setTargetSmiles("");
       return;

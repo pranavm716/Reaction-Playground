@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import ChemDraw from "../../components/ChemDraw";
 import {
   CautionText,
+  ClearSelectionButton,
   doubleArrowIcon,
 } from "../../components/SmallUIComponents";
 import MolImage from "../../components/MolImage";
@@ -59,32 +60,45 @@ const PreExecution = ({
           {/* third row */}
           {/* TODO: add clear buttons for starting and target molecules */}
           <div className="grid-starting-button">
-            {preSolverSmiles && !startingSmiles && (
-              <button
-                onClick={() => setStartingSmiles(preSolverSmiles)}
-                className="primary-colored-button"
-              >
-                Set as starting molecule
-              </button>
+            {startingEncoding ? (
+              <ClearSelectionButton onClick={() => setStartingSmiles("")} />
+            ) : (
+              preSolverSmiles &&
+              !startingSmiles && (
+                <button
+                  onClick={() => setStartingSmiles(preSolverSmiles)}
+                  className="primary-colored-button"
+                >
+                  Set as starting molecule
+                </button>
+              )
             )}
           </div>
-          {startingSmiles && targetSmiles && (
+          {startingSmiles && targetSmiles ? (
             <button
               onClick={handleRunSolver}
               className="primary-colored-button"
+              style={{ height: "34px" }}
             >
               Find pathway
             </button>
+          ) : (
+            <div className="grid-double-arrow-placeholder"></div>
           )}
-          <div className="grid-button-placeholder"></div>
+          {/* <div className="grid-button-placeholder"></div> */}
           <div className="grid-target-button">
-            {preSolverSmiles && !targetSmiles && (
-              <button
-                onClick={() => setTargetSmiles(preSolverSmiles)}
-                className="primary-colored-button"
-              >
-                Set as target molecule
-              </button>
+            {targetEncoding ? (
+              <ClearSelectionButton onClick={() => setTargetSmiles("")} />
+            ) : (
+              preSolverSmiles &&
+              !targetSmiles && (
+                <button
+                  onClick={() => setTargetSmiles(preSolverSmiles)}
+                  className="primary-colored-button"
+                >
+                  Set as target molecule
+                </button>
+              )
             )}
           </div>
         </div>

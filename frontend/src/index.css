@@ -138,18 +138,41 @@
 .reaction-button {
   background: #fff;
   color: #333;
+  fill: #333;
   border: 1px solid #333;
   padding: 8px;
   border-radius: 8px;
   cursor: pointer;
   width: 500px;
   margin: 8px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.reaction-button p {
+  width: 85%;
+}
+
+.reaction-button svg {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.reaction-button:focus,
+.reaction-button svg:focus {
+  outline: none;
 }
 
 .extra-reactant-button:hover,
-.reaction-button:hover {
+.reaction-button:hover,
+.reaction-button:hover p {
   background: var(--primary-color);
   color: #fff;
+  fill: #fff;
   border-color: var(--primary-color);
 }
 

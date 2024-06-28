@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from backend.reaction import Reaction
 
 
 class MolImageMetadata(BaseModel):
@@ -14,7 +15,7 @@ SolverModeImageData = dict[int, list[MolImageMetadata]]
 class SolverModeResponse(BaseModel):
     path_found: bool
     num_steps: int
-    reaction_names: list[str]
+    reactions: list[Reaction]
     choice_pathway: list[int]
     starting_encoding: str
     target_encoding: str

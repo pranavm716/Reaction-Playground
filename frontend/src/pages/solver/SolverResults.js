@@ -63,8 +63,12 @@ const SolverResults = ({ startingSmiles, targetSmiles, solverResults }) => {
                 return (
                   <div key={step}>
                     <ArrowWithReactionInfo
-                      reactionName={solverResults.reaction_names[step]}
+                      reactionName={solverResults.reactions[step].name}
                       stepNumber={step + 1}
+                      reactionDescriptionTooltip={
+                        solverResults.reactions[step].description
+                      }
+                      tooltipId={`solver-reaction-${step + 1}`}
                     />
                     <div
                       style={{

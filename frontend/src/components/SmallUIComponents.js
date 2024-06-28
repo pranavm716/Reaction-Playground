@@ -1,4 +1,5 @@
 import React from "react";
+import { Tooltip } from "react-tooltip";
 
 export const closeIcon = (
   <svg
@@ -99,7 +100,12 @@ export const CautionText = ({ text }) => {
   );
 };
 
-export const ArrowWithReactionInfo = ({ reactionName, stepNumber }) => {
+export const ArrowWithReactionInfo = ({
+  reactionName,
+  stepNumber,
+  reactionDescriptionTooltip,
+  tooltipId,
+}) => {
   return (
     <div
       style={{
@@ -128,6 +134,7 @@ export const ArrowWithReactionInfo = ({ reactionName, stepNumber }) => {
         alt="downward_arrow"
       ></img>
       <span
+        data-tooltip-id={tooltipId}
         style={{
           position: "absolute",
           left: "50%",
@@ -137,6 +144,13 @@ export const ArrowWithReactionInfo = ({ reactionName, stepNumber }) => {
       >
         {reactionName}
       </span>
+      <Tooltip
+        id={tooltipId}
+        place="bottom"
+        offset={12}
+        content={reactionDescriptionTooltip}
+        style={{ maxWidth: "350px", zIndex: 1000 }}
+      />
     </div>
   );
 };

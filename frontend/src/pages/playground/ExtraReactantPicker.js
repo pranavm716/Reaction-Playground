@@ -13,7 +13,7 @@ const ExtraReactantPicker = ({
   molImage,
   missingReactantPrompts,
   setMissingReactantSmilesPicked,
-  reactionName,
+  reaction,
   cancelMultipleReactants,
 }) => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -86,7 +86,7 @@ const ExtraReactantPicker = ({
               style={customStyles}
             >
               <div style={customStyles.header}>
-                {prompt} for {reactionName}
+                {prompt} for {reaction.name}
                 <div style={customStyles.closeIcon}>
                   {React.cloneElement(closeIcon, { onClick: closeModal })}
                 </div>
@@ -109,7 +109,11 @@ const ExtraReactantPicker = ({
         ))}
       </div>
 
-      <ArrowWithReactionInfo reactionName={reactionName} />
+      <ArrowWithReactionInfo
+        reactionName={reaction.name}
+        reactionDescriptionTooltip={reaction.description}
+        tooltipId={`extra-reactants-${reaction.name}`}
+      />
       <CautionText text="This reaction requires additional reactants." />
       <BackButton onClick={cancelMultipleReactants} text="Back to reactions" />
     </>

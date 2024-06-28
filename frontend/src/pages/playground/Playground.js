@@ -155,7 +155,7 @@ const Playground = () => {
                   setMissingReactantSmilesPicked={
                     setMissingReactantSmilesPicked
                   }
-                  reactionName={reactionPicked.name}
+                  reaction={reactionPicked}
                   cancelMultipleReactants={cancelMultipleReactants}
                 />
               )}
@@ -163,7 +163,7 @@ const Playground = () => {
                 <ProductPicker
                   products={productsMetadata}
                   handleStepStart={handleStepStart}
-                  reactionName={reactionPicked.name}
+                  reaction={reactionPicked}
                   molImage={molImage}
                   missingReactantSmilesPicked={missingReactantSmilesPicked}
                   missingReactantEncodings={missingReactantEncodings}

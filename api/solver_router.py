@@ -9,6 +9,7 @@ from backend.computations import (
     find_synthetic_pathway,
     generate_multi_step_product,
 )
+from backend.reaction import Reaction
 from rdkit import Chem
 
 
@@ -51,12 +52,12 @@ def run_solver_mode(start_smiles: str, target_smiles: str) -> SolverModeResponse
     num_steps = len(choice_pathway)
 
     # Reconstruct the synthetic pathway
-    reaction_names: list[str] = []
+    reactions: list[Reaction] = []
     current_mol = copy_mol(start_mol)
     for step_number, (reaction_key, choice) in enumerate(
         zip(reaction_pathway, choice_pathway)
     ):
-        reaction_names.append(ALL_REACTIONS[reaction_key].name)
+        reactions.append(ALL_REACTIONS[reaction_key])
         products = generate_multi_step_product(current_mol, reaction_key)
 
         product_images: list[MolImageMetadata] = [
@@ -73,7 +74,7 @@ def run_solver_mode(start_smiles: str, target_smiles: str) -> SolverModeResponse
     return SolverModeResponse(
         path_found=path_found,
         num_steps=num_steps,
-        reaction_names=reaction_names,
+        reactions=reactions,
         choice_pathway=choice_pathway,
         starting_encoding=mol_to_base64(start_mol),
         target_encoding=mol_to_base64(target_mol),

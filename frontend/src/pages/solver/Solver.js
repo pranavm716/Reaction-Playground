@@ -1,9 +1,9 @@
-import { useState, useEffect, useCallback } from "react";
-import PreExecution from "./PreExecution";
-import { GET_MOL_IMAGE_ENDPOINT, RUN_SOLVER_ENDPOINT } from "../../endpoints";
 import axios from "axios";
-import SolverResults from "./SolverResults";
+import { useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
+import { GET_MOL_IMAGE_ENDPOINT, RUN_SOLVER_ENDPOINT } from "../../endpoints";
+import PreExecution from "./PreExecution";
+import SolverResults from "./SolverResults";
 
 const Solver = () => {
   // before execution
@@ -20,7 +20,7 @@ const Solver = () => {
         return prev;
       });
     },
-    [setSearchParams]
+    [setSearchParams],
   );
   const [startingEncoding, setStartingEncoding] = useState(null);
 
@@ -32,7 +32,7 @@ const Solver = () => {
         return prev;
       });
     },
-    [setSearchParams]
+    [setSearchParams],
   );
   const [targetEncoding, setTargetEncoding] = useState(null);
 
@@ -45,7 +45,7 @@ const Solver = () => {
   useEffect(() => {
     const handleSetSolverMolecule = async (
       isStartingMolecule,
-      preSolverSmiles
+      preSolverSmiles,
     ) => {
       const solverInfo = {
         true: {

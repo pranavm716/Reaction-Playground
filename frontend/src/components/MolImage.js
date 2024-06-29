@@ -3,7 +3,8 @@ import { useMolImageContextMenu } from "../hooks";
 const MolImage = ({ smiles, encoding, onClick, isHighlighted }) => {
   // Supports both clickable and non clickable mol images
   const className = onClick ? "clickable-mol-image" : "mol-image";
-  const { contextMenu, setIsOpen, setAnchorPoint } = useMolImageContextMenu(smiles);
+  const { contextMenu, setIsOpen, setAnchorPoint } =
+    useMolImageContextMenu(smiles);
 
   return (
     <>

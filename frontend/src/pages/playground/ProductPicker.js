@@ -37,7 +37,7 @@ const ProductPicker = ({
     (index) => {
       handleStepStart(products[index].smiles);
     },
-    [products, handleStepStart]
+    [products, handleStepStart],
   );
 
   // If there is only one product, there is no choice the user has to make

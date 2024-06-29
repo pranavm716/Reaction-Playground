@@ -1,10 +1,10 @@
+import axios from "axios";
 import React from "react";
 import ReactDOM from "react-dom/client";
-import "./index.css";
-import App from "./App";
-import { BrowserRouter } from "react-router-dom";
-import axios from "axios";
 import Modal from "react-modal";
+import { BrowserRouter } from "react-router-dom";
+import App from "./App";
+import "./index.css";
 
 axios.defaults.withCredentials = true;
 axios.defaults.baseURL = "http://localhost:8000";
@@ -17,5 +17,5 @@ root.render(
     <BrowserRouter>
       <App />
     </BrowserRouter>
-  </React.StrictMode>
+  </React.StrictMode>,
 );

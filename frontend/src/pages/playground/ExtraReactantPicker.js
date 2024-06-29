@@ -1,11 +1,11 @@
+import React from "react";
 import {
-  CautionText,
-  plusIcon,
   ArrowWithReactionInfo,
   BackButton,
+  CautionText,
+  plusIcon,
 } from "../../components/SmallUIComponents";
 import { useExtraReactantModal } from "../../hooks";
-import React from "react";
 
 const ExtraReactantPicker = ({
   molImage,
@@ -16,14 +16,14 @@ const ExtraReactantPicker = ({
 }) => {
   // Array and state management for the smiles of the missing reactants picked
   let missingReactantSmiles = new Array(missingReactantPrompts.length).fill(
-    null
+    null,
   );
 
   const { openModal, modals } = useExtraReactantModal(
     missingReactantSmiles,
     missingReactantPrompts,
     reaction.name,
-    setMissingReactantSmilesPicked
+    setMissingReactantSmilesPicked,
   );
 
   return (

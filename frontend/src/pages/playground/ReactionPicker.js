@@ -1,5 +1,5 @@
-import { Tooltip } from "react-tooltip";
 import React from "react";
+import { Tooltip } from "react-tooltip";
 
 const ReactionPicker = ({ reactions, setReactionPicked, molImage }) => {
   return (

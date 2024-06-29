@@ -1,17 +1,17 @@
+import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import ChemDraw from "../../components/ChemDraw";
 import MolImage from "../../components/MolImage";
 import {
-  START_ENDPOINT,
-  REACTION_SINGLE_REACTANT_ENDPOINT,
   MISSING_REACTANTS_PROMPTS_ENDPOINT,
   REACTION_MULTIPLE_REACTANTS_ENDPOINT,
+  REACTION_SINGLE_REACTANT_ENDPOINT,
+  START_ENDPOINT,
 } from "../../endpoints";
-import axios from "axios";
-import ReactionPicker from "./ReactionPicker";
-import ProductPicker from "./ProductPicker";
 import ExtraReactantPicker from "./ExtraReactantPicker";
-import { useSearchParams } from "react-router-dom";
+import ProductPicker from "./ProductPicker";
+import ReactionPicker from "./ReactionPicker";
 
 // TODO: Add history and back button when there are no reactions (go back in history)
 // TODO: Revisit all the no deps useEffects

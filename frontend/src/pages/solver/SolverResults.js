@@ -1,12 +1,12 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import MolImage from "../../components/MolImage";
 import {
   ArrowWithReactionInfo,
   BackButton,
   doubleArrowIcon,
+  plusIcon,
 } from "../../components/SmallUIComponents";
-import { plusIcon } from "../../components/SmallUIComponents";
-import { useNavigate } from "react-router-dom";
 
 const SolverResults = ({ startingSmiles, targetSmiles, solverResults }) => {
   const startMol = (
@@ -103,7 +103,7 @@ const SolverResults = ({ startingSmiles, targetSmiles, solverResults }) => {
                                   .length -
                                   1 && plusIcon}
                             </React.Fragment>
-                          )
+                          ),
                         )}
                       </div>
 

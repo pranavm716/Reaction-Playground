@@ -1,9 +1,8 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import ChemDraw from "../../components/ChemDraw";
 import { CautionText, MolImageMenu } from "../../components/SmallUIComponents";
 import { useClassifierSubstructures } from "../../hooks";
-
 
 const Classifier = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -15,7 +14,7 @@ const Classifier = () => {
   };
 
   const [chemDraw, setChemDraw] = useState(
-    <ChemDraw setSmiles={updateSearchParams} />
+    <ChemDraw setSmiles={updateSearchParams} />,
   );
 
   // fill ChemDraw with smiles from URL on initial page load, if any

@@ -1,13 +1,13 @@
 import { ControlledMenu } from "@szhsin/react-menu";
-import React, { useEffect, useState } from "react";
-import { MolImageMenuItems, closeIcon } from "./components/SmallUIComponents";
-import { useNavigate } from "react-router-dom";
 import "@szhsin/react-menu/dist/index.css";
 import "@szhsin/react-menu/dist/transitions/slide.css";
 import axios from "axios";
-import { CLASSIFIER_ENDPOINT } from "./endpoints";
+import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
+import { useNavigate } from "react-router-dom";
 import ChemDraw from "./components/ChemDraw";
+import { closeIcon, MolImageMenuItems } from "./components/SmallUIComponents";
+import { CLASSIFIER_ENDPOINT } from "./endpoints";
 
 export const useMolImageMenuReroute = (url, searchParams) => {
   const navigate = useNavigate();
@@ -68,7 +68,7 @@ export const useExtraReactantModal = (
   missingReactantSmiles,
   missingReactantPrompts,
   reactionName,
-  setMissingReactantSmilesPicked
+  setMissingReactantSmilesPicked,
 ) => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [smiles, setSmiles] = useState(""); // Smiles of the current missing reactant picked

@@ -1,11 +1,11 @@
+import { useEffect } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
 import Navbar from "./components/NavBar";
-import Playground from "./pages/playground/Playground";
-import Solver from "./pages/solver/Solver";
+import About from "./pages/about/About";
 import Classifier from "./pages/classifier/Classifier";
 import Help from "./pages/help/Help";
-import About from "./pages/about/About";
-import { useEffect } from "react";
+import Playground from "./pages/playground/Playground";
+import Solver from "./pages/solver/Solver";
 
 // TODO: Add help and about pages
 const colorsMap = {

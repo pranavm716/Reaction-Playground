@@ -1,9 +1,9 @@
-import React, { useId } from "react";
-import { Tooltip } from "react-tooltip";
 import { Menu, MenuButton, MenuItem, SubMenu } from "@szhsin/react-menu";
-import { useMolImageMenuReroute } from "../hooks";
 import "@szhsin/react-menu/dist/index.css";
 import "@szhsin/react-menu/dist/transitions/slide.css";
+import { useId } from "react";
+import { Tooltip } from "react-tooltip";
+import { useMolImageMenuReroute } from "../hooks";
 
 export const closeIcon = (
   <svg

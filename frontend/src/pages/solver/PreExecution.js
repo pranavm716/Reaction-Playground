@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import ChemDraw from "../../components/ChemDraw";
+import MolImage from "../../components/MolImage";
 import {
   CautionText,
   ClearSelectionButton,
   doubleArrowIcon,
 } from "../../components/SmallUIComponents";
-import MolImage from "../../components/MolImage";
 
 const noneSelectedText = <CautionText text="Not set" />;
 

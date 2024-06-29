@@ -1,18 +1,17 @@
 import { useCallback, useEffect, useState } from "react";
 import ChemDraw from "../../components/ChemDraw";
 import MolImage from "../../components/MolImage";
+import {
+  START_ENDPOINT,
+  REACTION_SINGLE_REACTANT_ENDPOINT,
+  MISSING_REACTANTS_PROMPTS_ENDPOINT,
+  REACTION_MULTIPLE_REACTANTS_ENDPOINT,
+} from "../../endpoints";
 import axios from "axios";
 import ReactionPicker from "./ReactionPicker";
 import ProductPicker from "./ProductPicker";
 import ExtraReactantPicker from "./ExtraReactantPicker";
 import { useSearchParams } from "react-router-dom";
-
-const START_ENDPOINT = "/playground/start";
-const REACTION_SINGLE_REACTANT_ENDPOINT =
-  "/playground/reaction/single-reactant";
-const MISSING_REACTANTS_PROMPTS_ENDPOINT = "/playground/missing-reactants";
-const REACTION_MULTIPLE_REACTANTS_ENDPOINT =
-  "/playground/reaction/multiple-reactants";
 
 // TODO: Add history and back button when there are no reactions (go back in history)
 // TODO: Revisit all the no deps useEffects

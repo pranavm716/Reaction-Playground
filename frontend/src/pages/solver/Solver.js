@@ -1,11 +1,9 @@
 import { useState, useEffect, useCallback } from "react";
 import PreExecution from "./PreExecution";
+import { GET_MOL_IMAGE_ENDPOINT, RUN_SOLVER_ENDPOINT } from "../../endpoints";
 import axios from "axios";
 import SolverResults from "./SolverResults";
 import { useSearchParams } from "react-router-dom";
-
-const GET_MOL_IMAGE_ENDPOINT = "/solver/get-mol-image";
-const RUN_SOLVER_ENDPOINT = "/solver/run";
 
 const Solver = () => {
   // before execution

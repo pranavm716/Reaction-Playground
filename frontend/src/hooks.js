@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import "@szhsin/react-menu/dist/index.css";
 import "@szhsin/react-menu/dist/transitions/slide.css";
 import axios from "axios";
-import { CLASSIFIER_ENDPOINT } from "./pages/classifier/Classifier";
+import { CLASSIFIER_ENDPOINT } from "./endpoints";
 import Modal from "react-modal";
 import ChemDraw from "./components/ChemDraw";
 

@@ -4,7 +4,6 @@ import ChemDraw from "../../components/ChemDraw";
 import { CautionText, MolImageMenu } from "../../components/SmallUIComponents";
 import { useClassifierSubstructures } from "../../hooks";
 
-export const CLASSIFIER_ENDPOINT = "/classifier/";
 
 const Classifier = () => {
   const [searchParams, setSearchParams] = useSearchParams();

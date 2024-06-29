@@ -15,6 +15,7 @@ const REACTION_MULTIPLE_REACTANTS_ENDPOINT =
   "/playground/reaction/multiple-reactants";
 
 // TODO: Add history and back button when there are no reactions (go back in history)
+// TODO: Revisit all the no deps useEffects
 const Playground = () => {
   // before playground loop
   const [preLoopSmiles, setPreLoopSmiles] = useState(""); // smiles before explicitly starting the playground loop
@@ -49,6 +50,7 @@ const Playground = () => {
   // after the products are generated
   const [productsMetadata, setProductsMetadata] = useState(null); // metadata for the products of the current step: list of [{encoding: mol img encoding, smiles: smiles]}
 
+  // TODO: Reconsider making this a useEffect
   const handleStepStart = async (curSmiles) => {
     // clean up previous state so UI is rendered properly
     setProductsMetadata(null);

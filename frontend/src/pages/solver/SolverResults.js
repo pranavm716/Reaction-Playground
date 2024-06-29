@@ -68,7 +68,6 @@ const SolverResults = ({ startingSmiles, targetSmiles, solverResults }) => {
                       reactionDescriptionTooltip={
                         solverResults.reactions[step].description
                       }
-                      tooltipId={`solver-reaction-${step + 1}`}
                     />
                     <div
                       style={{

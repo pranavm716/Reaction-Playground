@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useId } from "react";
 import { Tooltip } from "react-tooltip";
 import { Menu, MenuButton, MenuItem, SubMenu } from "@szhsin/react-menu";
-import { useReroute } from "../hooks";
+import { useMolImageMenuReroute } from "../hooks";
 import "@szhsin/react-menu/dist/index.css";
 import "@szhsin/react-menu/dist/transitions/slide.css";
 
@@ -108,8 +108,9 @@ export const ArrowWithReactionInfo = ({
   reactionName,
   stepNumber,
   reactionDescriptionTooltip,
-  tooltipId,
 }) => {
+  const tooltipId = useId();
+
   return (
     <div
       style={{
@@ -198,14 +199,16 @@ export const ClearSelectionButton = ({ onClick }) => {
 
 export const MolImageMenuItems = ({ smiles, onClassifier }) => {
   // reroutes
-  const navigateToPlayground = useReroute("/", { smiles: smiles });
-  const navigateToSolverAsStarting = useReroute("/solver", {
+  const navigateToPlayground = useMolImageMenuReroute("/", { smiles: smiles });
+  const navigateToSolverAsStarting = useMolImageMenuReroute("/solver", {
     startingSmiles: smiles,
   });
-  const navigateToSolverAsTarget = useReroute("/solver", {
+  const navigateToSolverAsTarget = useMolImageMenuReroute("/solver", {
     targetSmiles: smiles,
   });
-  const navigateToClassifier = useReroute("/classifier", { smiles: smiles });
+  const navigateToClassifier = useMolImageMenuReroute("/classifier", {
+    smiles: smiles,
+  });
 
   return (
     <>

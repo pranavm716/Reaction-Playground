@@ -53,7 +53,6 @@ const ProductPicker = ({
       <ArrowWithReactionInfo
         reactionName={reaction.name}
         reactionDescriptionTooltip={reaction.description}
-        tooltipId={`products-${reaction.name}`}
       />
 
       {/* list of clickable products - only shows when there is more than 1 */}

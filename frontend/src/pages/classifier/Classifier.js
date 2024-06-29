@@ -2,14 +2,14 @@ import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import ChemDraw from "../../components/ChemDraw";
 import { CautionText, MolImageMenu } from "../../components/SmallUIComponents";
-import { useSubstructures } from "../../hooks";
+import { useClassifierSubstructures } from "../../hooks";
 
 export const CLASSIFIER_ENDPOINT = "/classifier/";
 
 const Classifier = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const smiles = searchParams.get("smiles") || "";
-  const { substructures, error } = useSubstructures(smiles);
+  const { substructures, error } = useClassifierSubstructures(smiles);
 
   const updateSearchParams = (smiles) => {
     setSearchParams({ smiles });

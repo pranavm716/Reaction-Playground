@@ -22,18 +22,10 @@ const Playground = () => {
 
   // before a reaction is picked
   const smiles = searchParams.get("smiles"); // keeps track of the smiles for this loop
-
-  // start loop immediately if there are smiles from URL on initial page load
-  useEffect(() => {
-    if (smiles) {
-      handleStepStart(smiles);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const handleLoopStart = () => {
-    handleStepStart(preLoopSmiles);
-  };
+  const setSmiles = useCallback(
+    (smiles) => setSearchParams({ smiles }),
+    [setSearchParams],
+  );
 
   // after a reaction is picked
   const [stepMetadata, setStepMetadata] = useState(null); // metadata for the current step: {encoding -> mol img encoding, validReactions -> [list of valid reactions]}
@@ -49,82 +41,98 @@ const Playground = () => {
   // after the products are generated
   const [productsMetadata, setProductsMetadata] = useState(null); // metadata for the products of the current step: list of [{encoding: mol img encoding, smiles: smiles]}
 
-  // TODO: Reconsider making this a useEffect
-  const handleStepStart = async (curSmiles) => {
+  // start loop immediately if there are smiles from URL on initial page load
+  useEffect(() => {
+    const handleStepStart = async () => {
+      await axios
+        .get(START_ENDPOINT, { params: { smiles } })
+        .then((res) => {
+          const [encoding, validReactions] = res.data;
+          setStepMetadata({ encoding, validReactions });
+        })
+        .catch((error) => {
+          alert(error.response.data.detail);
+        });
+    };
+
+    if (!smiles) {
+      setStepMetadata(null);
+      return;
+    }
+
     // clean up previous state so UI is rendered properly
+    setMissingReactantPrompts(null);
     setProductsMetadata(null);
-    setMissingReactantSmilesPicked(null);
-    setMissingReactantEncodings(null);
 
-    await axios
-      .get(START_ENDPOINT, { params: { smiles: curSmiles } })
-      .then((res) => {
-        const [encoding, validReactions] = res.data;
-        setStepMetadata({ encoding, validReactions });
-        setSearchParams({ smiles: curSmiles });
-      })
-      .catch((error) => {
-        alert(error.response.data.detail);
-      });
-  };
+    handleStepStart();
+  }, [smiles]);
 
-  const handleStepReaction = useCallback(async () => {
+  useEffect(() => {
+    const handleStepReaction = async () => {
+      if (reactionPicked.multiple_reactants_prompts) {
+        // reaction has multiple reactants, need to prompt user for missing reactants
+        await axios
+          .get(MISSING_REACTANTS_PROMPTS_ENDPOINT, {
+            params: { smiles, reaction_key: reactionPicked.reaction_key },
+          })
+          .then((res) => {
+            setMissingReactantPrompts(res.data);
+          });
+      } else {
+        // reaction has only one reactant
+        await axios
+          .get(REACTION_SINGLE_REACTANT_ENDPOINT, {
+            params: { smiles, reaction_key: reactionPicked.reaction_key },
+          })
+          .then((res) => {
+            const products = res.data;
+            if (products.length === 1) {
+              setSmiles(products[0].smiles);
+            } else {
+              setProductsMetadata(res.data);
+            }
+          });
+      }
+    };
+
     if (!reactionPicked) return;
 
-    if (reactionPicked.multiple_reactants_prompts) {
-      // reaction has multiple reactants, need to prompt user for missing reactants
-      await axios
-        .get(MISSING_REACTANTS_PROMPTS_ENDPOINT, {
-          params: { smiles, reaction_key: reactionPicked.reaction_key },
-        })
-        .then((res) => {
-          setMissingReactantPrompts(res.data);
-        });
-    } else {
-      // reaction has only one reactant
-      await axios
-        .get(REACTION_SINGLE_REACTANT_ENDPOINT, {
-          params: { smiles, reaction_key: reactionPicked.reaction_key },
-        })
-        .then((res) => {
-          setProductsMetadata(res.data);
-        });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [reactionPicked]);
-  useEffect(() => {
     handleStepReaction();
-  }, [handleStepReaction]);
+  }, [reactionPicked]);
 
-  const handleStepReactionMultipleReactants = useCallback(async () => {
+  useEffect(() => {
+    const handleStepReactionMultipleReactants = async () => {
+      await axios
+        .post(REACTION_MULTIPLE_REACTANTS_ENDPOINT, {
+          smiles,
+          extra_reactant_smiles: missingReactantSmilesPicked,
+          reaction_key: reactionPicked.reaction_key,
+        })
+        .then((res) => {
+          // clean up previous state so UI is rendered properly
+          setMissingReactantPrompts(null);
+
+          const [extraReactantEncodings, products] = res.data;
+          if (products.length === 1) {
+            setSmiles(products[0].smiles);
+          } else {
+            setMissingReactantEncodings(extraReactantEncodings);
+            setProductsMetadata(products);
+          }
+        })
+        .catch((error) => {
+          // provided reactants were invalid for this reaction
+          alert(error.response.data.detail);
+        });
+    };
+
     if (!missingReactantSmilesPicked) return;
 
-    await axios
-      .post(REACTION_MULTIPLE_REACTANTS_ENDPOINT, {
-        smiles,
-        extra_reactant_smiles: missingReactantSmilesPicked,
-        reaction_key: reactionPicked.reaction_key,
-      })
-      .then((res) => {
-        // clean up previous state so UI is rendered properly
-        setMissingReactantPrompts(null);
-
-        const [extraReactantEncodings, products] = res.data;
-        setMissingReactantEncodings(extraReactantEncodings);
-        setProductsMetadata(products);
-      })
-      .catch((error) => {
-        // provided reactants were invalid for this reaction
-        alert(error.response.data.detail);
-      });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [missingReactantSmilesPicked]);
-  useEffect(() => {
     handleStepReactionMultipleReactants();
-  }, [handleStepReactionMultipleReactants]);
+  }, [missingReactantSmilesPicked]);
 
+  // If the user picks a reaction that requires multiple reactants but then decides to go back to the reaction picker
   const cancelMultipleReactants = () => {
-    // If the user picks a reaction that requires multiple reactants but then decides to go back to the reaction picker
     setReactionPicked(null);
     setMissingReactantPrompts(null);
   };
@@ -163,7 +171,7 @@ const Playground = () => {
               {productsMetadata ? (
                 <ProductPicker
                   products={productsMetadata}
-                  handleStepStart={handleStepStart}
+                  setSmiles={setSmiles}
                   reaction={reactionPicked}
                   molImage={molImage}
                   missingReactantSmilesPicked={missingReactantSmilesPicked}
@@ -192,7 +200,7 @@ const Playground = () => {
             <div className="run-reactions-div">
               <button
                 className="primary-colored-button"
-                onClick={handleLoopStart}
+                onClick={() => setSmiles(preLoopSmiles)}
               >
                 Run Reactions
               </button>

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import ChemDraw from "../../components/ChemDraw";
 import MolImage from "../../components/MolImage";
@@ -10,6 +10,7 @@ import {
   START_ENDPOINT,
 } from "../../endpoints";
 import ExtraReactantPicker from "./ExtraReactantPicker";
+import HistoryViewer from "./HistoryViewer";
 import ProductPicker from "./ProductPicker";
 import ReactionPicker from "./ReactionPicker";
 
@@ -47,13 +48,10 @@ const Playground = () => {
   const [history, setHistory] = useState([defaultHistoryState]); // history of reactions
   const curHistoryState = history[history.length - 1];
 
-  const setNewSmiles = useCallback(
-    (productSmiles, productIndex) => {
-      setProductPicked(productIndex);
-      setSearchParams({ smiles: productSmiles });
-    },
-    [setSearchParams],
-  );
+  const setNewSmiles = (productSmiles, productIndex) => {
+    setProductPicked(productIndex);
+    setSearchParams({ smiles: productSmiles });
+  };
 
   // metadata unique for step
   const [stepMetadata, setStepMetadata] = useState(null); // structure: {encoding -> mol img encoding, validReactions -> [list of valid reactions]}
@@ -95,7 +93,6 @@ const Playground = () => {
 
   // start loop immediately if there are smiles from URL on initial page load
   useEffect(() => {
-    console.log(history);
     const handleStepStart = async () => {
       await axios
         .get(START_ENDPOINT, { params: { smiles } })
@@ -125,7 +122,7 @@ const Playground = () => {
 
     // * This useEffect should only run when the current smiles changes
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [smiles, setNewSmiles]);
+  }, [smiles]);
 
   useEffect(() => {
     const handleStepReaction = async () => {
@@ -259,9 +256,12 @@ const Playground = () => {
         </div>
         <div className="history-panel">
           {stepMetadata ? (
-            <p>
-              <b>History</b>
-            </p>
+            <>
+              <p>
+                <b>History</b>
+              </p>
+              <HistoryViewer history={history} />
+            </>
           ) : preLoopSmiles ? (
             <div className="run-reactions-div">
               <button

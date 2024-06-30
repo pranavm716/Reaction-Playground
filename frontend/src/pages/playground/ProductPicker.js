@@ -7,7 +7,7 @@ import {
 
 const ProductPicker = ({
   products,
-  setSmiles,
+  setNewSmiles,
   reaction,
   molImage,
   missingReactantSmilesPicked,
@@ -33,10 +33,6 @@ const ProductPicker = ({
     reactantMolRow = molImage;
   }
 
-  const pickProduct = (index) => {
-    setSmiles(products[index].smiles);
-  };
-
   return (
     <>
       {reactantMolRow}
@@ -53,7 +49,7 @@ const ProductPicker = ({
               <MolImage
                 smiles={product.smiles}
                 encoding={product.encoding}
-                onClick={() => pickProduct(index)}
+                onClick={() => setNewSmiles(product.smiles, index)}
               />
               {index < products.length - 1 && plusIcon}
             </React.Fragment>

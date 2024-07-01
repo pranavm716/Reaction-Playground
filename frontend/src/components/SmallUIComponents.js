@@ -4,6 +4,7 @@ import "@szhsin/react-menu/dist/transitions/slide.css";
 import { useId } from "react";
 import { Tooltip } from "react-tooltip";
 import { useMolImageMenuReroute } from "../hooks";
+import MolImage from "./MolImage";
 
 export const closeIcon = (
   <svg
@@ -107,8 +108,13 @@ export const CautionText = ({ text }) => {
 export const ArrowWithReactionInfo = ({
   reactionName,
   stepNumber,
+  missingReactantMetadata,
   reactionDescriptionTooltip,
+  isDownArrow = true,
 }) => {
+  // Either stepNumber or missingReactantMetadata will be present
+  // stepNumber is provided in solver mode
+  // missingReactantMetadata is provided in the history view for playground mode
   const tooltipId = useId();
 
   return (
@@ -133,9 +139,32 @@ export const ArrowWithReactionInfo = ({
           <b>Step {stepNumber}</b>
         </span>
       )}
+      {missingReactantMetadata && missingReactantMetadata.smiles && (
+        <span
+          style={{
+            position: "absolute",
+            right: "50%",
+            marginRight: "50px",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {missingReactantMetadata.smiles.map((smiles, index) => (
+            <div className="history-extra-reactants-row">
+              <MolImage
+                smiles={smiles}
+                encoding={missingReactantMetadata.encodings[index]}
+                sideLength={100}
+              />
+              {index < missingReactantMetadata.smiles.length - 1 && (
+                <p style={{ fontSize: "1.75rem" }}>,</p>
+              )}
+            </div>
+          ))}
+        </span>
+      )}
       <img
         height={130}
-        src={process.env.PUBLIC_URL + "down-arrow.png"}
+        src={`${process.env.PUBLIC_URL}/${isDownArrow ? "down-arrow" : "up-arrow"}.png`}
         alt="downward_arrow"
       ></img>
       <span

@@ -1,6 +1,12 @@
 import { useMolImageContextMenu } from "../hooks";
 
-const MolImage = ({ smiles, encoding, onClick, isHighlighted }) => {
+const MolImage = ({
+  smiles,
+  encoding,
+  onClick,
+  isHighlighted,
+  sideLength = 200,
+}) => {
   // Supports both clickable and non clickable mol images
   const className = onClick ? "clickable-mol-image" : "mol-image";
   const { contextMenu, setIsOpen, setAnchorPoint } =
@@ -11,8 +17,8 @@ const MolImage = ({ smiles, encoding, onClick, isHighlighted }) => {
       <img
         onClick={onClick || undefined}
         className={className}
-        width={200}
-        height={200}
+        width={sideLength}
+        height={sideLength}
         src={`data:image/png;base64,${encoding}`}
         alt={smiles}
         style={

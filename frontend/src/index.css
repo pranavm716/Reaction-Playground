@@ -96,16 +96,28 @@
   max-height: 100%;
   display: flex;
   justify-content: center;
-  align-items: center;
 }
 
 .history-panel {
-  max-height: 100%;
-  overflow-y: auto;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
+}
+
+.history-viewer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.history-extra-reactants-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
 }
 
 .run-reactions-div {

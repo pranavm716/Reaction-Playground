@@ -214,19 +214,20 @@ const Playground = () => {
               <p>
                 <b>Current molecule</b>
               </p>
-              {curHistoryState.missingReactantMetadata.prompts && (
-                <ExtraReactantPicker
-                  molImage={molImage}
-                  missingReactantPrompts={
-                    curHistoryState.missingReactantMetadata.prompts
-                  }
-                  setMissingReactantSmilesPicked={(smiles) =>
-                    setmissingReactantMetadata({ smiles })
-                  }
-                  reaction={curHistoryState.reactionPicked}
-                  cancelMultipleReactants={cancelMultipleReactants}
-                />
-              )}
+              {curHistoryState.missingReactantMetadata.prompts &&
+                !curHistoryState.missingReactantMetadata.smiles && (
+                  <ExtraReactantPicker
+                    molImage={molImage}
+                    missingReactantPrompts={
+                      curHistoryState.missingReactantMetadata.prompts
+                    }
+                    setMissingReactantSmilesPicked={(smiles) =>
+                      setmissingReactantMetadata({ smiles })
+                    }
+                    reaction={curHistoryState.reactionPicked}
+                    cancelMultipleReactants={cancelMultipleReactants}
+                  />
+                )}
               {curHistoryState.productMetadata ? (
                 <ProductPicker
                   products={curHistoryState.productMetadata}

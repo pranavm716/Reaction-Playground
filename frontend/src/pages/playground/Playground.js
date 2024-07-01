@@ -38,7 +38,7 @@ const setCurHistoryAttribute = (setHistory, attribute, value) => {
   ]);
 };
 
-// TODO: Add history and back button when there are no reactions (go back in history)
+// TODO: Figure out back button navigation for history mode
 const Playground = () => {
   // before playground loop/ before a reaction is picked
   const [preLoopSmiles, setPreLoopSmiles] = useState(""); // smiles before explicitly starting the playground loop

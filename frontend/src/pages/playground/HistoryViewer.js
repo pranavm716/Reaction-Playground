@@ -8,7 +8,6 @@ import {
 const molImageSideLength = 150;
 
 const HistoryViewer = ({ history }) => {
-  console.log(history);
   const prevHistory = history.slice(0, history.length - 1);
   if (!prevHistory.length) {
     return (

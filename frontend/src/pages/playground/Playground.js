@@ -14,7 +14,7 @@ import HistoryViewer from "./HistoryViewer";
 import ProductPicker from "./ProductPicker";
 import ReactionPicker from "./ReactionPicker";
 
-const defaultmissingReactantMetadata = {
+const defaultMissingReactantMetadata = {
   prompts: null,
   smiles: null,
   encodings: null,
@@ -22,7 +22,7 @@ const defaultmissingReactantMetadata = {
 
 const defaultHistoryState = {
   curMolMetadata: { smiles: "", encoding: null },
-  missingReactantMetadata: defaultmissingReactantMetadata,
+  missingReactantMetadata: defaultMissingReactantMetadata,
   reactionPicked: null,
   productMetadata: null,
   productPicked: null,
@@ -71,7 +71,7 @@ const Playground = () => {
     setCurHistoryAttribute(setHistory, "reactionPicked", reactionPicked);
   };
 
-  const setmissingReactantMetadata = ({
+  const setMissingReactantMetadata = ({
     prompts = curHistoryState.missingReactantMetadata.prompts,
     smiles = curHistoryState.missingReactantMetadata.smiles,
     encodings = curHistoryState.missingReactantMetadata.encodings,
@@ -133,7 +133,7 @@ const Playground = () => {
             params: { smiles, reaction_key: reactionPicked.reaction_key },
           })
           .then((res) => {
-            setmissingReactantMetadata({ prompts: res.data });
+            setMissingReactantMetadata({ prompts: res.data });
           });
       } else {
         // reaction has only one reactant
@@ -168,7 +168,7 @@ const Playground = () => {
         })
         .then((res) => {
           const [extraReactantEncodings, products] = res.data;
-          setmissingReactantMetadata({ encodings: extraReactantEncodings });
+          setMissingReactantMetadata({ encodings: extraReactantEncodings });
           setProductMetadata(products);
 
           if (products.length === 1) {
@@ -177,6 +177,7 @@ const Playground = () => {
         })
         .catch((error) => {
           // provided reactants were invalid for this reaction
+          setMissingReactantMetadata({smiles: defaultMissingReactantMetadata.smiles});
           alert(error.response.data.detail);
         });
     };
@@ -191,7 +192,7 @@ const Playground = () => {
   // If the user picks a reaction that requires multiple reactants but then decides to go back to the reaction picker
   const cancelMultipleReactants = () => {
     setReactionPicked(null);
-    setmissingReactantMetadata(defaultmissingReactantMetadata);
+    setMissingReactantMetadata(defaultMissingReactantMetadata);
   };
 
   let molImage = null;
@@ -215,14 +216,14 @@ const Playground = () => {
                 <b>Current molecule</b>
               </p>
               {curHistoryState.missingReactantMetadata.prompts &&
-                !curHistoryState.missingReactantMetadata.smiles && (
+                !curHistoryState.missingReactantMetadata.encodings && (
                   <ExtraReactantPicker
                     molImage={molImage}
                     missingReactantPrompts={
                       curHistoryState.missingReactantMetadata.prompts
                     }
                     setMissingReactantSmilesPicked={(smiles) =>
-                      setmissingReactantMetadata({ smiles })
+                      setMissingReactantMetadata({ smiles })
                     }
                     reaction={curHistoryState.reactionPicked}
                     cancelMultipleReactants={cancelMultipleReactants}

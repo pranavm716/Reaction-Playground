@@ -149,7 +149,7 @@ export const ArrowWithReactionInfo = ({
           }}
         >
           {missingReactantMetadata.smiles.map((smiles, index) => (
-            <div className="history-extra-reactants-row">
+            <div className="history-extra-reactants-row" key={`missing-${smiles}-${index}`}>
               <MolImage
                 smiles={smiles}
                 encoding={missingReactantMetadata.encodings[index]}

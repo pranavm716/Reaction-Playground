@@ -3,6 +3,7 @@ import { Route, Routes, useLocation } from "react-router-dom";
 import Navbar from "./components/NavBar";
 import About from "./pages/about/About";
 import Classifier from "./pages/classifier/Classifier";
+import Help from "./pages/help/Help";
 import Playground from "./pages/playground/Playground";
 import Solver from "./pages/solver/Solver";
 
@@ -33,6 +34,7 @@ const App = () => {
           <Route path="/" element={<Playground />} />
           <Route path="/solver" element={<Solver />} />
           <Route path="/classifier" element={<Classifier />} />
+          <Route path="/help" element={<Help />} />
           <Route path="/about" element={<About />} />
         </Routes>
       </div>

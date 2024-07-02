@@ -5,6 +5,7 @@ const references = [
   "https://github.com/rdkit/rdkit-tutorials/tree/master/notebooks",
   "https://chem.libretexts.org/",
   "https://stackabuse.com/courses/graphs-in-python-theory-and-implementation/lessons/breadth-first-search-bfs-algorithm/",
+  "https://www.youtube.com/watch?v=j942wKiXFu8&list=PL4cUxeGkcC9gZD-Tvwfod2gaISzfRiP9d"
   // TODO: link for deploying app on GH pages
 ];
 
@@ -14,7 +15,7 @@ const About = () => {
       <div className="about-section">
         <h2>Source code</h2>
         <p>
-          See the source code on Github{" "}
+          See the source code on GitHub{" "}
           <a href="https://github.com/pranavm716/Reaction-Playground">here</a>.
         </p>
       </div>

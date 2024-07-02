@@ -26,12 +26,6 @@ def all_reactions() -> ReactionDict:
     return ALL_REACTIONS
 
 
-@app.get("/reactions/{reaction_key}", response_model=ReactionDict)
-def get_reaction(reaction_key: ReactionKey) -> ReactionDict:
-    """Gets an individual reaction by its reaction key."""
-    return {reaction_key: ALL_REACTIONS[reaction_key]}
-
-
 app.include_router(playground_router)
 app.include_router(solver_router)
 app.include_router(classifier_router)

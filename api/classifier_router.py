@@ -3,8 +3,14 @@ from fastapi import APIRouter, HTTPException
 from api.utils import get_mol_and_image_encoding
 
 from backend.computations import get_substructure_classifications
+from backend.computations import ALL_SUBSTRUCTURES
 
 router = APIRouter(prefix="/classifier", tags=["classifier"])
+
+
+@router.get("/all")
+def get_all_classifications() -> list[str]:
+    return list(ALL_SUBSTRUCTURES)
 
 
 @router.get("/")

@@ -1,9 +1,9 @@
 import { useEffect } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
 import Navbar from "./components/NavBar";
-import About from "./pages/about/About";
 import Classifier from "./pages/classifier/Classifier";
-import Help from "./pages/help/Help";
+import About from "./pages/docs/About";
+import Help from "./pages/docs/Help";
 import Playground from "./pages/playground/Playground";
 import Solver from "./pages/solver/Solver";
 
@@ -12,6 +12,8 @@ const colorsMap = {
   "/": "#f1356d",
   "/solver": "#429987",
   "/classifier": "#1976D2",
+  "/help": "#7E57C2",
+  "/about": "#DA552F",
 };
 
 const useUpdatePrimaryColor = () => {

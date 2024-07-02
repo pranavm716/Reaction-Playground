@@ -30,7 +30,7 @@
 }
 
 .navbar a {
-  margin-left: 16px;
+  margin: 0px 8px;
   text-decoration: none;
   padding: 6px;
 }
@@ -293,4 +293,17 @@
   border: 0;
   padding: 8px 12px;
   border-radius: 15px;
+}
+
+/* about page */
+.about-section {
+  margin-bottom: 25px;
+}
+
+.about-section h2 {
+  margin-bottom: 12px;
+}
+
+.about-section a {
+  color: var(--primary-color);
 }

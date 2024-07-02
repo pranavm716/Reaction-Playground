@@ -1,4 +1,4 @@
-const About = () => {
+const Help = () => {
   return (
     <>
       About
@@ -15,4 +15,4 @@ const About = () => {
   );
 };
 
-export default About;
+export default Help;

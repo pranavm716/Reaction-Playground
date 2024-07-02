@@ -1,10 +1,15 @@
 import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 
-const links = {
+const appLinks = {
   "/": "Playground",
   "/solver": "Solver",
   "/classifier": "Classifier",
+};
+
+const docLinks = {
+  "/help": "Help",
+  "/about": "About",
 };
 
 const Navbar = ({ colorsMap }) => {
@@ -16,23 +21,33 @@ const Navbar = ({ colorsMap }) => {
     navigate(link);
   };
 
+  const getNavLink = (link, text) => {
+    return (
+      <NavLink
+        to={link}
+        key={link}
+        onMouseEnter={() => setHoverLink(link)}
+        onMouseLeave={() => setHoverLink(null)}
+        style={{ color: hoverLink === link ? colorsMap[link] : "#333" }}
+        onClick={(event) => handleNav(link, event)}
+      >
+        {text}
+      </NavLink>
+    );
+  };
+
   return (
     <nav className="navbar">
       <h1>Reaction Playground</h1>
       <div className="links">
-        {Object.keys(links).map((link) => {
-          return (
-            <NavLink
-              to={link}
-              key={link}
-              onMouseEnter={() => setHoverLink(link)}
-              onMouseLeave={() => setHoverLink(null)}
-              style={{ color: hoverLink === link ? colorsMap[link] : "#333" }}
-              onClick={(event) => handleNav(link, event)}
-            >
-              {links[link]}
-            </NavLink>
-          );
+        {Object.keys(appLinks).map((link) => {
+          return getNavLink(link, appLinks[link]);
+        })}
+
+        <span style={{ padding: "0 10px", color: "#333" }}>|</span>
+
+        {Object.keys(docLinks).map((link) => {
+          return getNavLink(link, docLinks[link]);
         })}
       </div>
     </nav>

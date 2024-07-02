@@ -270,7 +270,7 @@ const Playground = () => {
                 {history.length > 1 &&
                   !curHistoryState.missingReactantMetadata.prompts && (
                     <BackButton
-                      text="To previous molecule"
+                      text="Previous molecule"
                       onClick={toPreviousMolecule}
                     />
                   )}

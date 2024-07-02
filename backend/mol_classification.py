@@ -45,6 +45,12 @@ class MolClass(StrEnum):
     internal_alkyne = auto()
     terminal_alkyne = auto()
 
+    # Sulfur compounds
+    primary_thiol = auto()
+    secondary_thiol = auto()
+    tertiary_thiol = auto()
+    thioketone = auto()
+
     # Other
     ether = auto()
     acid_halide = auto()

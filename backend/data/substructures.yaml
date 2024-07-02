@@ -64,6 +64,17 @@ terminal_alkyne:
   - "[CH]#[CH]" # acetylene
   - "[#6][CH0]#[CH]"
 
+# Sulfur compounds
+primary_thiol:
+  - "[CH3][SH]" # methanol
+  - "[#6][CH2][SH]"
+secondary_thiol:
+  - "[#6][CH]([#6])[SH]"
+tertiary_thiol:
+  - "[#6][CH0]([#6])([#6])[SH]"
+thioketone:
+  - "[#6][CX3H0](=S)[#6]"
+
 # Other
 ether:
   - "[#6][OD2!$(OC=O)][#6]"

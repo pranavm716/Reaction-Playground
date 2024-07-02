@@ -368,6 +368,15 @@ class TestSubstructureClassifications:
                     MolClass.primary_amine,
                 ],
             ],
+            [
+                "CC(C)(S)CCC(S)C(=S)CS",
+                [
+                    MolClass.primary_thiol,
+                    MolClass.secondary_thiol,
+                    MolClass.tertiary_thiol,
+                    MolClass.thioketone,
+                ],
+            ],
             ["C", []],
             # Single carbon molecules
             ["C=O", [MolClass.aldehyde]],
@@ -376,6 +385,7 @@ class TestSubstructureClassifications:
             ["CF", [MolClass.primary_alkyl_halide]],
             ["C=C", [MolClass.terminal_alkene]],
             ["C#C", [MolClass.terminal_alkyne]],
+            ["CS", [MolClass.primary_thiol]],
         ],
     )
     def test_substructure_classifications(

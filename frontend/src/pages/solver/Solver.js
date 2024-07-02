@@ -15,10 +15,13 @@ const Solver = () => {
   const startingSmiles = searchParams.get("startingSmiles");
   const setStartingSmiles = useCallback(
     (smiles) => {
-      setSearchParams((prev) => {
-        prev.set("startingSmiles", smiles);
-        return prev;
-      });
+      setSearchParams(
+        (prev) => {
+          prev.set("startingSmiles", smiles);
+          return prev;
+        },
+        { replace: true },
+      );
     },
     [setSearchParams],
   );
@@ -27,10 +30,13 @@ const Solver = () => {
   const targetSmiles = searchParams.get("targetSmiles");
   const setTargetSmiles = useCallback(
     (smiles) => {
-      setSearchParams((prev) => {
-        prev.set("targetSmiles", smiles);
-        return prev;
-      });
+      setSearchParams(
+        (prev) => {
+          prev.set("targetSmiles", smiles);
+          return prev;
+        },
+        { replace: true },
+      );
     },
     [setSearchParams],
   );

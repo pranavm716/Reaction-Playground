@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import ChemDraw from "../../components/ChemDraw";
 import MolImage from "../../components/MolImage";
+import { BackButton } from "../../components/SmallUIComponents";
 import {
   MISSING_REACTANTS_PROMPTS_ENDPOINT,
   REACTION_MULTIPLE_REACTANTS_ENDPOINT,
@@ -50,7 +51,7 @@ const Playground = () => {
 
   const setNewSmiles = (productSmiles, productIndex) => {
     setProductPicked(productIndex);
-    setSearchParams({ smiles: productSmiles });
+    setSearchParams({ smiles: productSmiles }, { replace: true });
   };
 
   // metadata unique for step
@@ -110,6 +111,7 @@ const Playground = () => {
 
     if (!smiles) {
       setStepMetadata(null);
+      setHistory([defaultHistoryState]);
       return;
     }
 
@@ -177,7 +179,9 @@ const Playground = () => {
         })
         .catch((error) => {
           // provided reactants were invalid for this reaction
-          setMissingReactantMetadata({smiles: defaultMissingReactantMetadata.smiles});
+          setMissingReactantMetadata({
+            smiles: defaultMissingReactantMetadata.smiles,
+          });
           alert(error.response.data.detail);
         });
     };
@@ -193,6 +197,17 @@ const Playground = () => {
   const cancelMultipleReactants = () => {
     setReactionPicked(null);
     setMissingReactantMetadata(defaultMissingReactantMetadata);
+  };
+
+  // If the user wants to go back to the previous molecule, rewinding history
+  const toPreviousMolecule = () => {
+    setHistory((prev) => {
+      setSearchParams(
+        { smiles: prev[prev.length - 2].curMolMetadata.smiles },
+        { replace: true },
+      );
+      return [...prev.slice(0, prev.length - 2), defaultHistoryState];
+    });
   };
 
   let molImage = null;
@@ -229,28 +244,37 @@ const Playground = () => {
                     cancelMultipleReactants={cancelMultipleReactants}
                   />
                 )}
-              {curHistoryState.productMetadata ? (
-                <ProductPicker
-                  products={curHistoryState.productMetadata}
-                  setNewSmiles={setNewSmiles}
-                  reaction={curHistoryState.reactionPicked}
-                  molImage={molImage}
-                  missingReactantSmilesPicked={
-                    curHistoryState.missingReactantMetadata.smiles
-                  }
-                  missingReactantEncodings={
-                    curHistoryState.missingReactantMetadata.encodings
-                  }
-                />
-              ) : (
-                !curHistoryState.missingReactantMetadata.prompts && (
-                  <ReactionPicker
-                    reactions={stepMetadata.validReactions}
-                    setReactionPicked={setReactionPicked}
+              <>
+                {curHistoryState.productMetadata ? (
+                  <ProductPicker
+                    products={curHistoryState.productMetadata}
+                    setNewSmiles={setNewSmiles}
+                    reaction={curHistoryState.reactionPicked}
                     molImage={molImage}
+                    missingReactantSmilesPicked={
+                      curHistoryState.missingReactantMetadata.smiles
+                    }
+                    missingReactantEncodings={
+                      curHistoryState.missingReactantMetadata.encodings
+                    }
                   />
-                )
-              )}
+                ) : (
+                  !curHistoryState.missingReactantMetadata.prompts && (
+                    <ReactionPicker
+                      reactions={stepMetadata.validReactions}
+                      setReactionPicked={setReactionPicked}
+                      molImage={molImage}
+                    />
+                  )
+                )}
+                {history.length > 1 &&
+                  !curHistoryState.missingReactantMetadata.prompts && (
+                    <BackButton
+                      text="To previous molecule"
+                      onClick={toPreviousMolecule}
+                    />
+                  )}
+              </>
             </div>
           ) : (
             <ChemDraw setSmiles={setPreLoopSmiles} />

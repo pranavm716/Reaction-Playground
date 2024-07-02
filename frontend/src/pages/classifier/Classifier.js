@@ -10,7 +10,7 @@ const Classifier = () => {
   const { substructures, error } = useClassifierSubstructures(smiles);
 
   const updateSearchParams = (smiles) => {
-    setSearchParams({ smiles });
+    setSearchParams({ smiles }, { replace: true });
   };
 
   const [chemDraw, setChemDraw] = useState(

@@ -39,7 +39,6 @@ const setCurHistoryAttribute = (setHistory, attribute, value) => {
   ]);
 };
 
-// TODO: Figure out back button navigation for history mode
 const Playground = () => {
   // before playground loop/ before a reaction is picked
   const [preLoopSmiles, setPreLoopSmiles] = useState(""); // smiles before explicitly starting the playground loop
@@ -219,7 +218,7 @@ const Playground = () => {
     <>
       {!stepMetadata && (
         <p>
-          Welcome to Reaction Playground! In playground mode, you can draw a
+          This is the playground. Here, you can draw a
           molecule and experiment with running common organic reactions on it.
         </p>
       )}

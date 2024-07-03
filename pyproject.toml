@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "reaction-playground-ide"
+name = "reaction-playground"
 version = "0.1.0"
 description = ""
 authors = ["pranavm716 <pranav.manjapra@gmail.com>"]

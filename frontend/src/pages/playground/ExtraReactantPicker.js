@@ -5,7 +5,7 @@ import {
   CautionText,
   plusIcon,
 } from "../../components/SmallUIComponents";
-import { useExtraReactantModal } from "../../hooks";
+import { useExtraReactantModals } from "../../hooks";
 
 const ExtraReactantPicker = ({
   molImage,
@@ -19,7 +19,7 @@ const ExtraReactantPicker = ({
     null,
   );
 
-  const { openModal, modals } = useExtraReactantModal(
+  const { openModal, modals } = useExtraReactantModals(
     missingReactantSmiles,
     missingReactantPrompts,
     reaction.name,

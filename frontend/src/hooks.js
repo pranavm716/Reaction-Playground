@@ -8,6 +8,9 @@ import { useNavigate } from "react-router-dom";
 import ChemDraw from "./components/ChemDraw";
 import { closeIcon, MolImageMenuItems } from "./components/SmallUIComponents";
 import { CLASSIFIER_ENDPOINT } from "./endpoints";
+import ClassifierDocs from "./pages/help/ClassifierDocs";
+import PlaygroundDocs from "./pages/help/PlaygroundDocs";
+import SolverDocs from "./pages/help/SolverDocs";
 
 export const useMolImageMenuReroute = (url, searchParams) => {
   const navigate = useNavigate();
@@ -64,7 +67,7 @@ export const useClassifierSubstructures = (smiles) => {
   return { substructures, error };
 };
 
-export const useExtraReactantModal = (
+export const useExtraReactantModals = (
   missingReactantSmiles,
   missingReactantPrompts,
   reactionName,
@@ -147,4 +150,46 @@ export const useExtraReactantModal = (
   ));
 
   return { openModal, modals };
+};
+
+export const useAppDoc = (colorsMap) => {
+  const [hoverLink, setHoverLink] = useState(null);
+  const [appTab, setAppTab] = useState("Playground");
+  let docPage = null;
+  if (appTab === "Playground") {
+    docPage = <PlaygroundDocs />;
+  } else if (appTab === "Solver") {
+    docPage = <SolverDocs />;
+  } else if (appTab === "Classifier") {
+    docPage = <ClassifierDocs />;
+  }
+
+  const getDocButton = (text, colorMapRoute) => {
+    return (
+      <span
+        onMouseEnter={() => setHoverLink(text)}
+        onMouseLeave={() => setHoverLink(null)}
+        style={{
+          color: hoverLink === text ? colorsMap[colorMapRoute] : "#333",
+          borderBottom:
+            appTab === text ? `1px solid ${colorsMap[colorMapRoute]}` : "none",
+          paddingBottom: "6px",
+        }}
+        onClick={() => setAppTab(text)}
+      >
+        {text} docs
+      </span>
+    );
+  };
+
+  return (
+    <div>
+      <div className="app-doc-tab-selector">
+        {getDocButton("Playground", "/")}
+        {getDocButton("Solver", "/solver")}
+        {getDocButton("Classifier", "/classifier")}
+      </div>
+      <div className="app-doc">{docPage}</div>
+    </div>
+  );
 };

@@ -295,6 +295,23 @@
   border-radius: 15px;
 }
 
+/* help page */
+.app-doc-tab-selector {
+  display: flex;
+  gap: 0 25px;
+  margin-top: 15px;
+}
+
+.app-doc-tab-selector span {
+  cursor: pointer;
+}
+
+.app-doc {
+  margin-top: 15px;
+  padding: 15px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.15);
+}
+
 /* about page */
 .about-section {
   margin-bottom: 25px;

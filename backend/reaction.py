@@ -62,11 +62,8 @@ class Reaction(BaseModel):
     )
     multiple_reactants_prompts: list[str] | None = Field(
         default=None,
-        description="List of prompts that ask the user to enter the SMILES of the missing reactants. "
-        "Should only be set for reactions with more than one reactant.",
-        examples=[
-            "Enter the SMILES of carbon dioxide (O=C=O) or an aldehyde, ketone, or nitrile: "
-        ],
+        description="List of prompts that ask the user to draw the missing reactants. "
+        "Should only be set for reactions with more than one reactant."
     )
     description: str
     reaction_key: ReactionKey

@@ -1,20 +1,4 @@
 import { useAppDoc } from "../../hooks";
-const appInfo = {
-  "/": {
-    name: "Playground",
-    description: "A sandbox for drawing and applying reactions to molecules.",
-  },
-  "/solver": {
-    name: "Solver",
-    description:
-      "A tool for calculating a synthetic reaction pathway between a starting and a target molecule.",
-  },
-  "/classifier": {
-    name: "Classifier",
-    description:
-      "A tool for identifying the substructures and functional groups within molecules.",
-  },
-};
 
 const Help = ({ colorsMap }) => {
   const appDoc = useAppDoc(colorsMap);
@@ -24,21 +8,22 @@ const Help = ({ colorsMap }) => {
       <h2>Welcome to Reaction Playground!</h2>
       <p>
         This is a tool that allows users to experiment with applying common
-        organic reactions to molecules. It is intended to help beginner organic
-        chemistry students. Reaction Playground consists of 3 main apps:
+        organic reactions to molecules. It is intended to help beginner level
+        organic chemistry students. Reaction Playground consists of 3 main apps:
+        The{" "}
+        <span>
+          <b style={{ color: colorsMap["/"] }}>Playground</b>
+        </span>
+        , the{" "}
+        <span>
+          <b style={{ color: colorsMap["/solver"] }}>Solver</b>
+        </span>
+        , and the{" "}
+        <span>
+          <b style={{ color: colorsMap["/classifier"] }}>Classifier</b>
+        </span>
+        .
       </p>
-      <ul>
-        {Object.keys(appInfo).map((app) => {
-          return (
-            <li key={app}>
-              <span>
-                <b style={{ color: colorsMap[app] }}>{appInfo[app].name}</b>
-              </span>
-              : {appInfo[app].description}
-            </li>
-          );
-        })}
-      </ul>
       <p>Click through the tabs below to learn more about each app.</p>
       {appDoc}
       {/* <ul>
@@ -55,3 +40,4 @@ const Help = ({ colorsMap }) => {
 };
 
 export default Help;
+// TODO: Add a tooltip directing user to the help page on first load

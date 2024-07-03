@@ -13,3 +13,4 @@ export const RUN_SOLVER_ENDPOINT = "/solver/run";
 
 // classifier
 export const CLASSIFIER_ENDPOINT = "/classifier/";
+export const ALL_SUBSTRUCTURES_ENDPOINT = "/classifier/all";

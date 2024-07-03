@@ -310,6 +310,14 @@
   margin-top: 15px;
   padding: 15px;
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.15);
+  display: grid;
+  gap: 10px;
+}
+
+.doc-image {
+  max-width: 100%;
+  justify-self: center;
+  margin: 15px 0;
 }
 
 /* about page */

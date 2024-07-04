@@ -23,7 +23,7 @@ const ClassifierDocs = () => {
       <p>
         Start by drawing a molecule in the drawing tool on the left, and the
         substructures will be displayed on the right. The list of substructures
-        will update in real time as the molecule is changed.
+        will update in real time as the molecule changes.
       </p>
       <DocImageWithCaption
         src="classifier-main-page.png"

@@ -30,4 +30,3 @@ const Help = ({ colorsMap }) => {
 };
 
 export default Help;
-// TODO: Add a tooltip directing user to the help page on first load

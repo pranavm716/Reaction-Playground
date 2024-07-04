@@ -1,5 +1,6 @@
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
+import { Tooltip } from "react-tooltip";
 
 const appLinks = {
   "/": "Playground",
@@ -16,13 +17,19 @@ const Navbar = ({ colorsMap }) => {
   const [hoverLink, setHoverLink] = useState(null);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    if (!localStorage.getItem("visited")) {
+      localStorage.setItem("visited", "true");
+    }
+  }, []);
+
   const handleNav = (link, event) => {
     event.preventDefault();
     navigate(link);
   };
 
   const getNavLink = (link, text) => {
-    return (
+    let navLink = (
       <NavLink
         to={link}
         key={link}
@@ -34,6 +41,28 @@ const Navbar = ({ colorsMap }) => {
         {text}
       </NavLink>
     );
+
+    if (link === "/help" && !localStorage.getItem("visited")) {
+      navLink = (
+        <>
+          {React.cloneElement(navLink, {
+            "data-tooltip-id": "initial-help-tooltip",
+          })}
+          <Tooltip
+            id="initial-help-tooltip"
+            place="bottom-end"
+            offset={12}
+            content="Welcome to Reaction Playground! If this is your first time here, check out the help page."
+            defaultIsOpen={true}
+            style={{ maxWidth: "350px", padding: "20px", zIndex: 1000 }}
+            variant="info"
+            clickable={true}
+          />
+        </>
+      );
+    }
+
+    return navLink;
   };
 
   return (

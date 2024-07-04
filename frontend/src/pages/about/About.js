@@ -6,6 +6,7 @@ const references = [
   "https://chem.libretexts.org/",
   "https://stackabuse.com/courses/graphs-in-python-theory-and-implementation/lessons/breadth-first-search-bfs-algorithm/",
   "https://www.youtube.com/watch?v=j942wKiXFu8&list=PL4cUxeGkcC9gZD-Tvwfod2gaISzfRiP9d",
+  "https://jsme-editor.github.io/",
   // TODO: link for deploying app on GH pages
 ];
 

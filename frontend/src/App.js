@@ -7,7 +7,6 @@ import Help from "./pages/help/Help";
 import Playground from "./pages/playground/Playground";
 import Solver from "./pages/solver/Solver";
 
-// TODO: Add help and about pages
 const colorsMap = {
   "/": "#f1356d",
   "/solver": "#429987",

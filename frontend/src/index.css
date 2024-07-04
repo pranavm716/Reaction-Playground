@@ -308,7 +308,7 @@
 
 .app-doc {
   margin-top: 15px;
-  padding: 15px;
+  padding: 15px 15px 20px 15px;
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.15);
   display: grid;
   gap: 10px;

@@ -37,7 +37,7 @@ const ClassifierDocs = () => {
       <DocImageWithCaption
         src="classifier-options-button.png"
         alt="Classifier options button"
-        caption="Options button in the Classifier tool"
+        caption="Options menu for Classifier molecules"
       />
       <p>Here's the list of all available substructures:</p>
       {allSubstructures.length ? (

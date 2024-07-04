@@ -7,7 +7,7 @@ import Modal from "react-modal";
 import { useNavigate } from "react-router-dom";
 import ChemDraw from "./components/ChemDraw";
 import { closeIcon, MolImageMenuItems } from "./components/SmallUIComponents";
-import { CLASSIFIER_ENDPOINT } from "./endpoints";
+import { ALL_REACTIONS_ENDPOINT, CLASSIFIER_ENDPOINT } from "./endpoints";
 import ClassifierDocs from "./pages/help/ClassifierDocs";
 import PlaygroundDocs from "./pages/help/PlaygroundDocs";
 import SolverDocs from "./pages/help/SolverDocs";
@@ -192,4 +192,25 @@ export const useAppDoc = (colorsMap) => {
       <div className="app-doc">{docPage}</div>
     </div>
   );
+};
+
+export const useAllReactions = () => {
+  const [allReactions, setAllReactions] = useState([]);
+  const singleReactantReactions = allReactions.filter(
+    (reaction) => !reaction.multiple_reactants_prompts,
+  );
+  const multipleReactantReactions = allReactions.filter(
+    (reaction) => !!reaction.multiple_reactants_prompts,
+  );
+
+  useEffect(() => {
+    const getAllReactions = async () => {
+      await axios.get(ALL_REACTIONS_ENDPOINT).then((res) => {
+        setAllReactions(res.data);
+      });
+    };
+    getAllReactions();
+  }, []);
+
+  return { singleReactantReactions, multipleReactantReactions };
 };

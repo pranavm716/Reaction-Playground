@@ -149,7 +149,10 @@ export const ArrowWithReactionInfo = ({
           }}
         >
           {missingReactantMetadata.smiles.map((smiles, index) => (
-            <div className="history-extra-reactants-row" key={`missing-${smiles}-${index}`}>
+            <div
+              className="history-extra-reactants-row"
+              key={`missing-${smiles}-${index}`}
+            >
               <MolImage
                 smiles={smiles}
                 encoding={missingReactantMetadata.encodings[index]}
@@ -279,5 +282,18 @@ export const MolImageMenu = ({ smiles }) => {
     >
       <MolImageMenuItems smiles={smiles} onClassifier={true} />
     </Menu>
+  );
+};
+
+export const DocImageWithCaption = ({ src, alt, caption }) => {
+  return (
+    <div className="doc-image-container">
+      <img
+        className="doc-image"
+        src={`${process.env.PUBLIC_URL}/docs/${src}`}
+        alt={alt}
+      />
+      <p className="doc-image-caption">{caption}</p>
+    </div>
   );
 };

@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { DocImageWithCaption } from "../../components/SmallUIComponents";
 import { ALL_SUBSTRUCTURES_ENDPOINT } from "../../endpoints";
 
 const ClassifierDocs = () => {
@@ -17,23 +18,30 @@ const ClassifierDocs = () => {
     <>
       <p>
         The classifier is a tool for identifying the substructures and
-        functional groups within molecules. Start by drawing a molecule in the
-        drawing tool on the left, and the substructures will be displayed on the
-        right. The list of substructures will update in real time as the
-        molecule is changed.
+        functional groups within molecules.
       </p>
-      <img
-        className="doc-image"
-        src={process.env.PUBLIC_URL + "/docs/classifier-doc-main-page.png"}
+      <p>
+        Start by drawing a molecule in the drawing tool on the left, and the
+        substructures will be displayed on the right. The list of substructures
+        will update in real time as the molecule is changed.
+      </p>
+      <DocImageWithCaption
+        src="classifier-main-page.png"
         alt="Classifier main page doc"
+        caption="Classifier page, with drawing tool on the left and substructures displayed on the right"
       />
       <p>
         You can also open the current molecule in the Playground or the Solver
-        by clicking on the options button.
+        by clicking on the "Options" button:
       </p>
+      <DocImageWithCaption
+        src="classifier-options-button.png"
+        alt="Classifier options button"
+        caption="Options button in the Classifier tool"
+      />
       <p>Here's the list of all available substructures:</p>
       {allSubstructures.length ? (
-        <ul>
+        <ul className="info-list">
           {allSubstructures.map((substructure) => (
             <li key={substructure}>{substructure}</li>
           ))}

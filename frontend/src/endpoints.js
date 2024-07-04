@@ -1,3 +1,6 @@
+// general
+export const ALL_REACTIONS_ENDPOINT = "/reactions";
+
 // playground
 export const START_ENDPOINT = "/playground/start";
 export const REACTION_SINGLE_REACTANT_ENDPOINT =

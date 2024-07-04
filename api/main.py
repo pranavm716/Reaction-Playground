@@ -3,7 +3,7 @@ from starlette.middleware.cors import CORSMiddleware
 
 from backend.computations import ALL_REACTIONS
 from backend.config import REACT_JS_REQUEST_ORIGIN
-from backend.reaction import ReactionKey, ReactionDict
+from backend.reaction import Reaction
 from api.playground_router import router as playground_router
 from api.solver_router import router as solver_router
 from api.classifier_router import router as classifier_router
@@ -21,9 +21,9 @@ app.add_middleware(
 
 
 @app.get("/reactions")
-def all_reactions() -> ReactionDict:
+def all_reactions() -> list[Reaction]:
     """Returns a list of all available reactions."""
-    return ALL_REACTIONS
+    return list(ALL_REACTIONS.values())
 
 
 app.include_router(playground_router)

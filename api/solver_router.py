@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, Depends
 
 from api.response import MolImageMetadata, SolverModeImageData, SolverModeResponse
 from api.utils import get_mol_and_image_encoding, mol_to_base64
@@ -9,11 +9,14 @@ from backend.computations import (
     find_synthetic_pathway,
     generate_multi_step_product,
 )
+from api.auth import verify_api_key
 from backend.reaction import Reaction
 from rdkit import Chem
 
 
-router = APIRouter(prefix="/solver", tags=["solver"])
+router = APIRouter(
+    prefix="/solver", tags=["solver"], dependencies=[Depends(verify_api_key)]
+)
 
 
 @router.get("/get-mol-image")

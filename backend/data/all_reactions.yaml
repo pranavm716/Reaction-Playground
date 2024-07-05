@@ -116,7 +116,6 @@ deprotonation:
     # carboxylic acid (+formic acid) -> carboxylate anion
   description: Deprotonates an alcohol into an alkoxide anion and a carboxylic acid into a carboxylate anion.
 
-# TODO: Add ether cleavage
 
 # Reactions involving multiple reactants
 grignard_reaction:

@@ -41,7 +41,6 @@ const SolverResults = ({ startingSmiles, targetSmiles, solverResults }) => {
             </p>
           ) : (
             <p>
-              {/* TODO: make the max num solver steps and multi step react mode as frontend configs  */}
               <span style={{ marginRight: "4px" }}>
                 <b style={{ color: "red" }}>
                   No synthetic pathway found in 15 steps.

@@ -70,8 +70,18 @@ const PlaygroundDocs = () => {
       />
 
       <p>
-        You can hover over any reaction name to get a full description of what
-        it does...
+        Clicking the "Previous molecule" button will allow you to step back
+        through the history:
+      </p>
+      <DocImageWithCaption
+        src="playground-previous-molecule.png"
+        alt="Playground previous molecule"
+        caption="Stepping back through history"
+      />
+
+      <p>
+        Also, you can hover over any reaction name to get a full description of
+        what it does...
       </p>
       <div
         style={{

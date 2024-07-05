@@ -16,6 +16,6 @@ MAX_NUM_SOLVER_STEPS = 15
 # Frontend
 REACT_APP_FRONTEND_URL = (
     os.getenv("REACT_APP_FRONTEND_URL")
-    if os.getenv("REACT_APP_IS_CLOUD_DEPLOYMENT")
+    if os.getenv("REACT_APP_IS_CLOUD_DEPLOYMENT") == "true"
     else "http://localhost:3000"
 )

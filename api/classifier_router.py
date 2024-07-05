@@ -4,8 +4,11 @@ from api.utils import get_mol_and_image_encoding
 
 from backend.computations import get_substructure_classifications
 from backend.computations import ALL_SUBSTRUCTURES
+from api.auth import auth_dependencies
 
-router = APIRouter(prefix="/classifier", tags=["classifier"])
+router = APIRouter(
+    prefix="/classifier", tags=["classifier"], dependencies=auth_dependencies
+)
 
 
 @router.get("/all")

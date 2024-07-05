@@ -9,11 +9,12 @@ from backend.computations import (
     find_synthetic_pathway,
     generate_multi_step_product,
 )
+from api.auth import auth_dependencies
 from backend.reaction import Reaction
 from rdkit import Chem
 
 
-router = APIRouter(prefix="/solver", tags=["solver"])
+router = APIRouter(prefix="/solver", tags=["solver"], dependencies=auth_dependencies)
 
 
 @router.get("/get-mol-image")

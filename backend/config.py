@@ -1,4 +1,5 @@
 import pathlib
+import os
 
 # Backend data file paths
 ALL_REACTIONS_FILE_PATH = (
@@ -13,4 +14,8 @@ MULTI_STEP_REACT_MODE = True
 MAX_NUM_SOLVER_STEPS = 15
 
 # Frontend
-REACT_JS_REQUEST_ORIGIN = "http://localhost:3000"
+REACT_APP_FRONTEND_URL = (
+    os.getenv("REACT_APP_FRONTEND_URL")
+    if os.getenv("REACT_APP_IS_CLOUD_DEPLOYMENT")
+    else "http://localhost:3000"
+)

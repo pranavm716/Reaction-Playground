@@ -16,12 +16,15 @@ from api.utils import (
     get_mol_and_image_encoding,
     mol_to_base64,
 )
+from api.auth import auth_dependencies
 from backend.datatypes import MolTuple
 from backend.reaction import Reaction, ReactionKey
 from rdkit import Chem
 from rdkit.Chem.rdchem import Mol
 
-router = APIRouter(prefix="/playground", tags=["playground"])
+router = APIRouter(
+    prefix="/playground", tags=["playground"], dependencies=auth_dependencies
+)
 
 
 @router.get("/start")

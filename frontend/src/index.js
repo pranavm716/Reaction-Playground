@@ -7,7 +7,12 @@ import App from "./App";
 import "./index.css";
 
 axios.defaults.withCredentials = true;
-axios.defaults.baseURL = "http://localhost:8000";
+if (process.env.REACT_APP_IS_CLOUD_DEOLOYMENT) {
+  axios.defaults.headers.common["x-api-key"] = process.env.REACT_APP_API_KEY;
+  axios.defaults.baseURL = process.ENV.REACT_APP_API_BASE_URL;
+} else {
+  axios.defaults.baseURL = "http://localhost:8000";
+}
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 Modal.setAppElement("#root");

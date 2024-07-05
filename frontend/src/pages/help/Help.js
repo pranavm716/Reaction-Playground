@@ -7,7 +7,7 @@ const Help = ({ colorsMap }) => {
     <div style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
       <h2>Welcome to Reaction Playground!</h2>
       <p>
-        This is a tool intended to help beginner level organic chemistry
+        This is a website intended to help beginner level organic chemistry
         students understand common organic reactions and functional groups.
         Reaction Playground consists of 3 main apps: The{" "}
         <span>

@@ -9,7 +9,7 @@ import "./index.css";
 axios.defaults.withCredentials = true;
 if (process.env.REACT_APP_IS_CLOUD_DEPLOYMENT === "true") {
   axios.defaults.headers.common["x-api-key"] = process.env.REACT_APP_API_KEY;
-  axios.defaults.baseURL = process.ENV.REACT_APP_API_BASE_URL;
+  axios.defaults.baseURL = process.env.REACT_APP_API_BASE_URL;
 } else {
   axios.defaults.baseURL = "http://localhost:8000";
 }

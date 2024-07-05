@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
-from backend.config import REACT_JS_REQUEST_ORIGIN
+from backend.config import REACT_APP_FRONTEND_URL
 from api.playground_router import router as playground_router
 from api.solver_router import router as solver_router
 from api.classifier_router import router as classifier_router
@@ -12,7 +12,7 @@ app = FastAPI()
 # Add middleware to interface with React frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[REACT_JS_REQUEST_ORIGIN],
+    allow_origins=[REACT_APP_FRONTEND_URL],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

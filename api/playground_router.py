@@ -1,6 +1,6 @@
 import copy
 import functools
-from fastapi import APIRouter, HTTPException, Query, Body, Depends
+from fastapi import APIRouter, HTTPException, Query, Body
 
 from api.response import MolImageMetadata
 from backend.computations import (
@@ -16,14 +16,14 @@ from api.utils import (
     get_mol_and_image_encoding,
     mol_to_base64,
 )
-from api.auth import verify_api_key
+from api.auth import auth_dependencies
 from backend.datatypes import MolTuple
 from backend.reaction import Reaction, ReactionKey
 from rdkit import Chem
 from rdkit.Chem.rdchem import Mol
 
 router = APIRouter(
-    prefix="/playground", tags=["playground"], dependencies=[Depends(verify_api_key)]
+    prefix="/playground", tags=["playground"], dependencies=auth_dependencies
 )
 
 

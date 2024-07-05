@@ -1,13 +1,13 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException
 
 from api.utils import get_mol_and_image_encoding
 
 from backend.computations import get_substructure_classifications
 from backend.computations import ALL_SUBSTRUCTURES
-from api.auth import verify_api_key
+from api.auth import auth_dependencies
 
 router = APIRouter(
-    prefix="/classifier", tags=["classifier"], dependencies=[Depends(verify_api_key)]
+    prefix="/classifier", tags=["classifier"], dependencies=auth_dependencies
 )
 
 

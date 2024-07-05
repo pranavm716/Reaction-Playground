@@ -1,10 +1,10 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter
 from backend.reaction import Reaction
 from backend.computations import ALL_REACTIONS
-from api.auth import verify_api_key
+from api.auth import auth_dependencies
 
 
-router = APIRouter(tags=["general"], dependencies=[Depends(verify_api_key)])
+router = APIRouter(tags=["general"], dependencies=auth_dependencies)
 
 
 @router.get("/reactions")

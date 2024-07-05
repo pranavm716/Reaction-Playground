@@ -22,5 +22,5 @@ def verify_api_key(api_key: str = Security(api_key_header)) -> None:
 
 
 auth_dependencies = (
-    [Depends(verify_api_key)] if os.getenv("REACT_APP_IS_CLOUD_DEPLOYMENT") else None
+    [Depends(verify_api_key)] if os.getenv("REACT_APP_IS_CLOUD_DEPLOYMENT") == "true" else None
 )

@@ -3,9 +3,9 @@ from unittest.mock import patch
 
 from rdkit import rdBase
 
-from website.config import ALL_REACTIONS_FILE_PATH, ALL_SUBSTRUCTURES_FILE_PATH
-from website.mol_classification import read_all_substructures_from_file
-from website.reaction import read_all_reactions_from_file
+from backend.config import ALL_REACTIONS_FILE_PATH, ALL_SUBSTRUCTURES_FILE_PATH
+from backend.mol_classification import read_all_substructures_from_file
+from backend.reaction import read_all_reactions_from_file
 
 
 def test_data_is_configured_properly():

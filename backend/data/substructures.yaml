@@ -1,0 +1,84 @@
+# Alcohols
+primary_alcohol:
+  - "[CH3][OH]" # methanol
+  - "[#6][CH2][OH]"
+secondary_alcohol:
+  - "[#6][CH]([#6])[OH]"
+tertiary_alcohol:
+  - "[#6][CH0]([#6])([#6])[OH]"
+
+# Carbonyls
+aldehyde:
+  - "[CH2]=O" # formaldehyde
+  - "[#6][CH]=O"
+carboxylic_acid:
+  - "[CH](=O)[OH]" # formic acid
+  - "[#6][CX3](=O)[OH]"
+ketone:
+  - "[#6][CX3H0](=O)[#6]"
+ester:
+  - "[#6][O][C](=O)[#6]"
+
+# Nitrogen compounds
+primary_amine:
+  - "[NH3]" # ammonia
+  - "[#6][NX3;H2;!$(NC=O)]"
+secondary_amine:
+  - "[#6][NX3;H1;!$(NC=O)][#6]"
+tertiary_amine:
+  - "[#6][NX3;H0;!$(NC=O)]([#6])[#6]"
+
+primary_amide:
+  - "[#6][CX3](=[O])[NH2]"
+secondary_amide:
+  - "[#6][CX3](=[O])[NH][#6]"
+tertiary_amide:
+  - "[#6][CX3](=[O])[NH0]([#6])[#6]"
+
+nitrile:
+  - "[#6][C]#N"
+
+# Alkyl halides
+primary_alkyl_halide:
+  - "[CH3][F,Cl,Br,I]" # methyl halide
+  - "[#6][CH2][F,Cl,Br,I]"
+secondary_alkyl_halide:
+  - "[#6][CH]([#6])[F,Cl,Br,I]"
+tertiary_alkyl_halide:
+  - "[#6][CH0]([#6])([#6])[F,Cl,Br,I]"
+
+# Alkenes and alkynes
+internal_alkene:
+  - "[#6][CH]=[CH][#6]" # disubstituted
+  - "[#6][CH0]([#6])=[CH][#6]" # trisubstituted
+  - "[#6][CH0]([#6])=[CH0]([#6])[#6]" # tetrasubstituted
+  - "[CH1,CH0]=C=C" # cumulenes
+terminal_alkene:
+  - "[CH2]=[CH2]" # ethylene
+  - "[#6][C]=[CH2]"
+  - "C=C=[CH2]" # cumulenes
+
+internal_alkyne:
+  - "[#6][CH0]#[CH0][#6]"
+terminal_alkyne:
+  - "[CH]#[CH]" # acetylene
+  - "[#6][CH0]#[CH]"
+
+# Sulfur compounds
+primary_thiol:
+  - "[CH3][SH]" # methanol
+  - "[#6][CH2][SH]"
+secondary_thiol:
+  - "[#6][CH]([#6])[SH]"
+tertiary_thiol:
+  - "[#6][CH0]([#6])([#6])[SH]"
+thioketone:
+  - "[#6][CX3H0](=S)[#6]"
+
+# Other
+ether:
+  - "[#6][OD2!$(OC=O)][#6]"
+acid_halide:
+  - "[#6][CX3](=O)[F,Cl,Br,I]"
+carbon_nucleophile:
+  - "[#6-]"

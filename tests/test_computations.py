@@ -6,7 +6,7 @@ from tests.utils import (
     smiles_2d_tuple_to_mols,
     smiles_2d_tuples_match,
 )
-from website.computations import (
+from backend.computations import (
     copy_mol,
     find_possible_reaction_keys,
     find_synthetic_pathway,
@@ -16,9 +16,9 @@ from website.computations import (
     get_reactant_position_of_mol_in_reaction,
     get_substructure_classifications,
 )
-from website.datatypes import SmilesTuple, Smiles2dTuple
-from website.mol_classification import MolClass
-from website.reaction import ReactionKey
+from backend.datatypes import SmilesTuple, Smiles2dTuple
+from backend.mol_classification import MolClass
+from backend.reaction import ReactionKey
 
 
 class TestComputationUtils:
@@ -327,16 +327,16 @@ class TestSubstructureClassifications:
                 [MolClass.carboxylic_acid, MolClass.terminal_alkyne],
             ],
             [
-                "CC(C)(O)CCC(Br)C=O",
+                "CC(C)(O)CCC(I)C=O",
                 [
                     MolClass.aldehyde,
-                    MolClass.secondary_alkyl_bromide,
+                    MolClass.secondary_alkyl_halide,
                     MolClass.tertiary_alcohol,
                 ],
             ],
             [
-                "C/C=C/OCCCC(=O)NC",
-                [MolClass.alkene, MolClass.ether, MolClass.secondary_amide],
+                "CCCOCC=CC(=O)NC",
+                [MolClass.internal_alkene, MolClass.ether, MolClass.secondary_amide],
             ],
             ["CCN(C)CC=O", [MolClass.tertiary_amine, MolClass.aldehyde]],
             [
@@ -344,19 +344,20 @@ class TestSubstructureClassifications:
                 [MolClass.tertiary_amide, MolClass.ester],
             ],
             [
-                "[C-]CC#CC(=O)Cl",
+                "[C-]CC#CC(=O)I",
                 [
-                    MolClass.acid_chloride,
+                    MolClass.acid_halide,
                     MolClass.internal_alkyne,
                     MolClass.carbon_nucleophile,
                 ],
             ],
             [
-                "NC(=O)CC(O)CCBr",
+                "NC(=O)CC(O)C(CBr)=C",
                 [
-                    MolClass.primary_alkyl_bromide,
+                    MolClass.primary_alkyl_halide,
                     MolClass.secondary_alcohol,
                     MolClass.primary_amide,
+                    MolClass.terminal_alkene,
                 ],
             ],
             [
@@ -367,12 +368,24 @@ class TestSubstructureClassifications:
                     MolClass.primary_amine,
                 ],
             ],
+            [
+                "CC(C)(S)CCC(S)C(=S)CS",
+                [
+                    MolClass.primary_thiol,
+                    MolClass.secondary_thiol,
+                    MolClass.tertiary_thiol,
+                    MolClass.thioketone,
+                ],
+            ],
             ["C", []],
             # Single carbon molecules
             ["C=O", [MolClass.aldehyde]],
             ["CO", [MolClass.primary_alcohol]],
             ["C(=O)O", [MolClass.carboxylic_acid]],
-            ["CBr", [MolClass.primary_alkyl_bromide]],
+            ["CF", [MolClass.primary_alkyl_halide]],
+            ["C=C", [MolClass.terminal_alkene]],
+            ["C#C", [MolClass.terminal_alkyne]],
+            ["CS", [MolClass.primary_thiol]],
         ],
     )
     def test_substructure_classifications(

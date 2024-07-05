@@ -1,0 +1,352 @@
+@import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap");
+
+/* base styles */
+* {
+  margin: 0;
+  font-family: "Quicksand", serif;
+  color: #333;
+}
+
+:root {
+  --primary-color: #f1356d;
+  /* Gets dynamically updated depending on route */
+}
+
+/* navbar and content */
+.navbar {
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  margin: 0px 15px;
+  border-bottom: 2px solid #f2f2f2;
+}
+
+.navbar h1 {
+  color: var(--primary-color);
+}
+
+.navbar .links {
+  margin-left: auto;
+}
+
+.navbar a {
+  margin: 0px 8px;
+  text-decoration: none;
+  padding: 6px;
+}
+
+.navbar a:hover {
+  cursor: pointer;
+  /* The hover color is updated dynamically in NavBar.js */
+}
+
+.navbar a.active {
+  border-bottom: var(--primary-color) 1.5px solid;
+}
+
+.content {
+  max-width: 90%;
+  margin: 10px auto;
+  padding: 20px;
+}
+
+/* component and page specific styles */
+
+.primary-colored-button {
+  background: var(--primary-color);
+  color: #fff;
+  border: 0;
+  padding: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.primary-colored-button:hover {
+  filter: brightness(0.95);
+}
+
+.chem-draw-editor {
+  display: flex;
+  justify-content: center;
+  margin: 25px 0;
+}
+
+.clickable-mol-image:hover {
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+}
+
+.mol-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* playground - main page */
+.two-panel-content {
+  padding-top: 5px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 100px;
+}
+
+.action-panel {
+  max-height: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.history-panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.history-viewer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.history-extra-reactants-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.run-reactions-div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+}
+
+/* playground extra reactant picker */
+.extra-reactant-button {
+  background: #fff;
+  color: #333;
+  border: 1px solid #333;
+  padding: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  margin: 8px 0;
+}
+
+/* playground reaction/ product picker */
+.reaction-or-product-picker {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.reaction-button {
+  background: #fff;
+  color: #333;
+  fill: #333;
+  border: 1px solid #333;
+  padding: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  width: 500px;
+  margin: 8px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.reaction-button p {
+  width: 85%;
+}
+
+.reaction-button svg {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.reaction-button:focus,
+.reaction-button svg:focus {
+  outline: none;
+}
+
+.extra-reactant-button:hover,
+.reaction-button:hover,
+.reaction-button:hover p {
+  background: var(--primary-color);
+  color: #fff;
+  fill: #fff;
+  border-color: var(--primary-color);
+}
+
+.multi-product-text {
+  padding-top: 8px;
+}
+
+/* solver mode */
+.pre-solver-info {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  margin: 20px 0;
+}
+
+.pre-solver-double-arrow-div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 0 25px;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 100px 225px 100px;
+  gap: 10px;
+  align-items: center;
+  justify-items: center;
+}
+
+.grid-starting-text,
+.grid-target-text {
+  justify-self: center;
+}
+
+.grid-starting-button,
+.grid-target-button {
+  justify-self: center;
+}
+
+.grid-double-arrow-placeholder,
+.grid-button-placeholder {
+  visibility: hidden;
+}
+
+.solver-initial-display {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+}
+
+.solver-results-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.solver-mol-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.clear-selection-button {
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  background: #fff;
+  color: #b00020;
+  fill: #b00020;
+  border: 1px solid #b00020;
+  padding: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.clear-selection-button:hover {
+  background: #b00020;
+  fill: #fff;
+  color: #fff;
+}
+
+/* classifier */
+.substructure-container {
+  display: flex;
+  flex-direction: column;
+  margin: 25px 0;
+}
+
+.substructures-display {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 25px;
+  gap: 15px;
+}
+
+.substructure-chip {
+  background: var(--primary-color);
+  color: #fff;
+  border: 0;
+  padding: 8px 12px;
+  border-radius: 15px;
+}
+
+/* help page */
+.app-doc-tab-selector {
+  display: flex;
+  gap: 0 25px;
+  margin-top: 15px;
+}
+
+.app-doc-tab-selector span {
+  cursor: pointer;
+}
+
+.app-doc {
+  margin-top: 15px;
+  padding: 15px 15px 20px 15px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.15);
+  display: grid;
+  gap: 10px;
+}
+
+.doc-image-container {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  margin: 15px 0;
+  gap: 10px 0;
+}
+
+.doc-image {
+  max-width: 100%;
+  justify-self: center;
+  border: 2px solid #f2f2f2;
+}
+
+.doc-image-caption {
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.info-list {
+  display: grid;
+  gap: 8px;
+}
+
+/* about page */
+.about-section {
+  margin-bottom: 25px;
+}
+
+.about-section h2 {
+  margin-bottom: 12px;
+}
+
+.about-section a {
+  color: var(--primary-color);
+}
